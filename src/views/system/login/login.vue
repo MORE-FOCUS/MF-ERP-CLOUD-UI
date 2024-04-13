@@ -6,13 +6,13 @@
     <div class="box-item desc">
       <div class="welcome">
         <p class="welcome-title">观沧海</p>
-        <p>东临碣石，以观沧海。 </p>
+        <p> 东临碣石，以观沧海。 </p>
         <p> 水何澹澹，山岛竦峙。 </p>
         <p> 树木丛生，百草丰茂。 </p>
         <p> 秋风萧瑟，洪波涌起。 </p>
         <p> 日月之行，若出其中。 </p>
-        <p>星汉灿烂，若出其里。 </p>
-        <p>幸甚至哉，歌以咏志。 </p>
+        <p> 星汉灿烂，若出其里。 </p>
+        <p> 幸甚至哉，歌以咏志。 </p>
       </div>
     </div>
     <div class="box-item login">
@@ -62,7 +62,8 @@ import { loginApi } from '/@/api/system/login-api';
 import { SmartLoading } from '/@/components/framework/smart-loading';
 import { LOGIN_DEVICE_ENUM } from '/@/constants/system/login-device-const';
 import { useUserStore } from '/@/store/modules/system/user';
-import { saveTokenToCookie } from '/@/utils/cookie-util';
+import { localSave } from '/@/utils/local-util.js';
+import LocalStorageKeyConst from '/@/constants/local-storage-key-const.js';
 
 import loginQR from '/@/assets/images/login/login-qr.png';
 
@@ -119,7 +120,7 @@ async function onLogin() {
       });
       const res = await loginApi.login(encryptPasswordForm);
       stopRefrestCaptchaInterval();
-      saveTokenToCookie(res.data.token ? res.data.token : '');
+      localSave(LocalStorageKeyConst.USER_TOKEN, res.data.token ? res.data.token : '');
       message.success('登录成功');
       //更新用户信息到pinia
       useUserStore().setUserLoginInfo(res.data);

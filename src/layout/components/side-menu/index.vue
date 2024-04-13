@@ -73,9 +73,10 @@
       z-index: 21;
       display: flex;
       justify-content: center;
+      align-items: center;
       .logo-img {
-        width: 32px;
-        height: 32px;
+        width: 30px;
+        height: 30px;
       }
     }
 
@@ -87,10 +88,10 @@
       display: flex;
       cursor: pointer;
       justify-content: center;
-
+      align-items: center;
       .logo-img {
-        width: 40px;
-        height: 40px;
+        width: 30px;
+        height: 30px;
       }
 
       .title {

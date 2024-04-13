@@ -27,7 +27,6 @@
   import { computed, ref, onMounted } from 'vue';
   import { loginApi } from '/src/api/system/login-api';
   import { useUserStore } from '/@/store/modules/system/user';
-  import { clearAllCoolies } from '/@/utils/cookie-util';
   import { localClear } from '/@/utils/local-util';
   import { smartSentry } from '/@/lib/smart-sentry';
   import HeaderResetPassword from './header-reset-password-modal/index.vue';
@@ -44,7 +43,6 @@
     } finally {
 
       localClear();
-      clearAllCoolies();
       useUserStore().logout();
       location.reload();
     }

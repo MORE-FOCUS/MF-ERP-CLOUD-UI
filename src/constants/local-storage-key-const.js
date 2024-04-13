@@ -5,11 +5,13 @@
 /**
  * key前缀
  */
-const KEY_PREFIX = 'smart_admin_';
+const KEY_PREFIX = 'smart_erp_';
 /**
  * localStorageKey集合
  */
 export default {
+  // 用户token
+  USER_TOKEN: `${KEY_PREFIX}user_token`,
   // 用户信息
   USER_INFO: `${KEY_PREFIX}user_info`,
   // 用户权限点
@@ -22,4 +24,5 @@ export default {
   HOME_QUICK_ENTRY: `${KEY_PREFIX}home_quick_entry`,
   // 通知信息已读
   NOTICE_READ: `${KEY_PREFIX}notice_read`,
+  
 };
