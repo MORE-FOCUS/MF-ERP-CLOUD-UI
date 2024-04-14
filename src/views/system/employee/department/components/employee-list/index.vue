@@ -82,10 +82,10 @@
   </a-card>
 </template>
 <script setup lang="ts">
+import { computed, createVNode, reactive, ref, watch } from 'vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { message, Modal } from 'ant-design-vue';
 import _ from 'lodash';
-import { computed, createVNode, reactive, ref, watch } from 'vue';
 import { employeeApi } from '/@/api/system/employee-api';
 import { PAGE_SIZE } from '/@/constants/common-const';
 import { SmartLoading } from '/@/components/framework/smart-loading';
@@ -100,7 +100,7 @@ import { TABLE_ID_CONST } from '/@/constants/support/table-id-const';
 // ----------------------- 以下是字段定义 emits props ---------------------
 
 const props = defineProps({
-  departmentId: Number,
+  deptId: Number,
   breadcrumb: Array,
 });
 
@@ -163,7 +163,7 @@ const columns = ref([
 const tableData = ref();
 
 let defaultParams = {
-  departmentId: undefined,
+  deptId: undefined,
   disabledFlag: false,
   keyword: undefined,
   searchCount: undefined,
@@ -185,7 +185,7 @@ const tableLoading = ref(false);
 async function queryEmployee() {
   tableLoading.value = true;
   try {
-    params.departmentId = props.departmentId;
+    params.deptId = props.deptId;
     let res = await employeeApi.queryEmployee(params);
     for (const item of res.data.list) {
       item.roleNameList = _.join(item.roleNameList, ',');
@@ -207,7 +207,7 @@ async function queryEmployeeByKeyword(allDepartment) {
   tableLoading.value = true;
   try {
     params.pageNum = 1;
-    params.departmentId = allDepartment ? undefined : props.departmentId;
+    params.deptId = allDepartment ? undefined : props.deptId;
     let res = await employeeApi.queryEmployee(params);
     tableData.value = res.data.list;
     total.value = res.data.total;
@@ -222,9 +222,9 @@ async function queryEmployeeByKeyword(allDepartment) {
 }
 
 watch(
-  () => props.departmentId,
+  () => props.deptId,
   () => {
-    if (props.departmentId !== params.departmentId) {
+    if (props.deptId !== params.deptId) {
       params.pageNum = 1;
       queryEmployee();
     }
@@ -299,8 +299,8 @@ function showDrawer(rowData) {
   if (rowData) {
     params = _.cloneDeep(rowData);
     params.disabledFlag = params.disabledFlag ? 1 : 0;
-  } else if (props.departmentId) {
-    params.departmentId = props.departmentId;
+  } else if (props.deptId) {
+    params.deptId = props.deptId;
   }
   employeeFormModal.value.showDrawer(params);
 }
