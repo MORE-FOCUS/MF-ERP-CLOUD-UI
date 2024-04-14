@@ -27,7 +27,7 @@
     }"
   >
     <!---全局loading--->
-    <a-spin :spinning="spinning" tip="稍等片刻，我在拼命加载中..." size="large">
+    <a-spin :spinning="spinning" tip="稍等片刻，正在拼命加载中..." size="large">
       <!--- 路由 -->
       <RouterView />
     </a-spin>

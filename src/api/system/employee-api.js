@@ -15,7 +15,7 @@ export const employeeApi = {
    * 员工管理查询
    */
   queryEmployee: (params) => {
-    return postRequest('/employee/query', params);
+    return postRequest('/employee/queryPage', params);
   },
   /**
    * 添加员工

@@ -8,7 +8,7 @@ export const departmentApi = {
    * 查询部门列表 @author loki
    */
   queryAllDepartment: () => {
-    return getRequest('/department/listAll');
+    return getRequest('/department/queryAll');
   },
 
   /**

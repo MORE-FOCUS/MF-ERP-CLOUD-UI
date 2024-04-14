@@ -2,10 +2,10 @@
   * 部门表单 弹窗
 -->
 <template>
-  <a-modal v-model:open="visible" :title="formState.deptId ? '编辑部门' : '添加部门'" @ok="handleOk" destroyOnClose>
+  <a-modal v-model:open="visible" :title="formState.pid ? '编辑部门' : '添加部门'" @ok="handleOk" destroyOnClose>
     <a-form ref="formRef" :model="formState" :rules="rules" layout="vertical">
-      <a-form-item label="上级部门" name="parentId" v-if="formState.parentId != 0">
-        <DepartmentTreeSelect ref="departmentTreeSelect" v-model:value="formState.parentId" :defaultValueFlag="false" width="100%" />
+      <a-form-item label="上级部门" name="pid" v-if="formState.pid != 0">
+        <DepartmentTreeSelect ref="departmentTreeSelect" v-model:value="formState.pid" :defaultValueFlag="false" width="100%" />
       </a-form-item>
       <a-form-item label="部门名称" name="name">
         <a-input v-model:value.trim="formState.name" placeholder="请输入部门名称" />
@@ -52,9 +52,9 @@
   const departmentTreeSelect = ref();
   const defaultDepartmentForm = {
     id: undefined,
-    managerId: undefined, //部门负责人
+    managerId: undefined,
     name: undefined,
-    parentId: undefined,
+    pid: undefined,
     sortValue: 0,
   };
   const employeeSelect = ref();
@@ -64,13 +64,14 @@
   });
   // 表单校验规则
   const rules = {
-    parentId: [{ required: true, message: '上级部门不能为空' }],
+    pid: [{ required: true, message: '上级部门不能为空' }],
     name: [
       { required: true, message: '部门名称不能为空' },
       { max: 50, message: '部门名称不能大于20个字符', trigger: 'blur' },
     ],
     managerId: [{ required: true, message: '部门负责人不能为空' }],
   };
+  
   // 更新表单数据
   function updateFormData(data) {
     Object.assign(formState, defaultDepartmentForm);
@@ -79,6 +80,7 @@
     }
     visible.value = true;
   }
+
   // 重置表单数据
   function resetFormData() {
     Object.assign(formState, defaultDepartmentForm);
@@ -87,7 +89,7 @@
   async function handleOk() {
     try {
       await formRef.value.validate();
-      if (formState.deptId) {
+      if (formState.id) {
         updateDepartment();
       } else {
         addDepartment();
@@ -116,7 +118,7 @@
   async function updateDepartment() {
     SmartLoading.show();
     try {
-      if (formState.parentId == formState.deptId) {
+      if (formState.pid == formState.id) {
         message.warning('上级菜单不能为自己');
         return;
       }

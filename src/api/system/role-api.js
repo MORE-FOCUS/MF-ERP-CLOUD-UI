@@ -8,7 +8,7 @@ export const roleApi = {
    * @description: 获取所有角色
    */
   queryAll: () => {
-    return getRequest('/role/getAll');
+    return getRequest('/role/queryAll');
   },
   /**
    * @description:添加角色

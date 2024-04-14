@@ -19,6 +19,13 @@ export const menuApi = {
   },
 
   /**
+   * 复制菜单
+   */
+  copyMenu: (menuId) => {
+    return postRequest(`/menu/copy/${menuId}`);
+  },
+
+  /**
    * 批量删除菜单
    */
   batchDeleteMenu: (menuIdList) => {

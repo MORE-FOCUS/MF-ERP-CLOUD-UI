@@ -10,8 +10,6 @@
     @close="onClose"
     destroyOnClose
   >
-    <a-alert message="超管需要直接在数据库表 t_employee修改哦" type="error" closable />
-    <br />
     <a-form ref="formRef" :model="form" :rules="rules" layout="vertical">
       <a-form-item label="姓名" name="actualName">
         <a-input v-model:value.trim="form.actualName" placeholder="请输入姓名" />
@@ -19,8 +17,8 @@
       <a-form-item label="手机号" name="phone">
         <a-input v-model:value.trim="form.phone" placeholder="请输入手机号" />
       </a-form-item>
-      <a-form-item label="部门" name="departmentId">
-        <DepartmentTreeSelect ref="departmentTreeSelect" width="100%" :init="false" v-model:value="form.departmentId" />
+      <a-form-item label="部门" name="deptId">
+        <DepartmentTreeSelect ref="departmentTreeSelect" width="100%" :init="false" v-model:value="form.deptId" />
       </a-form-item>
       <a-form-item label="登录名" name="loginName">
         <a-input v-model:value.trim="form.loginName" placeholder="请输入登录名" />
@@ -97,7 +95,7 @@
   const formDefault = {
     id: undefined,
     actualName: undefined,
-    departmentId: undefined,
+    deptId: undefined,
     disabledFlag: 0,
     leaveFlag: 0,
     gender: GENDER_ENUM.MAN.value,

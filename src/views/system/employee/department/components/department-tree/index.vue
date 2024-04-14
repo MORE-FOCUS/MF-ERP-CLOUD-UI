@@ -4,7 +4,7 @@
 <template>
   <a-card class="tree-container">
     <a-row>
-      <a-input v-model:value.trim="keywords" placeholder="请输入部门名称" />
+      <a-input v-model:value.trim="keywords" placeholder="部门名称" />
     </a-row>
     <a-row class="sort-flag-row" v-if="props.showMenu">
       显示排序字段
@@ -17,7 +17,7 @@
       v-model:checkedKeys="checkedKeys"
       class="tree"
       :treeData="departmentTreeData"
-      :fieldNames="{ title: 'name', key: 'deptId', value: 'deptId' }"
+      :fieldNames="{ title: 'name', key: 'id', value: 'id' }"
       style="width: 100%; overflow-x: auto"
       :style="[!height ? '' : { height: `${height}px`, overflowY: 'auto' }]"
       :showLine="!props.checkable"
@@ -35,8 +35,8 @@
               <a-button type="text" @click="updateDepartment(item.dataRef)" v-privilege="'system:department:update'">修改</a-button>
               <a-button
                 type="text"
-                v-if="item.deptId != topdeptId"
-                @click="deleteDepartment(item.deptId)"
+                v-if="item.id != topdeptId"
+                @click="deleteDepartment(item.id)"
                 v-privilege="'system:department:delete'"
                 >删除</a-button
               >
@@ -68,7 +68,7 @@
   import departmentEmitter from '../../department-mitt';
   import { smartSentry } from '/@/lib/smart-sentry';
 
-  const DEPARTMENT_PARENT_ID = 0;
+  const DEFAULT_DEPARTMENT_PID = 0;
 
   // ----------------------- 组件参数 ---------------------
 
@@ -120,25 +120,25 @@
     let res = await departmentApi.queryAllDepartment();
     let data = res.data;
     departmentList.value = data;
-    departmentTreeData.value = buildDepartmentTree(data, DEPARTMENT_PARENT_ID);
+    departmentTreeData.value = buildDepartmentTree(data, DEFAULT_DEPARTMENT_PID);
 
     data.forEach((e) => {
-      idInfoMap.value.set(e.deptId, e);
+      idInfoMap.value.set(e.id, e);
     });
 
     // 默认显示 最顶级ID为列表中返回的第一条数据的ID
     if (!_.isEmpty(departmentTreeData.value) && departmentTreeData.value.length > 0) {
-      topdeptId.value = departmentTreeData.value[0].deptId;
+      topdeptId.value = departmentTreeData.value[0].id;
     }
 
-    selectTree(departmentTreeData.value[0].deptId);
+    selectTree(departmentTreeData.value[0].id);
   }
 
   // 构建部门树
-  function buildDepartmentTree(data, parentId) {
-    let children = data.filter((e) => e.parentId === parentId) || [];
+  function buildDepartmentTree(data, pid) {
+    let children = data.filter((e) => e.pid === pid) || [];
     children.forEach((e) => {
-      e.children = buildDepartmentTree(data, e.deptId);
+      e.children = buildDepartmentTree(data, e.id);
     });
     updateDepartmentPreIdAndNextId(children);
     return children;
@@ -148,18 +148,18 @@
   function updateDepartmentPreIdAndNextId(data) {
     for (let index = 0; index < data.length; index++) {
       if (index === 0) {
-        data[index].nextId = data.length > 1 ? data[1].deptId : undefined;
+        data[index].nextId = data.length > 1 ? data[1].id : undefined;
         continue;
       }
 
       if (index === data.length - 1) {
-        data[index].preId = data[index - 1].deptId;
+        data[index].preId = data[index - 1].id;
         data[index].nextId = undefined;
         continue;
       }
 
-      data[index].preId = data[index - 1].deptId;
-      data[index].nextId = data[index + 1].deptId;
+      data[index].preId = data[index - 1].id;
+      data[index].nextId = data[index + 1].id;
     }
   }
 
@@ -184,7 +184,7 @@
       return;
     }
     let id = idList[0];
-    selectedDepartmentChildren.value = departmentList.value.filter((e) => e.parentId == id);
+    selectedDepartmentChildren.value = departmentList.value.filter((e) => e.pid == id);
     let filterDepartmentList = [];
     recursionFilterDepartment(filterDepartmentList, id, true);
     breadcrumb.value = filterDepartmentList.map((e) => e.name);
@@ -202,7 +202,7 @@
   // 筛选
   function onSearch() {
     if (!keywords.value) {
-      departmentTreeData.value = buildDepartmentTree(departmentList.value, DEPARTMENT_PARENT_ID);
+      departmentTreeData.value = buildDepartmentTree(departmentList.value, DEFAULT_DEPARTMENT_PID);
       return;
     }
     let originData = departmentList.value.concat();
@@ -214,16 +214,16 @@
     let filterDepartmentList = [];
     // 循环筛选出的部门 构建部门树
     filterDepartmenet.forEach((e) => {
-      recursionFilterDepartment(filterDepartmentList, e.deptId, false);
+      recursionFilterDepartment(filterDepartmentList, e.id, false);
     });
 
-    departmentTreeData.value = buildDepartmentTree(filterDepartmentList, DEPARTMENT_PARENT_ID);
+    departmentTreeData.value = buildDepartmentTree(filterDepartmentList, DEFAULT_DEPARTMENT_PID);
   }
 
   // 根据ID递归筛选部门
   function recursionFilterDepartment(resList, id, unshift) {
     let info = idInfoMap.value.get(id);
-    if (!info || resList.some((e) => e.deptId == id)) {
+    if (!info || resList.some((e) => e.id == id)) {
       return;
     }
     if (unshift) {
@@ -231,8 +231,8 @@
     } else {
       resList.push(info);
     }
-    if (info.parentId && info.parentId != 0) {
-      recursionFilterDepartment(resList, info.parentId, unshift);
+    if (info.pid && info.pid != 0) {
+      recursionFilterDepartment(resList, info.pid, unshift);
     }
   }
 
@@ -242,16 +242,16 @@
   // 添加
   function addDepartment(e) {
     let data = {
-      deptId: 0,
+      id: 0,
       name: '',
-      parentId: e.deptId,
+      pid: e.id,
     };
-    currentSelectedDpartmentId.value = e.deptId;
+    currentSelectedDpartmentId.value = e.id;
     departmentFormModal.value.showModal(data);
   }
   // 编辑
   function updateDepartment(e) {
-    currentSelectedDpartmentId.value = e.deptId;
+    currentSelectedDpartmentId.value = e.id;
     departmentFormModal.value.showModal(e);
   }
 
@@ -271,9 +271,9 @@
           if (!_.isEmpty(selectedKeys.value)) {
             selectedKey = selectedKeys.value[0];
             if (selectedKey == id) {
-              let selectInfo = departmentList.value.find((e) => e.deptId == id);
-              if (selectInfo && selectInfo.parentId) {
-                selectedKey = selectInfo.parentId;
+              let selectInfo = departmentList.value.find((e) => e.id == id);
+              if (selectInfo && selectInfo.pid) {
+                selectedKey = selectInfo.pid;
               }
             }
           }
