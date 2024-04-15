@@ -48,9 +48,6 @@
       :columns="columns" :data-source="tableData" :pagination="false" :loading="tableLoading" :scroll="{ x: 1200 }"
       row-key="employeeId" bordered>
       <template #bodyCell="{ text, record, index, column }">
-        <template v-if="column.dataIndex === 'administratorFlag'">
-          <a-tag color="error" v-if="text">超管</a-tag>
-        </template>
         <template v-if="column.dataIndex === 'disabledFlag'">
           <a-tag :color="text ? 'error' : 'processing'">{{ text ? '禁用' : '启用' }}</a-tag>
         </template>
@@ -82,10 +79,10 @@
   </a-card>
 </template>
 <script setup lang="ts">
+import _ from 'lodash';
 import { computed, createVNode, reactive, ref, watch } from 'vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { message, Modal } from 'ant-design-vue';
-import _ from 'lodash';
 import { employeeApi } from '/@/api/system/employee-api';
 import { PAGE_SIZE } from '/@/constants/common-const';
 import { SmartLoading } from '/@/components/framework/smart-loading';
@@ -117,47 +114,50 @@ const columns = ref([
     title: '姓名',
     dataIndex: 'actualName',
     width: 85,
-  },
-  {
-    title: '手机号',
-    dataIndex: 'phone',
-    width: 80,
-  },
-  {
-    title: '性别',
-    dataIndex: 'gender',
-    width: 40,
-  },
-  {
-    title: '登录账号',
-    dataIndex: 'loginName',
-    width: 100,
-  },
-  {
-    title: '超管',
-    dataIndex: 'administratorFlag',
-    width: 60,
-  },
-  {
-    title: '状态',
-    dataIndex: 'disabledFlag',
-    width: 60,
-  },
-  {
-    title: '角色',
-    dataIndex: 'roleNameList',
-    width: 100,
+    align: 'center'
   },
   {
     title: '部门',
     dataIndex: 'departmentName',
     ellipsis: true,
-    width: 200,
+    width: 120,
+    align: 'center'
+  },
+  {
+    title: '手机号',
+    dataIndex: 'phone',
+    width: 80,
+    align: 'center'
+  },
+  {
+    title: '性别',
+    dataIndex: 'gender',
+    width: 40,
+    align: 'center'
+  },
+  {
+    title: '登录账号',
+    dataIndex: 'loginName',
+    width: 100,
+    align: 'center'
+  },
+  {
+    title: '状态',
+    dataIndex: 'disabledFlag',
+    width: 60,
+    align: 'center'
+  },
+  {
+    title: '角色',
+    dataIndex: 'roleNameList',
+    width: 100,
+    align: 'center'
   },
   {
     title: '操作',
     dataIndex: 'operate',
     width: 120,
+    align: 'center',
   },
 ]);
 const tableData = ref();
@@ -295,7 +295,11 @@ const employeeFormModal = ref(); //组件
 
 // 展示编辑弹窗
 function showDrawer(rowData) {
-  let params = {};
+  let params = {
+    disabledFlag: false,
+    deptId: undefined
+  };
+
   if (rowData) {
     params = _.cloneDeep(rowData);
     params.disabledFlag = params.disabledFlag ? 1 : 0;

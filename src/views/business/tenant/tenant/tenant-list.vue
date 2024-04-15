@@ -52,11 +52,17 @@
                 <template v-if="column.dataIndex === 'action'">
                     <div class="smart-table-operate">
                         <a-button @click="showForm(record)" type="link">编辑</a-button>
+                        <a-button v-privilege="'tenant:tenant:disabled'" type="link"
+                            @click="updateDisabled(record.id, record.disabledFlag)">
+                            {{ record.disabledFlag ? '启用' : '禁用' }}</a-button>
                     </div>
                 </template>
 
                 <template v-if="column.dataIndex === 'type'">
                     <a-tag color="processing">{{ $smartEnumPlugin.getDescByValue('TYPE_ENUM', text) }}</a-tag>
+                </template>
+                <template v-else-if="column.dataIndex === 'disabledFlag'">
+                    <a-tag :color="text ? 'error' : 'processing'">{{ text ? '禁用' : '启用' }}</a-tag>
                 </template>
             </template>
         </a-table>
@@ -74,7 +80,8 @@
     </a-card>
 </template>
 <script setup>
-import { reactive, ref, onMounted } from 'vue';
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import { reactive, ref, onMounted, createVNode } from 'vue';
 import { message, Modal } from 'ant-design-vue';
 import { SmartLoading } from '/@/components/framework/smart-loading';
 import { tenantApi } from '/@/api/business/tenant/tenant-api';
@@ -89,38 +96,57 @@ const columns = ref([
         title: '租户名称',
         dataIndex: 'name',
         ellipsis: true,
+        align: 'center'
     },
     {
         title: '租户编码',
         dataIndex: 'code',
         ellipsis: true,
+        align: 'center'
     },
     {
         title: '行业',
         dataIndex: 'industryName',
         ellipsis: true,
+        align: 'center'
     },
 
     {
-        title: '到期时间',
+        title: '有效日期',
         dataIndex: 'expirationDate',
         ellipsis: true,
+        align: 'center'
+    },
+    {
+        title: '剩余天数(天)',
+        dataIndex: 'effectiveDays',
+        ellipsis: true,
+        align: 'center'
     },
     {
         title: '类型',
         dataIndex: 'type',
         ellipsis: true,
+        align: 'center',
+    },
+    {
+        title: '状态',
+        dataIndex: 'disabledFlag',
+        ellipsis: true,
+        align: 'center',
     },
     {
         title: '创建时间',
         dataIndex: 'createTime',
         ellipsis: true,
+        align: 'center'
     },
     {
         title: '操作',
         dataIndex: 'action',
         fixed: 'right',
         width: 90,
+        align: 'center'
     },
 ]);
 
@@ -255,5 +281,31 @@ async function queryByKeyword() {
     } finally {
         tableLoading.value = false;
     }
+}
+
+
+// 禁用 / 启用
+function updateDisabled(id, disabledFlag) {
+    Modal.confirm({
+        title: '提醒',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: `确定要${disabledFlag ? '启用' : '禁用'}吗?`,
+        okText: '确定',
+        okType: 'danger',
+        async onOk() {
+            SmartLoading.show();
+            try {
+                await tenantApi.updateDisabled(id);
+                message.success(`${disabledFlag ? '启用' : '禁用'}成功`);
+                queryData();
+            } catch (error) {
+                smartSentry.captureError(error);
+            } finally {
+                SmartLoading.hide();
+            }
+        },
+        cancelText: '取消',
+        onCancel() { },
+    });
 }
 </script>

@@ -91,32 +91,38 @@ const columns = ref([
         title: '名称',
         dataIndex: 'name',
         ellipsis: true,
+        align: 'center'
     },
     {
         title: '图标',
         dataIndex: 'icon',
         ellipsis: true,
+        align: 'center'
     },
     {
         title: '排序',
         dataIndex: 'sortValue',
         ellipsis: true,
+        align: 'center'
     },
     {
         title: '备注',
         dataIndex: 'remark',
         ellipsis: true,
+        align: 'center'
     },
     {
         title: '更新时间',
         dataIndex: 'updateTime',
         ellipsis: true,
+        align: 'center'
     },
     {
         title: '操作',
         dataIndex: 'action',
         fixed: 'right',
         width: 90,
+        align: 'center'
     },
 ]);
 

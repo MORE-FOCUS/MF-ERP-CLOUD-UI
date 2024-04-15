@@ -59,6 +59,7 @@ export const employeeApi = {
   updateEmployeePassword: (param) => {
     return postRequest('/employee/update/password', param);
   },
+  
   /**
    * 更新员工禁用状态
    */
