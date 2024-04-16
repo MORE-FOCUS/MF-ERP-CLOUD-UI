@@ -10,7 +10,7 @@
     <!-- 次级菜单展示 -->
     <a-menu :selectedKeys="selectedKeys" :openKeys="openKeys" mode="inline">
       <template v-for="item in topMenu.children" :key="item.menuId">
-        <template v-if="item.visibleFlag">
+        <template v-if="item.isVisible">
           <template v-if="$lodash.isEmpty(item.children)">
             <a-menu-item :key="item.menuId.toString()" @click="turnToPage(item)">
               <template #icon v-if="item.icon">

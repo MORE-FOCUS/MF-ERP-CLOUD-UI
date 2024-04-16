@@ -23,8 +23,8 @@
     if (!currentName || typeof currentName !== 'string') {
       return [];
     }
-    let menuParentIdListMap = useUserStore().getMenuParentIdListMap;
-    return menuParentIdListMap.get(currentName) || [];
+    let menupidListMap = useUserStore().getMenupidListMap;
+    return menupidListMap.get(currentName) || [];
   });
 </script>
 <style scoped lang="less">

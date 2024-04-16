@@ -44,8 +44,8 @@
     </a-row>
     <a-table :scroll="{ x: 1300 }" size="small" :dataSource="tableData" bordered :columns="columns" rowKey="bankId" :pagination="false">
       <template #bodyCell="{ record, column }">
-        <template v-if="column.dataIndex === 'disabledFlag'">
-          {{ record.disabledFlag ? '禁用' : '启用' }}
+        <template v-if="column.dataIndex === 'isDisabled'">
+          {{ record.isDisabled ? '禁用' : '启用' }}
         </template>
         <template v-else-if="column.dataIndex === 'businessFlag'">
           {{ record.businessFlag ? '是' : '否' }}
@@ -120,7 +120,7 @@
     {
       title: '状态',
       width: 80,
-      dataIndex: 'disabledFlag',
+      dataIndex: 'isDisabled',
     },
     {
       title: '备注',

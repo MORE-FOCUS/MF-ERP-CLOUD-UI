@@ -17,7 +17,7 @@
         <a-radio-button :value="false">假删</a-radio-button>
       </a-radio-group>
       <div class="smart-margin-top10" v-if="!formData.isPhysicallyDeleted">
-        <span v-if="deleteFlagColumnName"> 假删字段为：{{ deleteFlagColumnName }} </span>
+        <span v-if="isDeletedColumnName"> 假删字段为：{{ isDeletedColumnName }} </span>
         <span stlye="color:red" v-else> 系统未检测出假删字段，假删字段名词应该为 ： <strong>deleted_flag</strong> </span>
       </div>
     </a-form-item>
@@ -38,7 +38,7 @@
 
   // ------------- 表单 -------------
 
-  const deleteFlagColumnName = ref('');
+  const isDeletedColumnName = ref('');
   const formRef = ref();
 
   const defaultFormData = {
@@ -58,9 +58,9 @@
   //初始化设置数据
   function setData(tableColumns, config) {
     //删除字段
-    let deletedFlagColumn = getDeleteFlagColumn(tableColumns);
+    let deletedFlagColumn = getisDeletedColumn(tableColumns);
     if (deletedFlagColumn) {
-      deleteFlagColumnName.value = deletedFlagColumn.columnName;
+      isDeletedColumnName.value = deletedFlagColumn.columnName;
     }
 
     //表单
@@ -72,7 +72,7 @@
   }
 
   // 获取配置过的字段信息
-  function getDeleteFlagColumn(configFields) {
+  function getisDeletedColumn(configFields) {
     if (!configFields) {
       return null;
     }

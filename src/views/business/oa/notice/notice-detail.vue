@@ -23,7 +23,7 @@
         </div>
       </a-descriptions-item>
       <a-descriptions-item label="可见范围" :span="2">
-        <template v-if="noticeDetail.allVisibleFlag">全部可见</template>
+        <template v-if="noticeDetail.allisVisible">全部可见</template>
         <div class="visible-list">
           <div class="visible-item" v-for="item in noticeDetail.visibleRangeList" :key="item.dataId">
             {{ item.dataName }}

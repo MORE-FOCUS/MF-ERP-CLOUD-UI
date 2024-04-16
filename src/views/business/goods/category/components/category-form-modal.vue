@@ -29,10 +29,10 @@
   // 是否展示抽屉
   const visible = ref(false);
 
-  function showModal(categoryType, parentId, rowData) {
+  function showModal(categoryType, pid, rowData) {
     Object.assign(form, formDefault);
     form.categoryType = categoryType;
-    form.parentId = parentId;
+    form.pid = pid;
     if (rowData && !_.isEmpty(rowData)) {
       Object.assign(form, rowData);
     }
@@ -50,8 +50,8 @@
     categoryId: undefined,
     categoryName: '',
     categoryType: 1,
-    parentId: undefined,
-    disabledFlag: false,
+    pid: undefined,
+    isDisabled: false,
   };
   let form = reactive({ ...formDefault });
   const rules = {
@@ -70,7 +70,7 @@
             await categoryApi.addCategory(form);
           }
           message.success(`${form.categoryId ? '修改' : '添加'}成功`);
-          emit('reloadList', form.parentId);
+          emit('reloadList', form.pid);
           onClose();
         } catch (error) {
           smartSentry.captureError(error);

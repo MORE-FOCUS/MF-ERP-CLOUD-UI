@@ -27,7 +27,7 @@
       bordered
     >
       <template #bodyCell="{ text, record, index, column }">
-        <template v-if="column.dataIndex === 'disabledFlag'">
+        <template v-if="column.dataIndex === 'isDisabled'">
           <a-tag :color="text ? 'error' : 'processing'">{{ text ? '禁用' : '启用' }}</a-tag>
         </template>
         <template v-else-if="column.dataIndex === 'gender'">
@@ -100,7 +100,7 @@
     },
     {
       title: '状态',
-      dataIndex: 'disabledFlag',
+      dataIndex: 'isDisabled',
       width: 80,
     },
     {

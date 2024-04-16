@@ -4,7 +4,7 @@
 <template>
   <a-drawer
     :title="formData.helpDocId ? '编辑系统手册' : '新建系统手册'"
-    :open="visibleFlag"
+    :open="isVisible"
     :width="1000"
     :footerStyle="{ textAlign: 'right' }"
     @close="onClose"
@@ -74,7 +74,7 @@
 
   // ------------------ 显示，关闭 ------------------
   // 显示
-  const visibleFlag = ref(false);
+  const isVisible = ref(false);
   function showModal(helpDocId) {
     Object.assign(formData, defaultFormData);
     defaultFileList.value = [];
@@ -82,7 +82,7 @@
       getDetail(helpDocId);
     }
 
-    visibleFlag.value = true;
+    isVisible.value = true;
     nextTick(() => {
       formRef.value.clearValidate();
     });
@@ -90,7 +90,7 @@
 
   // 关闭
   function onClose() {
-    visibleFlag.value = false;
+    isVisible.value = false;
   }
 
   // ------------------ 表单 ------------------

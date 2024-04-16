@@ -138,8 +138,8 @@
   }
 
   // 构建目录树
-  function buildHelpDocCatalogTree(data, parentId) {
-    let children = data.filter((e) => e.parentId === parentId) || [];
+  function buildHelpDocCatalogTree(data, pid) {
+    let children = data.filter((e) => e.pid === pid) || [];
     children = _.sortBy(children, (e) => e.sort);
     children.forEach((e) => {
       e.children = buildHelpDocCatalogTree(data, e.helpDocCatalogId);
@@ -188,7 +188,7 @@
       return;
     }
     let id = idList[0];
-    selectedHelpDocCatalogChildren.value = helpDocCatalogList.value.filter((e) => e.parentId === id);
+    selectedHelpDocCatalogChildren.value = helpDocCatalogList.value.filter((e) => e.pid === id);
     let filterHelpDocCatalogList = [];
     recursionFilterHelpDocCatalog(filterHelpDocCatalogList, id, true);
     breadcrumb.value = filterHelpDocCatalogList.map((e) => e.name);
@@ -235,8 +235,8 @@
     } else {
       resList.push(info);
     }
-    if (info.parentId && info.parentId !== 0) {
-      recursionFilterHelpDocCatalog(resList, info.parentId, unshift);
+    if (info.pid && info.pid !== 0) {
+      recursionFilterHelpDocCatalog(resList, info.pid, unshift);
     }
   }
 
@@ -248,7 +248,7 @@
     let data = {
       helpDocCatalogId: 0,
       name: '',
-      parentId: e.helpDocCatalogId,
+      pid: e.helpDocCatalogId,
     };
     currentSelectedHelpDocCatalogId.value = e.helpDocCatalogId;
     helpDocCatalogFormModal.value.showModal(data);
@@ -258,7 +258,7 @@
     let data = {
       helpDocCatalogId: 0,
       name: '',
-      parentId: 0,
+      pid: 0,
     };
     helpDocCatalogFormModal.value.showModal(data);
   }
@@ -285,8 +285,8 @@
             selectedKey = selectedKeys.value[0];
             if (selectedKey === id) {
               let selectInfo = helpDocCatalogList.value.find((e) => e.helpDocCatalogId === id);
-              if (selectInfo && selectInfo.parentId) {
-                selectedKey = selectInfo.parentId;
+              if (selectInfo && selectInfo.pid) {
+                selectedKey = selectInfo.pid;
               }
             }
           }

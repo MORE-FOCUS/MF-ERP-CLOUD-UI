@@ -10,7 +10,7 @@
     :theme="theme"
   >
     <template v-for="item in menuTree" :key="item.menuId">
-      <template v-if="item.visibleFlag && !item.disabledFlag">
+      <template v-if="item.isVisible && !item.isDisabled">
         <template v-if="$lodash.isEmpty(item.children)">
           <a-menu-item :key="item.menuId" @click="turnToPage(item)">
             <template #icon>

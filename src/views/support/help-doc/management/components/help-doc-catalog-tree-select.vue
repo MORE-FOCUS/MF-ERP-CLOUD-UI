@@ -43,8 +43,8 @@
   }
 
   // 构建目录树
-  function buildHelpDocCatalogTree(data, parentId) {
-    let children = data.filter((e) => e.parentId === parentId) || [];
+  function buildHelpDocCatalogTree(data, pid) {
+    let children = data.filter((e) => e.pid === pid) || [];
     children = _.sortBy(children, (e) => e.sort);
     children.forEach((e) => {
       e.children = buildHelpDocCatalogTree(data, e.helpDocCatalogId);

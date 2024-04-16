@@ -36,9 +36,9 @@ export const buildMenuTableTree = (menuList) => {
   }
 
   for (const menu of menuList) {
-    const parentId = menu.parentId;
+    const pid = menu.pid;
     // 不存在父节点，则为顶级菜单
-    if (!menuIdSet.has(parentId)) {
+    if (!menuIdSet.has(pid)) {
       topMenuList.push(menu);
     }
   }
@@ -54,7 +54,7 @@ export const buildMenuTableTree = (menuList) => {
  */
 function recursiveMenuTree(menuList, parentArray) {
   for (const parent of parentArray) {
-    const children = menuList.filter((e) => e.parentId === parent.menuId);
+    const children = menuList.filter((e) => e.pid === parent.menuId);
     if (children.length > 0) {
       parent.children = children;
       recursiveMenuTree(menuList, parent.children);
@@ -69,35 +69,35 @@ function recursiveMenuTree(menuList, parentArray) {
  * @returns
  */
 function isMenuExistMenuFlag(menu, queryForm) {
-  let frameFlagCondition = false;
-  if (!_.isNil(queryForm.frameFlag)) {
-    frameFlagCondition = !_.isNil(menu.frameFlag) && menu.frameFlag === (queryForm.frameFlag === 1);
+  let isFrameCondition = false;
+  if (!_.isNil(queryForm.isFrame)) {
+    isFrameCondition = !_.isNil(menu.isFrame) && menu.isFrame === (queryForm.isFrame === 1);
   } else {
-    frameFlagCondition = true;
+    isFrameCondition = true;
   }
 
-  let cacheFlagCondition = false;
-  if (!_.isNil(queryForm.cacheFlag)) {
-    cacheFlagCondition = !_.isNil(menu.cacheFlag) && menu.cacheFlag === (queryForm.cacheFlag === 1);
+  let isCachedCondition = false;
+  if (!_.isNil(queryForm.isCached)) {
+    isCachedCondition = !_.isNil(menu.isCached) && menu.isCached === (queryForm.isCached === 1);
   } else {
-    cacheFlagCondition = true;
+    isCachedCondition = true;
   }
 
-  let visibleFlagCondition = false;
-  if (!_.isNil(queryForm.visibleFlag)) {
-    visibleFlagCondition = !_.isNil(menu.visibleFlag) && menu.visibleFlag === (queryForm.visibleFlag === 1);
+  let isVisibleCondition = false;
+  if (!_.isNil(queryForm.isVisible)) {
+    isVisibleCondition = !_.isNil(menu.isVisible) && menu.isVisible === (queryForm.isVisible === 1);
   } else {
-    visibleFlagCondition = true;
+    isVisibleCondition = true;
   }
 
-  let disabledFlagCondition = false;
-  if (!_.isNil(queryForm.disabledFlag)) {
-    disabledFlagCondition = !_.isNil(menu.disabledFlag) && menu.disabledFlag === (queryForm.disabledFlag === 1);
+  let isDisabledCondition = false;
+  if (!_.isNil(queryForm.isDisabled)) {
+    isDisabledCondition = !_.isNil(menu.isDisabled) && menu.isDisabled === (queryForm.isDisabled === 1);
   } else {
-    disabledFlagCondition = true;
+    isDisabledCondition = true;
   }
 
-  return frameFlagCondition && cacheFlagCondition && visibleFlagCondition && disabledFlagCondition;
+  return isFrameCondition && isCachedCondition && isVisibleCondition && isDisabledCondition;
 }
 
 /**

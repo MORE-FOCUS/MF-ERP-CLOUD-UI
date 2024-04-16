@@ -19,7 +19,7 @@
         </a-radio-group>
       </a-form-item>
       <a-form-item :label="form.menuType === MENU_TYPE_ENUM.CATALOG.value ? '上级目录' : '上级菜单'">
-        <MenuTreeSelect ref="parentMenuTreeSelect" v-model:value="form.parentId" />
+        <MenuTreeSelect ref="parentMenuTreeSelect" v-model:value="form.pid" />
       </a-form-item>
       <!--      目录 菜单 start   -->
       <template v-if="form.menuType === MENU_TYPE_ENUM.CATALOG.value || form.menuType === MENU_TYPE_ENUM.MENU.value">
@@ -38,24 +38,24 @@
           <a-input v-model:value="form.path" placeholder="请输入路由地址" />
         </a-form-item>
         <template v-if="form.menuType === MENU_TYPE_ENUM.MENU.value">
-          <a-form-item v-if="form.frameFlag" label="外链地址" name="frameUrl">
+          <a-form-item v-if="form.isFrame" label="外链地址" name="frameUrl">
             <a-input v-model:value="form.frameUrl" placeholder="请输入外链地址" />
           </a-form-item>
           <a-form-item v-else label="组件地址" name="component">
             <a-input v-model:value="form.component" placeholder="请输入组件地址 默认带有开头/@/views" />
           </a-form-item>
         </template>
-        <a-form-item v-if="form.menuType === MENU_TYPE_ENUM.MENU.value" label="是否缓存" name="cacheFlag">
-          <a-switch v-model:checked="form.cacheFlag" checked-children="开启缓存" un-checked-children="不缓存" />
+        <a-form-item v-if="form.menuType === MENU_TYPE_ENUM.MENU.value" label="是否缓存" name="isCached">
+          <a-switch v-model:checked="form.isCached" checked-children="开启缓存" un-checked-children="不缓存" />
         </a-form-item>
-        <a-form-item v-if="form.menuType === MENU_TYPE_ENUM.MENU.value" label="是否外链" name="frameFlag">
-          <a-switch v-model:checked="form.frameFlag" checked-children="是外链" un-checked-children="不是外链" />
+        <a-form-item v-if="form.menuType === MENU_TYPE_ENUM.MENU.value" label="是否外链" name="isFrame">
+          <a-switch v-model:checked="form.isFrame" checked-children="是外链" un-checked-children="不是外链" />
         </a-form-item>
-        <a-form-item label="显示状态" name="frameFlag">
-          <a-switch v-model:checked="form.visibleFlag" checked-children="显示" un-checked-children="不显示" />
+        <a-form-item label="显示状态" name="isFrame">
+          <a-switch v-model:checked="form.isVisible" checked-children="显示" un-checked-children="不显示" />
         </a-form-item>
-        <a-form-item label="禁用状态" name="frameFlag">
-          <a-switch v-model:checked="form.disabledFlag" checked-children="启用" un-checked-children="禁用" />
+        <a-form-item label="禁用状态" name="isFrame">
+          <a-switch v-model:checked="form.isDisabled" checked-children="启用" un-checked-children="禁用" />
         </a-form-item>
       </template>
       <!--      目录 菜单 end   -->
@@ -67,8 +67,8 @@
         <a-form-item label="功能点关联菜单">
           <MenuTreeSelect ref="contextMenuTreeSelect" v-model:value="form.contextMenuId" />
         </a-form-item>
-        <a-form-item label="功能点状态" name="frameFlag">
-          <a-switch v-model:checked="form.disabledFlag" checked-children="启用" un-checked-children="禁用" />
+        <a-form-item label="功能点状态" name="isFrame">
+          <a-switch v-model:checked="form.isDisabled" checked-children="启用" un-checked-children="禁用" />
         </a-form-item>
         <a-form-item label="权限类型" name="permsType">
           <a-radio-group v-model:value="form.permsType">
@@ -132,8 +132,8 @@
     Object.assign(form, formDefault);
     if (rowData && !_.isEmpty(rowData)) {
       Object.assign(form, rowData);
-      if (form.parentId === MENU_DEFAULT_PARENT_ID) {
-        form.parentId = null;
+      if (form.pid === MENU_DEFAULT_PARENT_ID) {
+        form.pid = null;
       }
     }
     visible.value = true;
@@ -166,18 +166,18 @@
     menuName: undefined,
     menuType: MENU_TYPE_ENUM.CATALOG.value,
     icon: undefined,
-    parentId: undefined,
+    pid: undefined,
     path: undefined,
     permsType: MENU_PERMS_TYPE_ENUM.SA_TOKEN.value,
     webPerms: undefined,
     apiPerms: undefined,
     sortValue: undefined,
-    visibleFlag: true,
-    cacheFlag: true,
+    isVisible: true,
+    isCached: true,
     component: undefined,
     contextMenuId: undefined,
-    disabledFlag: false,
-    frameFlag: false,
+    isDisabled: false,
+    isFrame: false,
     frameUrl: undefined,
   };
   let form = reactive({ ...formDefault });
@@ -185,12 +185,12 @@
   function continueResetForm() {
     refreshParentAndContext();
     const menuType = form.menuType;
-    const parentId = form.parentId;
+    const pid = form.pid;
     const webPerms = form.webPerms;
     Object.assign(form, formDefault);
     formRef.value.resetFields();
     form.menuType = menuType;
-    form.parentId = parentId;
+    form.pid = pid;
     // 移除最后一个：后面的内容
     if (webPerms && webPerms.lastIndexOf(':')) {
       form.webPerms = webPerms.substring(0, webPerms.lastIndexOf(':') + 1);
@@ -237,8 +237,8 @@
     try {
       let params = _.cloneDeep(form);
       // 若无父级ID 默认设置为0
-      if (!params.parentId) {
-        params.parentId = 0;
+      if (!params.pid) {
+        params.pid = 0;
       }
       if (params.menuId) {
         await menuApi.updateMenu(params);

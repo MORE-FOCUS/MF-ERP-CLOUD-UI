@@ -4,7 +4,7 @@
 <template>
   <a-drawer
     :title="formData.noticeId ? '编辑' : '新建'"
-    :open="visibleFlag"
+    :open="isVisible"
     :width="1000"
     :footerStyle="{ textAlign: 'right' }"
     @close="onClose"
@@ -30,13 +30,13 @@
       <a-form-item label="来源" name="source">
         <a-input v-model:value="formData.source" placeholder="请输入来源" />
       </a-form-item>
-      <a-form-item label="可见范围" name="allVisibleFlag">
-        <a-select v-model:value="formData.allVisibleFlag" placeholder="请选择可见范围">
+      <a-form-item label="可见范围" name="allisVisible">
+        <a-select v-model:value="formData.allisVisible" placeholder="请选择可见范围">
           <a-select-option :value="1">全部可见</a-select-option>
           <a-select-option :value="0">部分可见</a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item v-show="!formData.allVisibleFlag" label="可见员工/部门">
+      <a-form-item v-show="!formData.allisVisible" label="可见员工/部门">
         <a-button type="primary" @click="showNoticeVisibleModal">选择</a-button>
         <div class="visible-list">
           <div class="visible-item" v-for="(item, index) in formData.visibleRangeList" :key="item.dataId">
@@ -111,7 +111,7 @@
 
   // ------------------ 显示，关闭 ------------------
   // 显示
-  const visibleFlag = ref(false);
+  const isVisible = ref(false);
   function showModal(noticeId) {
     Object.assign(formData, defaultFormData);
     releaseTime.value = null;
@@ -121,7 +121,7 @@
       getNoticeUpdate(noticeId);
     }
 
-    visibleFlag.value = true;
+    isVisible.value = true;
     nextTick(() => {
       formRef.value.clearValidate();
     });
@@ -129,7 +129,7 @@
 
   // 关闭
   function onClose() {
-    visibleFlag.value = false;
+    isVisible.value = false;
   }
 
   // ------------------ 表单 ------------------
@@ -146,7 +146,7 @@
     source: undefined, // 来源
     documentNumber: undefined, // 文号
     author: undefined, // 作者
-    allVisibleFlag: 1, // 是否全部可见
+    allisVisible: 1, // 是否全部可见
     visibleRangeList: [], // 可见范围
     scheduledPublishFlag: false, // 是否定时发布
     publishTime: undefined, // 发布时间
@@ -160,7 +160,7 @@
   const formRules = {
     title: [{ required: true, message: '请输入' }],
     noticeTypeId: [{ required: true, message: '请选择分类' }],
-    allVisibleFlag: [{ required: true, message: '请选择' }],
+    allisVisible: [{ required: true, message: '请选择' }],
     source: [{ required: true, message: '请输入来源' }],
     author: [{ required: true, message: '请输入作者' }],
     contentHtml: [{ required: true, message: '请输入内容' }],
@@ -178,10 +178,10 @@
         defaultFileList.value = [];
       }
       Object.assign(formData, result.data);
-      formData.allVisibleFlag = formData.allVisibleFlag ? 1 : 0;
+      formData.allisVisible = formData.allisVisible ? 1 : 0;
 
       releaseTime.value = dayjs(result.data.publishTime);
-      visibleFlag.value = true;
+      isVisible.value = true;
     } catch (err) {
       smartSentry.captureError(err);
     } finally {
@@ -205,7 +205,7 @@
   async function save() {
     try {
       SmartLoading.show();
-      if (formData.allVisibleFlag) {
+      if (formData.allisVisible) {
         formData.visibleRangeList = [];
       }
       if (!formData.publishTime) {

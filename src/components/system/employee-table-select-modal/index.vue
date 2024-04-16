@@ -12,7 +12,7 @@
           <DepartmentTreeSelect style="width: 200px" ref="departmentTreeSelect" v-model:value="params.deptId" />
         </a-form-item>
         <a-form-item label="状态" class="smart-query-form-item">
-          <a-select style="width: 120px" v-model:value="params.disabledFlag" placeholder="请选择状态" allowClear>
+          <a-select style="width: 120px" v-model:value="params.isDisabled" placeholder="请选择状态" allowClear>
             <a-select-option :key="1"> 禁用 </a-select-option>
             <a-select-option :key="0"> 启用 </a-select-option>
           </a-select>
@@ -45,7 +45,7 @@
       :scroll="{ y: 300 }"
     >
       <template #bodyCell="{ text, column }">
-        <template v-if="column.dataIndex === 'disabledFlag'">
+        <template v-if="column.dataIndex === 'isDisabled'">
           <a-tag :color="text ? 'error' : 'processing'">{{ text ? '禁用' : '启用' }}</a-tag>
         </template>
 
@@ -105,7 +105,7 @@
 
   let defaultParams = {
     deptId: undefined,
-    disabledFlag: undefined,
+    isDisabled: undefined,
     employeeIdList: undefined,
     keyword: undefined,
     searchCount: undefined,
@@ -176,7 +176,7 @@
     },
     {
       title: '状态',
-      dataIndex: 'disabledFlag',
+      dataIndex: 'isDisabled',
     },
   ];
 </script>

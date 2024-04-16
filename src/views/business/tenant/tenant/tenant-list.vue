@@ -53,15 +53,15 @@
                     <div class="smart-table-operate">
                         <a-button @click="showForm(record)" type="link">编辑</a-button>
                         <a-button v-privilege="'tenant:tenant:disabled'" type="link"
-                            @click="updateDisabled(record.id, record.disabledFlag)">
-                            {{ record.disabledFlag ? '启用' : '禁用' }}</a-button>
+                            @click="updateDisabled(record.id, record.isDisabled)">
+                            {{ record.isDisabled ? '启用' : '禁用' }}</a-button>
                     </div>
                 </template>
 
                 <template v-if="column.dataIndex === 'type'">
                     <a-tag color="processing">{{ $smartEnumPlugin.getDescByValue('TYPE_ENUM', text) }}</a-tag>
                 </template>
-                <template v-else-if="column.dataIndex === 'disabledFlag'">
+                <template v-else-if="column.dataIndex === 'isDisabled'">
                     <a-tag :color="text ? 'error' : 'processing'">{{ text ? '禁用' : '启用' }}</a-tag>
                 </template>
             </template>
@@ -131,7 +131,7 @@ const columns = ref([
     },
     {
         title: '状态',
-        dataIndex: 'disabledFlag',
+        dataIndex: 'isDisabled',
         ellipsis: true,
         align: 'center',
     },
@@ -285,18 +285,18 @@ async function queryByKeyword() {
 
 
 // 禁用 / 启用
-function updateDisabled(id, disabledFlag) {
+function updateDisabled(id, isDisabled) {
     Modal.confirm({
         title: '提醒',
         icon: createVNode(ExclamationCircleOutlined),
-        content: `确定要${disabledFlag ? '启用' : '禁用'}吗?`,
+        content: `确定要${isDisabled ? '启用' : '禁用'}吗?`,
         okText: '确定',
         okType: 'danger',
         async onOk() {
             SmartLoading.show();
             try {
                 await tenantApi.updateDisabled(id);
-                message.success(`${disabledFlag ? '启用' : '禁用'}成功`);
+                message.success(`${isDisabled ? '启用' : '禁用'}成功`);
                 queryData();
             } catch (error) {
                 smartSentry.captureError(error);

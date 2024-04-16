@@ -2,7 +2,7 @@
   * 系统更新日志 查看
 -->
 <template>
-  <a-modal title="更新日志" width="700px" :open="visibleFlag" @close="onClose" >
+  <a-modal title="更新日志" width="700px" :open="isVisible" @close="onClose" >
 
     <div>
       <pre>{{ content }}</pre>
@@ -20,18 +20,18 @@
 <script setup>
   import { ref } from 'vue';
 
-  const visibleFlag = ref(false);
+  const isVisible = ref(false);
   const content = ref('');
   const link = ref('');
 
   function show(changeLog) {
     content.value = changeLog.content;
     link.value = changeLog.link;
-    visibleFlag.value = true;
+    isVisible.value = true;
   }
 
   function onClose() {
-    visibleFlag.value = false;
+    isVisible.value = false;
   }
 
   defineExpose({

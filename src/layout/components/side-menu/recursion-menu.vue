@@ -11,7 +11,7 @@
     :inlineCollapsed="collapsed"
   >
     <template v-for="item in menuTree" :key="item.menuId">
-      <template v-if="item.visibleFlag && !item.disabledFlag">
+      <template v-if="item.isVisible && !item.isDisabled">
         <template v-if="$lodash.isEmpty(item.children)">
           <a-menu-item :key="item.menuId" @click="turnToPage(item)">
             <template #icon>
@@ -70,8 +70,8 @@
      * 更新展开（1、获取新展开的menu key集合；2、保留原有的openkeys，然后把新展开的与之合并）
      */
     //获取需要展开的menu key集合
-    let menuParentIdListMap = useUserStore().getMenuParentIdListMap;
-    let parentList = menuParentIdListMap.get(currentRoute.name) || [];
+    let menupidListMap = useUserStore().getMenupidListMap;
+    let parentList = menupidListMap.get(currentRoute.name) || [];
 
     // 如果是折叠菜单的话，则不需要设置openkey
     if(!props.collapsed){

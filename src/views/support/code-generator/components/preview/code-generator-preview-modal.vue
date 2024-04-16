@@ -4,7 +4,7 @@
 <template>
   <a-drawer
     title="代码预览"
-    :open="visibleFlag"
+    :open="isVisible"
     :width="1200"
     :footerStyle="{ textAlign: 'right' }"
     :bodyStyle="{ padding: '8px 24px' }"
@@ -46,11 +46,11 @@
   // ------------------ 显示，关闭 ------------------
 
   // 显示
-  const visibleFlag = ref(false);
+  const isVisible = ref(false);
   function showModal(tableInfo) {
     tableName.value = tableInfo.tableName;
     tableComment.value = tableInfo.tableComment;
-    visibleFlag.value = true;
+    isVisible.value = true;
     nextTick(() => {
       onChangeTab(fileKey.value);
     });
@@ -58,7 +58,7 @@
 
   // 关闭
   function onClose() {
-    visibleFlag.value = false;
+    isVisible.value = false;
   }
 
   // ------------------ 表------------------

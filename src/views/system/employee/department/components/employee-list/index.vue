@@ -7,7 +7,7 @@
     <div class="header">
       <a-typography-title :level="5">部门人员</a-typography-title>
       <div class="query-operate">
-        <a-radio-group v-model:value="params.disabledFlag" style="margin: 8px; flex-shrink: 0"
+        <a-radio-group v-model:value="params.isDisabled" style="margin: 8px; flex-shrink: 0"
           @change="queryEmployeeByKeyword(false)">
           <a-radio-button :value="undefined">全部</a-radio-button>
           <a-radio-button :value="false">启用</a-radio-button>
@@ -48,7 +48,7 @@
       :columns="columns" :data-source="tableData" :pagination="false" :loading="tableLoading" :scroll="{ x: 1200 }"
       row-key="employeeId" bordered>
       <template #bodyCell="{ text, record, index, column }">
-        <template v-if="column.dataIndex === 'disabledFlag'">
+        <template v-if="column.dataIndex === 'isDisabled'">
           <a-tag :color="text ? 'error' : 'processing'">{{ text ? '禁用' : '启用' }}</a-tag>
         </template>
         <template v-else-if="column.dataIndex === 'gender'">
@@ -61,8 +61,8 @@
             <a-button v-privilege="'system:employee:password:reset'" type="link" size="small"
               @click="resetPassword(record.employeeId, record.loginName)">重置密码</a-button>
             <a-button v-privilege="'system:employee:disabled'" type="link"
-              @click="updateDisabled(record.employeeId, record.disabledFlag)">{{
-        record.disabledFlag ? '启用' : '禁用'
+              @click="updateDisabled(record.employeeId, record.isDisabled)">{{
+        record.isDisabled ? '启用' : '禁用'
       }}</a-button>
           </div>
         </template>
@@ -143,7 +143,7 @@ const columns = ref([
   },
   {
     title: '状态',
-    dataIndex: 'disabledFlag',
+    dataIndex: 'isDisabled',
     width: 60,
     align: 'center'
   },
@@ -164,7 +164,7 @@ const tableData = ref();
 
 let defaultParams = {
   deptId: undefined,
-  disabledFlag: false,
+  isDisabled: false,
   keyword: undefined,
   searchCount: undefined,
   pageNum: 1,
@@ -296,13 +296,13 @@ const employeeFormModal = ref(); //组件
 // 展示编辑弹窗
 function showDrawer(rowData) {
   let params = {
-    disabledFlag: false,
+    isDisabled: false,
     deptId: undefined
   };
 
   if (rowData) {
     params = _.cloneDeep(rowData);
-    params.disabledFlag = params.disabledFlag ? 1 : 0;
+    params.isDisabled = params.isDisabled ? 1 : 0;
   } else if (props.deptId) {
     params.deptId = props.deptId;
   }
@@ -336,18 +336,18 @@ function resetPassword(id, name) {
 }
 
 // 禁用 / 启用
-function updateDisabled(id, disabledFlag) {
+function updateDisabled(id, isDisabled) {
   Modal.confirm({
     title: '提醒',
     icon: createVNode(ExclamationCircleOutlined),
-    content: `确定要${disabledFlag ? '启用' : '禁用'}吗?`,
+    content: `确定要${isDisabled ? '启用' : '禁用'}吗?`,
     okText: '确定',
     okType: 'danger',
     async onOk() {
       SmartLoading.show();
       try {
         await employeeApi.updateDisabled(id);
-        message.success(`${disabledFlag ? '启用' : '禁用'}成功`);
+        message.success(`${isDisabled ? '启用' : '禁用'}成功`);
         queryEmployee();
       } catch (error) {
         smartSentry.captureError(error);

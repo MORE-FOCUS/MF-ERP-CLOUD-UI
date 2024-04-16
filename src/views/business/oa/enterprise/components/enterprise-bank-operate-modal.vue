@@ -16,7 +16,7 @@
       <a-form-item label="是否对公" name="businessFlag">
         <a-switch v-model:checked="businessFlagChecked" @change="businessFlagCheckedChange" />
       </a-form-item>
-      <a-form-item label="启用状态" name="disabledFlag">
+      <a-form-item label="启用状态" name="isDisabled">
         <a-switch v-model:checked="enabledChecked" @change="enabledCheckedChange" />
       </a-form-item>
       <a-form-item label="备注" name="remark">
@@ -49,7 +49,7 @@
     if (rowData) {
       Object.assign(form, rowData);
       businessFlagChecked.value = rowData.businessFlag;
-      enabledChecked.value = !rowData.disabledFlag;
+      enabledChecked.value = !rowData.isDisabled;
     }
     form.enterpriseId = props.enterpriseId;
     visible.value = true;
@@ -73,7 +73,7 @@
     accountName: '',
     accountNumber: '',
     businessFlag: false,
-    disabledFlag: false,
+    isDisabled: false,
     remark: '',
   };
   let form = reactive({ ...formDefault });
@@ -90,7 +90,7 @@
     form.businessFlag = checked;
   }
   function enabledCheckedChange(checked) {
-    form.disabledFlag = !checked;
+    form.isDisabled = !checked;
   }
 
   function onSubmit() {

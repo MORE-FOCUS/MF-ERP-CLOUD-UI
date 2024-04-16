@@ -16,7 +16,7 @@
       <a-form-item label="开户行" name="bankName">
         <a-input v-model:value="form.bankName" placeholder="请输入开户行" />
       </a-form-item>
-      <a-form-item label="启用状态" name="disabledFlag">
+      <a-form-item label="启用状态" name="isDisabled">
         <a-switch v-model:checked="enabledChecked" @change="enabledCheckedChange" />
       </a-form-item>
       <a-form-item label="备注" name="remark">
@@ -47,14 +47,14 @@
   const enabledChecked = ref(true);
 
   function enabledCheckedChange(checked) {
-    form.disabledFlag = !checked;
+    form.isDisabled = !checked;
   }
 
   function showModal(rowData) {
     Object.assign(form, formDefault);
     if (rowData) {
       Object.assign(form, rowData);
-      enabledChecked.value = !rowData.disabledFlag;
+      enabledChecked.value = !rowData.isDisabled;
     }
     form.enterpriseId = props.enterpriseId;
     visible.value = true;
@@ -78,7 +78,7 @@
     accountNumber: '',
     invoiceHeads: '',
     taxpayerIdentificationNumber: '',
-    disabledFlag: false,
+    isDisabled: false,
     remark: '',
   };
   let form = reactive({ ...formDefault });

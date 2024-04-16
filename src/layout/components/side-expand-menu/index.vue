@@ -33,7 +33,7 @@
   // 根据路由更新菜单展开和选中状态
   function updateSelectKeyAndOpenKey() {
     // 第一步，根据路由 更新选中 顶级菜单
-    let parentList = useUserStore().menuParentIdListMap.get(currentRoute.name) || [];
+    let parentList = useUserStore().menupidListMap.get(currentRoute.name) || [];
     if (parentList.length === 0) {
       topMenuRef.value.updateSelectKey(currentRoute.name);
       return;

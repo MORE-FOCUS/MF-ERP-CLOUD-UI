@@ -115,11 +115,11 @@ export function buildRoutes(menuRouterList) {
         // 菜单图标展示
         icon: e.icon,
         // 是否在菜单隐藏
-        hideInMenu: !e.visibleFlag,
+        hideInMenu: !e.isVisible,
         // 页面是否keep-alive缓存
-        keepAlive: e.cacheFlag,
+        keepAlive: e.isCached,
         // 是否为外链
-        frameFlag: e.frameFlag,
+        isFrame: e.isFrame,
         // 外链地址
         frameUrl: e.frameUrl,
         // 是否 rename了组件的名字
@@ -127,7 +127,7 @@ export function buildRoutes(menuRouterList) {
       },
     };
 
-    if (e.frameFlag) {
+    if (e.isFrame) {
       route.component = () => import('../components/framework/iframe/iframe-index.vue');
     } else {
       let componentPath = e.component && e.component.startsWith('/') ? e.component : '/' + e.component;

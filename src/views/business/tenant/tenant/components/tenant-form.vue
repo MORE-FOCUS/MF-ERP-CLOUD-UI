@@ -5,7 +5,7 @@
   * @date:      2024-04-09 00:06:01
 -->
 <template>
-    <a-modal :title="form.id ? '编辑' : '添加'" width="400" :visible="visibleFlag" @cancel="onClose" :maskClosable="false"
+    <a-modal :title="form.id ? '编辑' : '添加'" width="400" :visible="isVisible" @cancel="onClose" :maskClosable="false"
         :destroyOnClose="true">
         <a-form ref="formRef" :model="form" :rules="rules" :label-col="{ span: 5 }">
             <a-row>
@@ -16,8 +16,8 @@
                     <a-date-picker show-time valueFormat="YYYY-MM-DD HH:mm:ss" v-model:value="form.updateTime"
                         style="width: 100%" placeholder="更新时间" />
                 </a-form-item>
-                <a-form-item label="是否删除" name="deleteFlag">
-                    <BooleanSelect v-model:value="form.deleteFlag" style="width: 100%" />
+                <a-form-item label="是否删除" name="isDeleted">
+                    <BooleanSelect v-model:value="form.isDeleted" style="width: 100%" />
                 </a-form-item>
                 <a-form-item label="创建时间" name="createTime">
                     <a-date-picker show-time valueFormat="YYYY-MM-DD HH:mm:ss" v-model:value="form.createTime"
@@ -50,14 +50,14 @@ const emits = defineEmits(['reloadList']);
 
 // ------------------------ 显示与隐藏 ------------------------
 // 是否显示
-const visibleFlag = ref(false);
+const isVisible = ref(false);
 
 function show(rowData) {
     Object.assign(form, formDefault);
     if (rowData && !_.isEmpty(rowData)) {
         Object.assign(form, rowData);
     }
-    visibleFlag.value = true;
+    isVisible.value = true;
     nextTick(() => {
         formRef.value.clearValidate();
     });
@@ -65,7 +65,7 @@ function show(rowData) {
 
 function onClose() {
     Object.assign(form, formDefault);
-    visibleFlag.value = false;
+    isVisible.value = false;
 }
 
 // ------------------------ 表单 ------------------------
@@ -77,7 +77,7 @@ const formDefault = {
     id: undefined,
     id: undefined, //分类id
     updateTime: undefined, //更新时间
-    deleteFlag: undefined, //是否删除
+    isDeleted: undefined, //是否删除
     createTime: undefined, //创建时间
 };
 
@@ -86,7 +86,7 @@ let form = reactive({ ...formDefault });
 const rules = {
     id: [{ required: true, message: '分类id 必填' }],
     updateTime: [{ required: true, message: '更新时间 必填' }],
-    deleteFlag: [{ required: true, message: '是否删除 必填' }],
+    isDeleted: [{ required: true, message: '是否删除 必填' }],
     createTime: [{ required: true, message: '创建时间 必填' }],
 };
 

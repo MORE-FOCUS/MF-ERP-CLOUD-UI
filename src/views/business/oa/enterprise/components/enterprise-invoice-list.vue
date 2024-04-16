@@ -44,8 +44,8 @@
     </a-row>
     <a-table :scroll="{ x: 1300 }" size="small" :dataSource="tableData" :columns="columns" rowKey="invoiceId" :pagination="false" bordered>
       <template #bodyCell="{ text, record, index, column }">
-        <template v-if="column.dataIndex === 'disabledFlag'">
-          {{ record.disabledFlag ? '禁用' : '启用' }}
+        <template v-if="column.dataIndex === 'isDisabled'">
+          {{ record.isDisabled ? '禁用' : '启用' }}
         </template>
         <template v-else-if="column.dataIndex === 'action'">
           <div class="smart-table-operate">
@@ -123,7 +123,7 @@
     {
       title: '状态',
       width: 80,
-      dataIndex: 'disabledFlag',
+      dataIndex: 'isDisabled',
     },
     {
       title: '备注',

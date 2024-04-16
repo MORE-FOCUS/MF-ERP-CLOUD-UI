@@ -45,7 +45,7 @@
       default: null,
     },
     // 禁用标识
-    disabledFlag: {
+    isDisabled: {
       type: Number,
       default: null,
     },
@@ -63,8 +63,8 @@
       if (props.roleId) {
         params = { roleId: props.roleId };
       }
-      if (null != props.disabledFlag) {
-        params.disabledFlag = props.disabledFlag;
+      if (null != props.isDisabled) {
+        params.isDisabled = props.isDisabled;
       }
       let resp = await employeeApi.queryAll(params);
       employeeList.value = resp.data;

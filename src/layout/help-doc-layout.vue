@@ -113,14 +113,14 @@
       expandedKeys.value.push(TYPE_CATALOG_PREFIX + catalogId);
     }
 
-    let parentId = catalogId;
-    while (parentId !== 0) {
-      let catalog = catalogList.filter((e) => e.helpDocCatalogId === parentId);
+    let pid = catalogId;
+    while (pid !== 0) {
+      let catalog = catalogList.filter((e) => e.helpDocCatalogId === pid);
       if (catalog.length > 0) {
-        parentId = catalog[0].parentId;
+        pid = catalog[0].pid;
         expandedKeys.value.push(TYPE_CATALOG_PREFIX + catalog[0].helpDocCatalogId);
       } else {
-        parentId = 0;
+        pid = 0;
       }
     }
   }
@@ -176,12 +176,12 @@
   // 记录第一个树
   let firstHelpDocId = null;
   // 构建目录树
-  function buildHelpDocCatalogTree(data, parentId, helpDocMap) {
-    let children = data.filter((e) => e.parentId === parentId) || [];
+  function buildHelpDocCatalogTree(data, pid, helpDocMap) {
+    let children = data.filter((e) => e.pid === pid) || [];
     //排序
     children = _.sortBy(children, (e) => e.sort);
 
-    let helpDocList = helpDocMap.get(parentId);
+    let helpDocList = helpDocMap.get(pid);
     if (helpDocList) {
       //排序
       helpDocList = _.sortBy(helpDocList, (e) => e.sort);

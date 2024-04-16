@@ -11,7 +11,7 @@
     <!-- 一级菜单展示 -->
     <a-menu :selectedKeys="selectedKeys" mode="inline" :theme="theme">
       <template v-for="item in menuTree" :key="item.menuId">
-        <template v-if="item.visibleFlag">
+        <template v-if="item.isVisible">
           <a-menu-item :key="item.menuId.toString()" @click="onSelectMenu(item)">
             <template #icon>
               <component :is="$antIcons[item.icon]" />
@@ -49,7 +49,7 @@ const selectedKeys = ref([]);
 // 选中菜单，页面跳转
 function onSelectMenu(menuItem) {
   selectedKeys.value = [menuItem.menuId.toString()];
-  if (menuItem.menuType === MENU_TYPE_ENUM.MENU.value && (_.isEmpty(menuItem.children) || menuItem.children.every((e) => !e.visibleFlag))) {
+  if (menuItem.menuType === MENU_TYPE_ENUM.MENU.value && (_.isEmpty(menuItem.children) || menuItem.children.every((e) => !e.isVisible))) {
     useUserStore().deleteKeepAliveIncludes(menuItem.menuId.toString());
     router.push({ name: menuItem.menuId.toString() });
   }

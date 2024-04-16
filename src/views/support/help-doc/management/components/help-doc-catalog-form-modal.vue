@@ -4,8 +4,8 @@
 <template>
   <a-modal v-model:open="visible" :title="formState.helpDocCatalogId ? '编辑目录' : '添加目录'" @ok="handleOk" destroyOnClose>
     <a-form ref="formRef" :model="formState" :rules="rules" layout="vertical">
-      <a-form-item label="上级目录" name="parentId" v-if="formState.parentId !== 0">
-        <HelpDocCatalogTreeSelect ref="helpDocCatalogTreeSelect" v-model:value="formState.parentId" :defaultValueFlag="false" width="100%" />
+      <a-form-item label="上级目录" name="pid" v-if="formState.pid !== 0">
+        <HelpDocCatalogTreeSelect ref="helpDocCatalogTreeSelect" v-model:value="formState.pid" :defaultValueFlag="false" width="100%" />
       </a-form-item>
       <a-form-item label="目录名称" name="name">
         <a-input v-model:value.trim="formState.name" placeholder="请输入目录名称" />
@@ -49,7 +49,7 @@
   const defaultHelpDocCatalogForm = {
     helpDocCatalogId: undefined,
     name: undefined,
-    parentId: undefined,
+    pid: undefined,
     sort: 0,
   };
   const employeeSelect = ref();
@@ -59,7 +59,7 @@
   });
   // 表单校验规则
   const rules = {
-    parentId: [{ required: true, message: '上级目录不能为空' }],
+    pid: [{ required: true, message: '上级目录不能为空' }],
     name: [
       { required: true, message: '目录名称不能为空' },
       { max: 50, message: '目录名称不能大于20个字符', trigger: 'blur' },
@@ -110,7 +110,7 @@
   async function updateHelpDocCatalog() {
     SmartLoading.show();
     try {
-      if (formState.parentId === formState.helpDocCatalogId) {
+      if (formState.pid === formState.helpDocCatalogId) {
         message.warning('上级菜单不能为自己');
         return;
       }

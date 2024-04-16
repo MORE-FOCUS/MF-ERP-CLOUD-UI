@@ -105,10 +105,10 @@
   }
 
   const expandedRowKeys = ref([]);
-  function reloadList(parentId) {
+  function reloadList(pid) {
     queryList();
-    if (parentId) {
-      expandedRowKeys.value.push(parentId);
+    if (pid) {
+      expandedRowKeys.value.push(pid);
     }
   }
 
@@ -124,8 +124,8 @@
   // ------------------------------ 添加 ------------------------------
 
   const formModal = ref();
-  function addCategory(parentId, rowData) {
-    formModal.value.showModal(props.categoryType, parentId, rowData);
+  function addCategory(pid, rowData) {
+    formModal.value.showModal(props.categoryType, pid, rowData);
   }
 
   // ------------------------------ 删除 ------------------------------

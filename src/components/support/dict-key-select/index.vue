@@ -39,7 +39,7 @@
       default: 'default',
     },
     // 禁用标识
-    disabledFlag: {
+    isDisabled: {
       type: Number,
       default: null,
     },

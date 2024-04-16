@@ -16,13 +16,13 @@ export function smartKeepAlive() {
   // ----------------------- iframe相关 -----------------------
 
   // 当前路由是否为不需要缓存的iframe页面
-  const iframeNotKeepAlivePageFlag = computed(() => route.meta.frameFlag && !route.meta.keepAlive);
+  const iframeNotKeepAlivePageFlag = computed(() => route.meta.isFrame && !route.meta.keepAlive);
   // 打开中的tagNav
   const tagNav = computed(() => useUserStore().getTagNav || []);
   // 已打开的iframe列表
   const keepAliveIframePages = computed(() => {
     let routes = router.getRoutes();
-    return routes.filter((e) => e.meta.frameFlag && e.meta.keepAlive && tagNav.value.some((t) => t.menuName == e.name));
+    return routes.filter((e) => e.meta.isFrame && e.meta.keepAlive && tagNav.value.some((t) => t.menuName == e.name));
   });
   return {
     route,

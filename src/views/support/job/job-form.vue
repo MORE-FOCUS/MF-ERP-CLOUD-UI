@@ -5,7 +5,7 @@
   * @date:      2024-01-21 16:37:55
 -->
 <template>
-    <a-drawer :title="form.jobId ? '编辑' : '添加'" :width="600" :visible="visibleFlag" @cancel="onClose" :maskClosable="false"
+    <a-drawer :title="form.jobId ? '编辑' : '添加'" :width="600" :visible="isVisible" @cancel="onClose" :maskClosable="false"
         :destroyOnClose="true">
         <a-form ref="formRef" :model="form" :rules="rules" :label-col="{ span: 5 }">
 
@@ -70,14 +70,14 @@ const emits = defineEmits(['reloadList']);
 
 // ------------------------ 显示与隐藏 ------------------------
 // 是否显示
-const visibleFlag = ref(false);
+const isVisible = ref(false);
 
 function show(rowData) {
     Object.assign(form, formDefault);
     if (rowData && !_.isEmpty(rowData)) {
         Object.assign(form, rowData);
     }
-    visibleFlag.value = true;
+    isVisible.value = true;
     nextTick(() => {
         formRef.value.clearValidate();
     });
@@ -85,7 +85,7 @@ function show(rowData) {
 
 function onClose() {
     Object.assign(form, formDefault);
-    visibleFlag.value = false;
+    isVisible.value = false;
 }
 
 // ------------------------ 表单 ------------------------

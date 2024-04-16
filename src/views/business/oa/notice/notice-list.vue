@@ -69,7 +69,7 @@
         <template v-if="column.dataIndex === 'title'">
           <a @click="toDetail(record.noticeId)">{{ text }}</a>
         </template>
-        <template v-else-if="column.dataIndex === 'allVisibleFlag'"> {{ text ? '全部可见' : '部分可见' }} </template>
+        <template v-else-if="column.dataIndex === 'allisVisible'"> {{ text ? '全部可见' : '部分可见' }} </template>
         <template v-else-if="column.dataIndex === 'publishFlag'">
           {{ text ? '已发布' : '待发布' }}
         </template>
@@ -168,7 +168,7 @@
 
     {
       title: '可见范围',
-      dataIndex: 'allVisibleFlag',
+      dataIndex: 'allisVisible',
       width: 90,
       ellipsis: true,
     },

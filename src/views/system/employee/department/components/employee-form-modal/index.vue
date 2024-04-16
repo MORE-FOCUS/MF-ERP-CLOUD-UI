@@ -27,8 +27,8 @@
       <a-form-item label="性别" name="gender">
         <smart-enum-select style="width: 100%" v-model:value="form.gender" placeholder="请选择性别" enum-name="GENDER_ENUM" />
       </a-form-item>
-      <a-form-item label="状态" name="disabledFlag">
-        <a-select v-model:value="form.disabledFlag" placeholder="请选择状态">
+      <a-form-item label="状态" name="isDisabled">
+        <a-select v-model:value="form.isDisabled" placeholder="请选择状态">
           <a-select-option :value="0">启用</a-select-option>
           <a-select-option :value="1">禁用</a-select-option>
         </a-select>
@@ -96,7 +96,7 @@
     id: undefined,
     actualName: undefined,
     deptId: undefined,
-    disabledFlag: 0,
+    isDisabled: 0,
     leaveFlag: 0,
     gender: GENDER_ENUM.MAN.value,
     loginName: undefined,
@@ -127,7 +127,7 @@
     ],
     gender: [{ required: true, message: '性别不能为空' }],
     departmentId: [{ required: true, message: '部门不能为空' }],
-    disabledFlag: [{ required: true, message: '状态不能为空' }],
+    isDisabled: [{ required: true, message: '状态不能为空' }],
     leaveFlag: [{ required: true, message: '在职状态不能为空' }],
   };
 

@@ -6,7 +6,7 @@
     :title="form.changeLogId ? '编辑' : '添加'"
     width="600px"
     :closable="true"
-    :open="visibleFlag"
+    :open="isVisible"
     @close="onClose"
     :onCancel="onClose"
     :maskClosable="false"
@@ -56,14 +56,14 @@
 
   // ------------------------ 显示与隐藏 ------------------------
   // 是否显示
-  const visibleFlag = ref(false);
+  const isVisible = ref(false);
 
   function show(rowData) {
     Object.assign(form, formDefault);
     if (rowData && !_.isEmpty(rowData)) {
       Object.assign(form, rowData);
     }
-    visibleFlag.value = true;
+    isVisible.value = true;
     nextTick(() => {
       formRef.value.clearValidate();
     });
@@ -71,7 +71,7 @@
 
   function onClose() {
     Object.assign(form, formDefault);
-    visibleFlag.value = false;
+    isVisible.value = false;
   }
 
   // ------------------------ 表单 ------------------------

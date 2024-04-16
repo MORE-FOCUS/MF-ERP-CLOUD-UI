@@ -63,7 +63,7 @@
       bordered
     >
       <template #bodyCell="{ column, record, text }">
-        <template v-if="column.dataIndex === 'disabledFlag'">
+        <template v-if="column.dataIndex === 'isDisabled'">
           {{ text ? '禁用' : '启用' }}
         </template>
         <template v-if="column.dataIndex === 'enterpriseName'">
@@ -153,7 +153,7 @@
     {
       title: '状态',
       width: 50,
-      dataIndex: 'disabledFlag',
+      dataIndex: 'isDisabled',
     },
     {
       title: '创建人',

@@ -66,12 +66,12 @@ export const useRoleStore = defineStore({
     // 选中上一级
     selectUpperLevel(module) {
       // 拿到上级key
-      let parentId = module.parentId;
-      if (!parentId) {
+      let pid = module.pid;
+      if (!pid) {
         return;
       }
       // 从权限树对象 获取该父级对象
-      let parentModule = this.treeMap.get(parentId);
+      let parentModule = this.treeMap.get(pid);
       if (!parentModule) {
         return;
       }
@@ -81,7 +81,7 @@ export const useRoleStore = defineStore({
         this.addCheckedData(parentModule.menuId);
       }
       // 如果上级还有上级 则进行递归
-      if (parentModule.parentId) {
+      if (parentModule.pid) {
         this.selectUpperLevel(parentModule);
       }
     },

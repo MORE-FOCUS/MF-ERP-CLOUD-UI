@@ -40,7 +40,7 @@
       <a-form-item label="邮箱" name="email">
         <a-input v-model:value="form.email" placeholder="请输入邮箱" />
       </a-form-item>
-      <a-form-item label="启用状态" name="disabledFlag">
+      <a-form-item label="启用状态" name="isDisabled">
         <a-switch v-model:checked="enabledChecked" @change="enabledCheckedChange" />
       </a-form-item>
 
@@ -144,7 +144,7 @@
     district: undefined,
     districtName: undefined,
     address: undefined,
-    disabledFlag: false,
+    isDisabled: false,
   };
   let form = reactive({ ...formDefault });
   const rules = {
@@ -188,7 +188,7 @@
   const enabledChecked = ref(true);
 
   function enabledCheckedChange(checked) {
-    form.disabledFlag = !checked;
+    form.isDisabled = !checked;
   }
 
   // 地区

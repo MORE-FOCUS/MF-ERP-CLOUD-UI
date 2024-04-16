@@ -15,7 +15,7 @@
         </a-form-item>
 
         <a-form-item label="禁用" class="smart-query-form-item">
-          <SmartEnumSelect width="120px" enum-name="FLAG_NUMBER_ENUM" v-model:value="queryForm.disabledFlag" />
+          <SmartEnumSelect width="120px" enum-name="FLAG_NUMBER_ENUM" v-model:value="queryForm.isDisabled" />
         </a-form-item>
 
         <a-form-item class="smart-query-form-item smart-margin-left10">
@@ -43,15 +43,15 @@
 
       <a-row class="smart-query-form-row" v-show="moreQueryConditionFlag">
         <a-form-item label="外链" class="smart-query-form-item">
-          <SmartEnumSelect width="120px" enum-name="FLAG_NUMBER_ENUM" v-model:value="queryForm.frameFlag" />
+          <SmartEnumSelect width="120px" enum-name="FLAG_NUMBER_ENUM" v-model:value="queryForm.isFrame" />
         </a-form-item>
 
         <a-form-item label="缓存" class="smart-query-form-item">
-          <SmartEnumSelect width="120px" enum-name="FLAG_NUMBER_ENUM" v-model:value="queryForm.cacheFlag" />
+          <SmartEnumSelect width="120px" enum-name="FLAG_NUMBER_ENUM" v-model:value="queryForm.isCached" />
         </a-form-item>
 
         <a-form-item label="显示" class="smart-query-form-item">
-          <SmartEnumSelect width="120px" enum-name="FLAG_NUMBER_ENUM" v-model:value="queryForm.visibleFlag" />
+          <SmartEnumSelect width="120px" enum-name="FLAG_NUMBER_ENUM" v-model:value="queryForm.isVisible" />
         </a-form-item>
       </a-row>
     </a-form>
@@ -89,10 +89,10 @@
           </template>
 
           <template v-if="column.dataIndex === 'component'">
-            <span>{{ record.frameFlag ? record.frameUrl : record.component }}</span>
+            <span>{{ record.isFrame ? record.frameUrl : record.component }}</span>
           </template>
 
-          <template v-if="column.dataIndex === 'frameFlag'">
+          <template v-if="column.dataIndex === 'isFrame'">
             <span>{{ $smartEnumPlugin.getDescByValue('FLAG_NUMBER_ENUM', text) }}</span>
           </template>
 
@@ -100,15 +100,15 @@
             <span>{{ $smartEnumPlugin.getDescByValue('MENU_PERMS_TYPE_ENUM', text) }}</span>
           </template>
 
-          <template v-if="column.dataIndex === 'cacheFlag'">
+          <template v-if="column.dataIndex === 'isCached'">
             <span>{{ $smartEnumPlugin.getDescByValue('FLAG_NUMBER_ENUM', text) }}</span>
           </template>
 
-          <template v-if="column.dataIndex === 'visibleFlag'">
+          <template v-if="column.dataIndex === 'isVisible'">
             <span>{{ $smartEnumPlugin.getDescByValue('FLAG_NUMBER_ENUM', text) }}</span>
           </template>
 
-          <template v-if="column.dataIndex === 'disabledFlag'">
+          <template v-if="column.dataIndex === 'isDisabled'">
             <span>{{ $smartEnumPlugin.getDescByValue('FLAG_NUMBER_ENUM', text) }}</span>
           </template>
 
@@ -154,10 +154,10 @@ const menuTypeColorArray = ['red', 'blue', 'orange', 'green'];
 const queryFormState = {
   keywords: '',
   menuType: undefined,
-  frameFlag: undefined,
-  cacheFlag: undefined,
-  visibleFlag: undefined,
-  disabledFlag: undefined,
+  isFrame: undefined,
+  isCached: undefined,
+  isVisible: undefined,
+  isDisabled: undefined,
 };
 const queryForm = reactive({ ...queryFormState });
 //展开更多查询参数

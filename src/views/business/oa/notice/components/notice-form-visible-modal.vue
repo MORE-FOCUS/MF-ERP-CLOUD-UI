@@ -2,7 +2,7 @@
   * 通知  可见范围
 -->
 <template>
-  <a-modal title="选择部门" v-model:open="visibleFlag" :maskClosable="false" :width="768" @ok="onSubmit" @cancel="onClose">
+  <a-modal title="选择部门" v-model:open="isVisible" :maskClosable="false" :width="768" @ok="onSubmit" @cancel="onClose">
     <a-tabs v-model:activeKey="activeKey">
       <a-tab-pane :key="1" tab="选择员工">
         <NoticeFormVisibleTransferEmployee :employeeList="employeeList" @onChange="onChangeEmployee" />
@@ -21,9 +21,9 @@ import NoticeFormVisibleTransferDepartment from './notice-form-visible-transfer-
 import NoticeFormVisibleTransferEmployee from './notice-form-visible-transfer-employee.vue';
 
 const emits = defineEmits('selectedFinish');
-const visibleFlag = ref(false);
+const isVisible = ref(false);
 function onClose() {
-  visibleFlag.value = false;
+  isVisible.value = false;
 }
 
 const activeKey = ref(1);
@@ -37,7 +37,7 @@ function showModal(visibleRangeList = []) {
   employeeList.value = visibleRangeList.filter((item) => item.dataType === NOTICE_VISIBLE_RANGE_DATA_TYPE_ENUM.EMPLOYEE.value);
   departmentList.value = visibleRangeList.filter((item) => item.dataType === NOTICE_VISIBLE_RANGE_DATA_TYPE_ENUM.DEPARTMENT.value);
   activeKey.value = 1;
-  visibleFlag.value = true;
+  isVisible.value = true;
 }
 
 function onSubmit() {

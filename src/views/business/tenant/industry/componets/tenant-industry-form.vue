@@ -18,8 +18,8 @@
             <a-form-item label="排序" name="sortValue">
                 <a-input style="width: 100%" v-model:value="form.sortValue" placeholder="排序" />
             </a-form-item>
-            <a-form-item label="状态" name="disabledFlag">
-                <a-select v-model:value="form.disabledFlag" placeholder="请选择状态">
+            <a-form-item label="状态" name="isDisabled">
+                <a-select v-model:value="form.isDisabled" placeholder="请选择状态">
                     <a-select-option :value="0">启用</a-select-option>
                     <a-select-option :value="1">禁用</a-select-option>
                 </a-select>

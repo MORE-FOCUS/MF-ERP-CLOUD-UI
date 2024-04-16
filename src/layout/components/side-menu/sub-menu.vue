@@ -8,7 +8,7 @@
     </template>
     <template #title>{{ menuInfo.menuName }}</template>
     <template v-for="item in menuInfo.children" :key="item.menuId">
-      <template v-if="item.visibleFlag && !item.disabledFlag">
+      <template v-if="item.isVisible && !item.isDisabled">
         <template v-if="!item.children">
           <a-menu-item :key="item.menuId" @click="turnToPage(item)">
             <template #icon>

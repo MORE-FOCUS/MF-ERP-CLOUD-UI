@@ -5,7 +5,7 @@
   <a-drawer
     title="代码配置"
     style=""
-    :open="visibleFlag"
+    :open="isVisible"
     :width="1000"
     :footerStyle="{ textAlign: 'right' }"
     @close="onClose"
@@ -93,11 +93,11 @@
 
   // ------------------ 显示，关闭 ------------------
   // 显示
-  const visibleFlag = ref(false);
+  const isVisible = ref(false);
   function showModal(table) {
     Object.assign(tableInfo, table);
     activeKey.value = '1';
-    visibleFlag.value = true;
+    isVisible.value = true;
     nextTick(() => {
       getTableColumns();
     });
@@ -105,7 +105,7 @@
 
   // 关闭
   function onClose() {
-    visibleFlag.value = false;
+    isVisible.value = false;
   }
 
   // ------------------ 组件------------------

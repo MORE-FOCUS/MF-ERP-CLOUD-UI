@@ -42,7 +42,7 @@ export const useUserStore = defineStore({
     //是否完成menuRouter初始化
     menuRouterInitFlag: false,
     //父类菜单集合
-    menuParentIdListMap: new Map(),
+    menupidListMap: new Map(),
     // 功能点集合
     pointsList: [],
     // 标签页
@@ -70,8 +70,8 @@ export const useUserStore = defineStore({
       return state.menuRouterList;
     },
     //菜单的父级id
-    getMenuParentIdListMap(state) {
-      return state.menuParentIdListMap;
+    getMenupidListMap(state) {
+      return state.menupidListMap;
     },
     //功能点
     getPointList(state) {
@@ -127,10 +127,10 @@ export const useUserStore = defineStore({
       this.menuRouterList = data.menuList.filter((e) => e.path || e.frameUrl);
 
       //父级菜单集合
-      this.menuParentIdListMap = buildMenuParentIdListMap(this.menuTree);
+      this.menupidListMap = buildMenupidListMap(this.menuTree);
 
       //功能点
-      this.pointsList = data.menuList.filter((menu) => menu.menuType === MENU_TYPE_ENUM.POINTS.value && menu.visibleFlag && !menu.disabledFlag);
+      this.pointsList = data.menuList.filter((menu) => menu.menuType === MENU_TYPE_ENUM.POINTS.value && menu.isVisible && !menu.isDisabled);
     },
     setToken(token) {
       this.token = token;
@@ -249,16 +249,16 @@ export const useUserStore = defineStore({
 /**
  * 构建菜单父级集合
  */
-function buildMenuParentIdListMap(menuTree) {
-  let menuParentIdListMap = new Map();
-  recursiveBuildMenuParentIdListMap(menuTree, [], menuParentIdListMap);
-  return menuParentIdListMap;
+function buildMenupidListMap(menuTree) {
+  let menupidListMap = new Map();
+  recursiveBuildMenupidListMap(menuTree, [], menupidListMap);
+  return menupidListMap;
 }
 
-function recursiveBuildMenuParentIdListMap(menuList, parentMenuList, menuParentIdListMap) {
+function recursiveBuildMenupidListMap(menuList, parentMenuList, menupidListMap) {
   for (const e of menuList) {
     // 顶级parentMenuList清空
-    if (e.parentId === 0) {
+    if (e.pid === 0) {
       parentMenuList = [];
     }
     let menuIdStr = e.menuId.toString();
@@ -266,9 +266,9 @@ function recursiveBuildMenuParentIdListMap(menuList, parentMenuList, menuParentI
     if (!_.isEmpty(e.children) && e.menuName) {
       // 递归
       cloneParentMenuList.push({ name: menuIdStr, title: e.menuName });
-      recursiveBuildMenuParentIdListMap(e.children, cloneParentMenuList, menuParentIdListMap);
+      recursiveBuildMenupidListMap(e.children, cloneParentMenuList, menupidListMap);
     } else {
-      menuParentIdListMap.set(menuIdStr, cloneParentMenuList);
+      menupidListMap.set(menuIdStr, cloneParentMenuList);
     }
   }
 }
@@ -281,10 +281,10 @@ function recursiveBuildMenuParentIdListMap(menuList, parentMenuList, menuParentI
  */
 function buildMenuTree(menuList) {
   //1 获取所有 有效的 目录和菜单
-  let catalogAndMenuList = menuList.filter((menu) => menu.menuType !== MENU_TYPE_ENUM.POINTS.value && menu.visibleFlag && !menu.disabledFlag);
+  let catalogAndMenuList = menuList.filter((menu) => menu.menuType !== MENU_TYPE_ENUM.POINTS.value && menu.isVisible && !menu.isDisabled);
 
   //2 获取顶级目录
-  let topCatalogList = catalogAndMenuList.filter((menu) => menu.parentId === 0);
+  let topCatalogList = catalogAndMenuList.filter((menu) => menu.pid === 0);
   for (const topCatalog of topCatalogList) {
     buildMenuChildren(topCatalog, catalogAndMenuList);
   }
@@ -292,7 +292,7 @@ function buildMenuTree(menuList) {
 }
 
 function buildMenuChildren(menu, allMenuList) {
-  let children = allMenuList.filter((e) => e.parentId === menu.menuId);
+  let children = allMenuList.filter((e) => e.pid === menu.menuId);
   if (children.length === 0) {
     return;
   }
