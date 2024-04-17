@@ -6,16 +6,16 @@ import { getRequest, postRequest } from '/src/lib/axios';
 
 export const employeeApi = {
   /**
-   * 查询所有员工 @author loki
-   */
-  queryAll: () => {
-    return getRequest('/employee/queryAll');
-  },
-  /**
    * 员工管理查询
    */
   queryEmployee: (params) => {
     return postRequest('/employee/queryPage', params);
+  },
+  /**
+   * 查询所有员工 @author loki
+   */
+  queryAll: (params) => {
+    return postRequest('/employee/queryAll',params);
   },
   /**
    * 添加员工
@@ -59,7 +59,7 @@ export const employeeApi = {
   updateEmployeePassword: (param) => {
     return postRequest('/employee/update/password', param);
   },
-  
+
   /**
    * 更新员工禁用状态
    */
