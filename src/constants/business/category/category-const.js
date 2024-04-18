@@ -6,9 +6,9 @@ export const CATEGORY_TYPE_ENUM = {
     value: 1,
     desc: '商品',
   },
-  DEMO: {
+  SUPPLIER: {
     value: 2,
-    desc: '演示分类',
+    desc: '供应商',
   },
 };
 

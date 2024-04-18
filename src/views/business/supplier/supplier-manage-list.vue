@@ -5,7 +5,7 @@
     <div class="height100">
         <a-row :gutter="24" class="height100">
             <a-col :span="6">
-                <SupplierCatalogTree ref="supplierCatalogTreeRef" />
+                <CategoryTree ref="categoryTreeRef" :categoryType="CATEGORY_TYPE_ENUM.SUPPLIER.value"/>
             </a-col>
             <a-col :span="18" class="height100">
                 <div class="supplier-box height100">
@@ -19,15 +19,16 @@
 <script setup>
 import _ from 'lodash';
 import { computed, ref } from 'vue';
-import SupplierCatalogTree from './components/supplier-catalog-tree.vue';
+import CategoryTree from '/@/components/business/category-tree/category-tree.vue';
 import SupplierList from './components/supplier-list.vue'
+import { CATEGORY_TYPE_ENUM } from '/@/constants/business/category/category-const';
 
-const supplierCatalogTreeRef = ref();
+const categoryTreeRef = ref();
 
 //当前选中的目录ID
 const selectedCatalogId = computed(() => {
-    if (supplierCatalogTreeRef.value) {
-        let selectedKeys = supplierCatalogTreeRef.value.selectedKeys;
+    if (categoryTreeRef.value) {
+        let selectedKeys = categoryTreeRef.value.selectedKeys;
         return _.isEmpty(selectedKeys) ? null : selectedKeys[0];
     }
     return null;

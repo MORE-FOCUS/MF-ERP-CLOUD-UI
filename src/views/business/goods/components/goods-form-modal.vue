@@ -50,7 +50,7 @@
 <script setup>
   import { ref, nextTick, reactive } from 'vue';
   import CategoryTree from '/@/components/business/category-tree-select/index.vue';
-  import { CATEGORY_TYPE_ENUM } from '/@/constants/business/goodscategory/category-const';
+  import { CATEGORY_TYPE_ENUM } from '/@/constants/business/category/category-const';
   import { message } from 'ant-design-vue';
   import { SmartLoading } from '/@/components/framework/smart-loading';
   import { GOODS_STATUS_ENUM } from '/@/constants/business/goods/goods-const';

@@ -3,7 +3,7 @@
  */
 import menu from './system/menu-const';
 import goods from './business/goods/goods-const';
-import category from './business/goodscategory/category-const';
+import category from './business/category/category-const';
 import { LOGIN_DEVICE_ENUM } from './system/login-device-const';
 import { FLAG_NUMBER_ENUM, GENDER_ENUM, USER_TYPE_ENUM } from './common-const';
 import { LAYOUT_ENUM } from './layout-const';

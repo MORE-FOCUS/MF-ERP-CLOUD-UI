@@ -8,6 +8,5 @@
 </template>
 <script setup>
   import CategoryTreeTable from './components/category-tree-table.vue';
-  import { CATEGORY_TYPE_ENUM } from '/@/constants/business/erp/category-const';
+  import { CATEGORY_TYPE_ENUM } from '/@/constants/business/category/category-const';
 </script>
-../../../../constants/business/goodscategory/category-const

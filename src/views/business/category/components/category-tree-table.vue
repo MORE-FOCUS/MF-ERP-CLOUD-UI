@@ -47,7 +47,7 @@
   import { SmartLoading } from '/@/components/framework/smart-loading';
   import CategoryFormModal from './category-form-modal.vue';
   import { categoryApi } from '/@/api/business/category/category-api';
-  import { CATEGORY_TYPE_ENUM } from '/@/constants/business/erp/category-const';
+  import { CATEGORY_TYPE_ENUM } from '/@/constants/business/category/category-const';
   import { smartSentry } from '/@/lib/smart-sentry';
 
   const columnNameList = [
@@ -95,7 +95,7 @@
       let queryForm = {
         categoryType: props.categoryType,
       };
-      let responseModel = await categoryApi.queryCategoryTree(queryForm);
+      let responseModel = await categoryApi.queryTree(queryForm);
       tableData.value = responseModel.data;
     } catch (e) {
       smartSentry.captureError(e);
@@ -146,7 +146,7 @@
   async function deleteCategory(categoryId) {
     try {
       SmartLoading.show();
-      await categoryApi.deleteCategoryById(categoryId);
+      await categoryApi.delete(categoryId);
       message.success('删除成功');
       queryList();
     } catch (e) {

@@ -173,7 +173,7 @@
   import { goodsApi } from '/@/api/business/goods/goods-api';
   import { PAGE_SIZE_OPTIONS } from '/@/constants/common-const';
   import CategoryTree from '/@/components/business/category-tree-select/index.vue';
-  import { CATEGORY_TYPE_ENUM } from '/@/constants/goodscategory/category-const';
+  import { CATEGORY_TYPE_ENUM } from '/@/constants/category/category-const';
   import { smartSentry } from '/@/lib/smart-sentry';
   import TableOperator from '/@/components/support/table-operator/index.vue';
   import { TABLE_ID_CONST } from '/@/constants/support/table-id-const';

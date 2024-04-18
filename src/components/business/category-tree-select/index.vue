@@ -45,7 +45,7 @@
       let param = {
         categoryType: props.categoryType,
       };
-      let resp = await categoryApi.queryCategoryTree(param);
+      let resp = await categoryApi.queryTree(param);
       categoryTreeData.value = resp.data;
     } catch (e) {
       smartSentry.captureError(e);
@@ -77,4 +77,3 @@
 
   onMounted(queryCategoryTree);
 </script>
-../../../api/business/erp/category/category-api
