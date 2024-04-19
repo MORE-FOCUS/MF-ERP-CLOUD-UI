@@ -6,38 +6,25 @@
     <a-row>
       <a-input v-model:value.trim="keywords" placeholder="请输入类别名称" />
     </a-row>
-    <a-row class="sort-flag-row" v-if="props.showMenu">
-      <span>
-        排序
-        <template v-if="showSortFlag"> （越小越靠前） </template>
-        ：<a-switch v-model:checked="showSortFlag" />
-      </span>
-      <a-button type="primary" @click="addTop" size="small" v-privilege="'business:category:add'">新建</a-button>
+    <a-row class="operate-row" v-if="props.showMenu">
+      <a-button class="operate-row-button"  shape="circle" @click="addTop" size="small" v-privilege="'business:category:add'"><PlusOutlined /></a-button>
+      <a-button type="primary" class="operate-row-button" shape="circle" @click="addTop" size="small" v-privilege="'business:category:edit'"><EditOutlined /></a-button>
+      <a-button type="primary" class="operate-row-button" shape="circle" @click="addTop" size="small" v-privilege="'business:category:delete'" danger><DeleteOutlined /></a-button>
+      <a-button class="operate-row-button" shape="circle" @click="addTop" size="small"><SyncOutlined /></a-button>
     </a-row>
-    <a-tree v-if="!_.isEmpty(categoryTreeData)" v-model:selectedKeys="selectedKeys" v-model:checkedKeys="checkedKeys"
-      class="tree" :treeData="categoryTreeData" :fieldNames="{ title: 'name', key: 'categoryId', value: 'categoryId' }"
-      style="width: 100%; overflow-x: auto" :style="[!height ? '' : { height: `${height}px`, overflowY: 'auto' }]"
-      :showLine="!props.checkable" :checkable="props.checkable" :checkStrictly="props.checkStrictly"
-      :selectable="!props.checkable" :defaultExpandAll="true" @select="treeSelectChange">
+    <a-tree v-if="!_.isEmpty(categoryTreeData)" 
+      class="tree"
+      v-model:selectedKeys="selectedKeys" 
+      v-model:checkedKeys="checkedKeys"
+      :treeData="categoryTreeData" 
+      :fieldNames="{ title: 'categoryName', key: 'categoryId', value: 'categoryId' }"
+      :showLine="false"
+      :defaultCheckedKeys="1"
+      :defaultExpandAll="true" 
+      :blockNode="true"
+      @select="treeSelectChange">
       <template #title="item">
-        <a-popover placement="right" v-if="props.showMenu">
-          <template #content>
-            <div style="display: flex; flex-direction: column">
-              <a-button type="text" @click="addCategory(item.dataRef)"
-                v-privilege="'business:category:add'">添加下级</a-button>
-              <a-button type="text" @click="updateCategory(item.dataRef)"
-                v-privilege="'business:category:edit'">修改</a-button>
-              <a-button type="text" v-if="item.categoryId !== topCategoryId" @click="deleteCategory(item.categoryId)"
-                v-privilege="'business:category:delete'">删除</a-button>
-            </div>
-          </template>
-          {{ item.name }}
-          <!--显示排序字段-->
-          <template v-if="showSortFlag">
-            <span class="sort-span">({{ item.sort }})</span>
-          </template>
-        </a-popover>
-        <div v-else>{{ item.name }}</div>
+          {{ item.categoryName }}
       </template>
     </a-tree>
     <div class="no-data" v-else>暂无结果</div>
@@ -47,11 +34,9 @@
 </template>
 <script setup>
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
-import { ref } from 'vue';
-import { onUnmounted, watch } from 'vue';
+import { onUnmounted, watch, ref, createVNode, onMounted } from 'vue';
 import { Modal } from 'ant-design-vue';
 import _ from 'lodash';
-import { createVNode, onMounted } from 'vue';
 import CategoryFormModal from './category-form-modal.vue';
 import { categoryApi } from '/@/api/business/category/category-api';
 import { SmartLoading } from '/@/components/framework/smart-loading';
@@ -108,9 +93,10 @@ async function refresh() {
 
 // 类别树
 async function queryCategoryTree() {
-  let params ={
+  let params = {
     categoryType: props.categoryType
   };
+
   let res = await categoryApi.queryTree(params);
   let data = res.data;
   categoryList.value = data;
@@ -181,7 +167,7 @@ function treeSelectChange(idList) {
   selectedCategoryChildren.value = categoryList.value.filter((e) => e.pid === id);
   let filterCategoryList = [];
   recursionFilterCategory(filterCategoryList, id, true);
-  breadcrumb.value = filterCategoryList.map((e) => e.name);
+  breadcrumb.value = filterCategoryList.map((e) => e.categoryName);
 }
 
 // -----------------------  筛选 ---------------------
@@ -204,10 +190,10 @@ function onSearch() {
     return;
   }
   // 筛选出名称符合的目录
-  let filterDepartmenet = originData.filter((e) => e.name.indexOf(keywords.value) > -1);
+  let filterCategoryResultList = originData.filter((e) => e.categoryName.indexOf(keywords.value) > -1);
   let filterCategoryList = [];
   // 循环筛选出的目录 构建目录树
-  filterDepartmenet.forEach((e) => {
+  filterCategoryResultList.forEach((e) => {
     recursionFilterCategory(filterCategoryList, e.categoryId, false);
   });
 
@@ -239,6 +225,7 @@ function addCategory(e) {
     categoryId: 0,
     categoryName: '',
     pid: e.categoryId,
+    isDefault: false,
     categoryType: props.categoryType
   };
 
@@ -251,6 +238,7 @@ function addTop() {
     categoryId: 0,
     categoryName: '',
     pid: 0,
+    isDefault: false,
     categoryType: props.categoryType
   };
   categoryFormModal.value.showModal(data);
@@ -324,15 +312,15 @@ defineExpose({
     overflow-x: hidden;
   }
 
-  .sort-flag-row {
+  .operate-row {
     display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
+    justify-content: right;
+    margin-top: 5px;
     margin-bottom: 10px;
   }
 
-  .sort-span {
-    margin-left: 5px;
+  .operate-row-button {
+    margin-left: 10px;
   }
 
   .no-data {
@@ -340,4 +328,3 @@ defineExpose({
   }
 }
 </style>
-../../../../components/business/category-tree/category-mitt

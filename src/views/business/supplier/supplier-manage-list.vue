@@ -4,10 +4,10 @@
 <template>
     <div class="height100">
         <a-row :gutter="24" class="height100">
-            <a-col :span="6">
+            <a-col :span="5">
                 <CategoryTree ref="categoryTreeRef" :categoryType="CATEGORY_TYPE_ENUM.SUPPLIER.value"/>
             </a-col>
-            <a-col :span="18" class="height100">
+            <a-col :span="19" class="height100">
                 <div class="supplier-box height100">
                     <SupplierList :catalogId="selectedCatalogId" />
                 </div>
