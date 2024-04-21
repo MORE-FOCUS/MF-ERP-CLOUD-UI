@@ -9,7 +9,7 @@
             </a-col>
             <a-col :span="19" class="height100">
                 <div class="supplier-box height100">
-                    <SupplierList :catalogId="selectedCatalogId" />
+                    <SupplierList :selectedCategoryId="selectedCategoryId"/>
                 </div>
             </a-col>
         </a-row>
@@ -26,7 +26,7 @@ import { CATEGORY_TYPE_ENUM } from '/@/constants/business/category/category-cons
 const categoryTreeRef = ref();
 
 //当前选中的目录ID
-const selectedCatalogId = computed(() => {
+const selectedCategoryId = computed(() => {
     if (categoryTreeRef.value) {
         let selectedKeys = categoryTreeRef.value.selectedKeys;
         return _.isEmpty(selectedKeys) ? null : selectedKeys[0];

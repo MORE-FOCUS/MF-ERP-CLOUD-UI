@@ -6,7 +6,7 @@
     <a-form ref="formRef" :model="formState" :rules="rules" layout="vertical">
       <a-form-item label="父类" name="pid">
         <CategoryTreeSelect v-model:value="formState.pid" placeholder="请选择父类"
-          :categoryType="formState.categoryType" :currentSelectedParentCategoryId="formState.pid" />
+          :categoryType="formState.categoryType" :currentSelectedCategoryId="formState.pid" />
       </a-form-item>
       <a-form-item label="名称" name="categoryName">
         <a-input v-model:value.trim="formState.categoryName" placeholder="请输入名称" />

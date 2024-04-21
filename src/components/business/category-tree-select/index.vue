@@ -8,8 +8,8 @@
     :style="`width:${width}`"
     :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }" 
     :tree-data="categoryTreeData" :placeholder="placeholder"
-    :defaultValue="currentSelectedParentCategoryId" 
-    tree-default-expand-all="false"
+    :defaultValue="currentSelectedCategoryId" 
+    :tree-default-expand-all="false"
     allowClear="true" 
     @change="onChange" />
 </template>
@@ -25,7 +25,7 @@ const props = defineProps({
     type: String,
     default: '请选择',
   },
-  currentSelectedParentCategoryId: Number,
+  currentSelectedCategoryId: Number,
   categoryType: Number,
   width: {
     type: String,

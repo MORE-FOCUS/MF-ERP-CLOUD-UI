@@ -30,7 +30,7 @@
         <!---------- 表格操作行 begin ----------->
         <a-row class="smart-table-btn-block">
             <div class="smart-table-operate-block">
-                <a-button @click="showForm" type="primary" size="small">
+                <a-button @click="addSupplier" type="primary" size="small">
                     <template #icon>
                         <PlusOutlined />
                     </template>
@@ -53,11 +53,17 @@
         <!---------- 表格 begin ----------->
         <a-table size="small" :dataSource="tableData" :columns="columns" rowKey="id" bordered :loading="tableLoading"
             :pagination="false" :row-selection="{ selectedRowKeys: selectedRowKeyList, onChange: onSelectChange }">
-            <template #bodyCell="{ text, record, column }">
+            <template #bodyCell="{ record, index, column }">
+                <template v-if="column.dataIndex === 'no'">
+                    {{ index + 1 }}
+                </template>
+                <template v-if="column.dataIndex === 'idDefault'">
+                    <a-tag :color="record.isDefaut ? 'processing' : 'error'">{{ record.isDefaut ? '是' : '否' }}</a-tag>
+                </template>
                 <template v-if="column.dataIndex === 'action'">
                     <div class="smart-table-operate">
-                        <a-button @click="showForm(record)" type="link">编辑</a-button>
-                        <a-button @click="onDelete(record)" danger type="link">删除</a-button>
+                        <a-button @click="editSupplier(record)" type="link">编辑</a-button>
+                        <a-button @click="deleteSupplier(record)" danger type="link">删除</a-button>
                     </div>
                 </template>
             </template>
@@ -71,7 +77,7 @@
                 :show-total="(total) => `共${total}条`" />
         </div>
 
-        <SupplierForm ref="formRef" @reloadList="queryData" />
+        <SupplierFormModel ref="supplierFormModelRef" @reloadList="queryData" />
 
     </a-card>
 </template>
@@ -81,79 +87,74 @@ import { message, Modal } from 'ant-design-vue';
 import { SmartLoading } from '/@/components/framework/smart-loading';
 import { supplierApi } from '/@/api/business/supplier/supplier-api';
 import { smartSentry } from '/@/lib/smart-sentry';
-import SupplierForm from './supplier-form.vue';
+import SupplierFormModel from './supplier-form-model.vue';
 import { TABLE_ID_CONST } from '/@/constants/support/table-id-const';
 import TableOperator from '/@/components/support/table-operator/index.vue';
+import { CATEGORY_TYPE_ENUM } from '/@/constants/business/category/category-const';
 // ---------------------------- 表格列 ----------------------------
 
 const columns = ref([
     {
-        title: '排序',
-        dataIndex: 'sortValue',
-        ellipsis: true,
+        title: '序号',
+        dataIndex: 'no',
+        width: 50,
+        align: 'center'
     },
     {
-        title: '备注',
-        dataIndex: 'remark',
+        title: '编码',
+        dataIndex: 'code',
         ellipsis: true,
-    },
-    {
-        title: '更新时间',
-        dataIndex: 'updateTime',
-        ellipsis: true,
+        align: 'center'
     },
     {
         title: '名称',
         dataIndex: 'name',
         ellipsis: true,
+        align: 'center'
     },
     {
         title: '是否默认',
         dataIndex: 'isDefault',
         ellipsis: true,
+        align: 'center',
     },
-    {
-        title: '供应商编码',
-        dataIndex: 'code',
-        ellipsis: true,
-    },
-    {
-        title: '类别id',
-        dataIndex: 'categoryId',
-        ellipsis: true,
-    },
+
     {
         title: '联系人',
         dataIndex: 'contacts',
         ellipsis: true,
-    },
-    {
-        title: '微信号',
-        dataIndex: 'wechat',
-        ellipsis: true,
-    },
-    {
-        title: '传真',
-        dataIndex: 'tax',
-        ellipsis: true,
+        align: 'center',
     },
     {
         title: '初始欠款',
         dataIndex: 'originDebt',
         ellipsis: true,
+        align: 'center',
     },
     {
         title: '欠款',
         dataIndex: 'debt',
         ellipsis: true,
+        align: 'center',
+    },
+    {
+        title: '更新时间',
+        dataIndex: 'updateTime',
+        ellipsis: true,
+        align: 'center'
     },
     {
         title: '操作',
         dataIndex: 'action',
         fixed: 'right',
         width: 90,
+        align: 'center',
     },
 ]);
+
+const props = defineProps({
+    selectedCategoryId: Number
+});
 
 // ---------------------------- 查询数据表单和方法 ----------------------------
 
@@ -192,37 +193,33 @@ async function queryData() {
     }
 }
 
-// 根据关键字 查询
-async function queryByKeyword() {
-    tableLoading.value = true;
-    try {
-        params.pageNum = 1;
-        let res = await supplierApi.queryPage(params);
-        tableData.value = res.data.list;
-        total.value = res.data.total;
-        // 清除选中
-        selectedRowKeys.value = [];
-        selectedRows.value = [];
-    } catch (error) {
-        smartSentry.captureError(error);
-    } finally {
-        tableLoading.value = false;
-    }
-}
-
-
 onMounted(queryData);
 
 // ---------------------------- 添加/修改 ----------------------------
-const formRef = ref();
+const supplierFormModelRef = ref();
+
+//新增
+function addSupplier() {
+    let data = {
+        categoryId: props.selectedCategoryId,
+        categoryType: CATEGORY_TYPE_ENUM.SUPPLIER.value
+    }
+    showForm(data);
+}
+
+//编辑
+function editSupplier(data) {
+    data.categoryType = CATEGORY_TYPE_ENUM.SUPPLIER.value;
+    showForm(data);
+}
 
 function showForm(data) {
-    formRef.value.show(data);
+    supplierFormModelRef.value.showDrawer(data);
 }
 
 // ---------------------------- 单个删除 ----------------------------
 //确认删除
-function onDelete(data) {
+function deleteSupplier(data) {
     Modal.confirm({
         title: '提示',
         content: '确定要删除吗?',
