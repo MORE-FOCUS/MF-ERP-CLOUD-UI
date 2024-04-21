@@ -43,10 +43,5 @@ const selectedCatalogId = computed(() => {
 .supplier-box {
     display: flex;
     flex-direction: column;
-
-    .employee {
-        flex-grow: 2;
-        margin-top: 10px;
-    }
 }
 </style>

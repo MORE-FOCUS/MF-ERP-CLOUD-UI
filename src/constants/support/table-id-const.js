@@ -1,10 +1,3 @@
-/*
- * @Description: 表格id
- * @Author: loki
- * @Date: 2022-08-21
- * @LastEditTime: 2022-08-21
- * @LastEditors: loki
- */
 
 //system系统功能表格初始化id
 let systemInitTableId = 10000;
@@ -15,7 +8,7 @@ let supportInitTableId = 20000;
 //业务表格初始化id
 let businessOAInitTableId = 30000;
 
-let businessERPInitTableId = 40000;
+let businessBasicInitTableId = 40000;
 
 export const TABLE_ID_CONST = {
   /**
@@ -29,8 +22,9 @@ export const TABLE_ID_CONST = {
       ENTERPRISE_BANK: businessOAInitTableId + 4, //企业银行
       ENTERPRISE_INVOICE: businessOAInitTableId + 5, //企业发票
     },
-    ERP: {
-      GOODS: businessERPInitTableId + 1, //商品管理
+    BUSINESS: {
+      GOODS: businessBasicInitTableId + 1, //商品管理
+      SUPPLIER: businessBasicInitTableId + 2, //供应商列表
     },
   },
 

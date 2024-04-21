@@ -32,7 +32,7 @@
 <script setup>
   import _ from 'lodash';
   import { tableColumnApi } from '/src/api/support/table-column-api';
-  import { onMounted, reactive, ref, watch } from 'vue';
+  import { onMounted, ref, watch } from 'vue';
   import SmartTableColumnModal from './smart-table-column-modal.vue';
   import { message } from 'ant-design-vue';
   import { mergeColumn } from './smart-table-column-merge';

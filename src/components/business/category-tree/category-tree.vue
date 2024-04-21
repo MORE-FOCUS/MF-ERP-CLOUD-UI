@@ -4,7 +4,7 @@
 <template>
   <a-card class="tree-container" size="small">
     <a-row>
-      <a-input v-model:value.trim="keywords" placeholder="请输入类别名称" />
+      <a-input v-model:value.trim="keywords" placeholder="输入名称过滤" />
     </a-row>
     <a-row class="operate-row">
       <a-button class="operate-row-button" shape="circle" @click="topAdd" size="small"

@@ -45,7 +45,7 @@
                 </a-button>
             </div>
             <div class="smart-table-setting-block">
-                <TableOperator v-model="columns" :tableId="null" :refresh="queryData" />
+                <TableOperator v-model="columns" :tableId="TABLE_ID_CONST.BUSINESS.SUPPLIER" :refresh="queryData" />
             </div>
         </a-row>
         <!---------- 表格操作行 end ----------->
@@ -82,6 +82,8 @@ import { SmartLoading } from '/@/components/framework/smart-loading';
 import { supplierApi } from '/@/api/business/supplier/supplier-api';
 import { smartSentry } from '/@/lib/smart-sentry';
 import SupplierForm from './supplier-form.vue';
+import { TABLE_ID_CONST } from '/@/constants/support/table-id-const';
+import TableOperator from '/@/components/support/table-operator/index.vue';
 // ---------------------------- 表格列 ----------------------------
 
 const columns = ref([

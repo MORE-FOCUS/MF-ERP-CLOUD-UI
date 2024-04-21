@@ -3,9 +3,15 @@
   *
 -->
 <template>
-  <a-tree-select v-model:value="selectValue" :style="`width:${width}`"
-    :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }" :tree-data="categoryTreeData" :placeholder="placeholder"
-    :defaultValue="currentSelectedParentCategoryId" tree-default-expand-all @change="onChange" />
+  <a-tree-select 
+    v-model:value="selectValue" 
+    :style="`width:${width}`"
+    :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }" 
+    :tree-data="categoryTreeData" :placeholder="placeholder"
+    :defaultValue="currentSelectedParentCategoryId" 
+    tree-default-expand-all="false"
+    allowClear="true" 
+    @change="onChange" />
 </template>
 
 <script setup>
