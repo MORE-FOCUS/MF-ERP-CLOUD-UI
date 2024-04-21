@@ -5,10 +5,10 @@
   <a-modal v-model:open="visible" :title="formState.categoryId ? '编辑类别' : '添加类别'" @ok="handleOk" destroyOnClose>
     <a-form ref="formRef" :model="formState" :rules="rules" layout="vertical">
       <a-form-item label="父类" name="pid">
-        <CategoryTreeSelect v-model:value="formState.categoryId" placeholder="请选择父类"
-          :categoryType="formState.categoryType" />
+        <CategoryTreeSelect v-model:value="formState.pid" placeholder="请选择父类"
+          :categoryType="formState.categoryType" :currentSelectedParentCategoryId="formState.pid" />
       </a-form-item>
-      <a-form-item label="目录名称" name="categoryName">
+      <a-form-item label="名称" name="categoryName">
         <a-input v-model:value.trim="formState.categoryName" placeholder="请输入名称" />
       </a-form-item>
       <a-form-item label="禁用" name="isDisabled">
@@ -17,8 +17,8 @@
       <a-form-item label="默认" name="isDefault">
         <a-switch v-model:checked="formState.isDefault" />
       </a-form-item>
-      <a-form-item label="目录排序 （值越小越靠前！）" name="sortValue">
-        <a-input-number style="width: 100%" v-model:value="formState.sortValue" :min="0" placeholder="请输入目录名称" />
+      <a-form-item label="排序 （值越小越靠前！）" name="sortValue">
+        <a-input-number style="width: 100%" v-model:value="formState.sortValue" :min="0" placeholder="请输入正整数" />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -45,6 +45,7 @@ function showModal(data) {
   visible.value = true;
   updateFormData(data);
 }
+
 function closeModal() {
   visible.value = false;
   resetFormData();
@@ -57,8 +58,9 @@ const defaultCategoryForm = {
   categoryType: undefined,
   categoryName: undefined,
   isDisabled: false,
-  pid: undefined,
-  sort: 0,
+  isDefault: false,
+  pid: 0,
+  sortValue: 0,
 };
 
 let formState = reactive({
@@ -72,6 +74,7 @@ const rules = {
     { max: 50, message: '名称不能大于20个字符', trigger: 'blur' },
   ],
 };
+
 // 更新表单数据
 function updateFormData(data) {
   Object.assign(formState, defaultCategoryForm);
@@ -80,6 +83,7 @@ function updateFormData(data) {
   }
   visible.value = true;
 }
+
 // 重置表单数据
 function resetFormData() {
   Object.assign(formState, defaultCategoryForm);

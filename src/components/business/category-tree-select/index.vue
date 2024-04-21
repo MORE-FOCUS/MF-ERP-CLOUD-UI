@@ -3,77 +3,72 @@
   *
 -->
 <template>
-  <a-tree-select
-    v-model:value="selectValue"
-    :style="`width:${width}`"
-    :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-    :tree-data="categoryTreeData"
-    :placeholder="placeholder"
-    tree-default-expand-all
-    @change="onChange"
-  />
+  <a-tree-select v-model:value="selectValue" :style="`width:${width}`"
+    :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }" :tree-data="categoryTreeData" :placeholder="placeholder"
+    :defaultValue="currentSelectedParentCategoryId" tree-default-expand-all @change="onChange" />
 </template>
 
 <script setup>
-  import { ref, watch, onMounted } from 'vue';
-  import { categoryApi } from '/@/api/business/category/category-api';
-  import { smartSentry } from '/@/lib/smart-sentry';
+import { ref, watch, onMounted } from 'vue';
+import { categoryApi } from '/@/api/business/category/category-api';
+import { smartSentry } from '/@/lib/smart-sentry';
 
-  const props = defineProps({
-    value: Number,
-    placeholder: {
-      type: String,
-      default: '请选择',
-    },
-    categoryType: Number,
-    width: {
-      type: String,
-      default: '100%',
-    },
-  });
+const props = defineProps({
+  value: Number,
+  placeholder: {
+    type: String,
+    default: '请选择',
+  },
+  currentSelectedParentCategoryId: Number,
+  categoryType: Number,
+  width: {
+    type: String,
+    default: '100%',
+  },
+});
 
-  const emit = defineEmits(['update:value', 'change']);
+const emit = defineEmits(['update:value', 'change']);
 
-  // -----------------  查询 目录 数据 -----------------
-  const categoryTreeData = ref([]);
-  async function queryCategoryTree() {
-    if (!props.categoryType) {
-      categoryTreeData.value = [];
-      return;
-    }
-    try {
-      let param = {
-        categoryType: props.categoryType,
-      };
-      let resp = await categoryApi.queryTree(param);
-      categoryTreeData.value = resp.data;
-    } catch (e) {
-      smartSentry.captureError(e);
-    }
+// -----------------  查询 目录 数据 -----------------
+const categoryTreeData = ref([]);
+async function queryCategoryTree() {
+  if (!props.categoryType) {
+    categoryTreeData.value = [];
+    return;
   }
-
-  // -----------------  选中相关监听、事件 -----------------
-  const selectValue = ref(props.value);
-  // 箭头value变化
-  watch(
-    () => props.value,
-    (newValue) => {
-      selectValue.value = newValue;
-    }
-  );
-
-  // 监听类型变化
-  watch(
-    () => props.categoryType,
-    () => {
-      queryCategoryTree();
-    }
-  );
-
-  function onChange(value) {
-    emit('update:value', value);
-    emit('change', value);
+  try {
+    let param = {
+      categoryType: props.categoryType,
+    };
+    let resp = await categoryApi.queryTree(param);
+    categoryTreeData.value = resp.data;
+  } catch (e) {
+    smartSentry.captureError(e);
   }
+}
 
-  onMounted(queryCategoryTree);
+// -----------------  选中相关监听、事件 -----------------
+const selectValue = ref(props.value);
+// 箭头value变化
+watch(
+  () => props.value,
+  (newValue) => {
+    selectValue.value = newValue;
+  }
+);
+
+// 监听类型变化
+watch(
+  () => props.categoryType,
+  () => {
+    queryCategoryTree();
+  }
+);
+
+function onChange(value) {
+  emit('update:value', value);
+  emit('change', value);
+}
+
+onMounted(queryCategoryTree);
 </script>

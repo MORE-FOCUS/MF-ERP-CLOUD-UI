@@ -7,24 +7,27 @@
       <a-input v-model:value.trim="keywords" placeholder="请输入类别名称" />
     </a-row>
     <a-row class="operate-row">
-      <a-button class="operate-row-button"  shape="circle" @click="topAdd" size="small" v-privilege="'business:category:add'"><PlusOutlined /></a-button>
-      <a-button type="primary" class="operate-row-button" shape="circle" @click="topEdit" size="small" v-privilege="'business:category:edit'"><EditOutlined /></a-button>
-      <a-button type="primary" class="operate-row-button" shape="circle" @click="topDelete" size="small" v-privilege="'business:category:delete'" danger><DeleteOutlined /></a-button>
-      <a-button class="operate-row-button" shape="circle" @click="refresh" size="small"><SyncOutlined /></a-button>
+      <a-button class="operate-row-button" shape="circle" @click="topAdd" size="small"
+        v-privilege="'business:category:add'">
+        <PlusOutlined />
+      </a-button>
+      <a-button type="primary" class="operate-row-button" shape="circle" @click="topEdit" size="small"
+        v-privilege="'business:category:edit'">
+        <EditOutlined />
+      </a-button>
+      <a-button type="primary" class="operate-row-button" shape="circle" @click="topDelete" size="small"
+        v-privilege="'business:category:delete'" danger>
+        <DeleteOutlined />
+      </a-button>
+      <a-button class="operate-row-button" shape="circle" @click="refresh" size="small">
+        <SyncOutlined />
+      </a-button>
     </a-row>
-    <a-tree v-if="!_.isEmpty(categoryTreeData)" 
-      class="tree"
-      v-model:selectedKeys="selectedKeys" 
-      v-model:checkedKeys="checkedKeys"
-      :treeData="categoryTreeData" 
-      :fieldNames="{ title: 'categoryName', key: 'categoryId', value: 'categoryId' }"
-      :showLine="false"
-      :defaultCheckedKeys="1"
-      :defaultExpandAll="true" 
-      :blockNode="true"
-      @select="treeSelectChange">
+    <a-tree v-if="!_.isEmpty(categoryTreeData)" class="tree" v-model:selectedKeys="selectedKeys"
+      :treeData="categoryTreeData" :fieldNames="{ title: 'categoryName', key: 'categoryId', value: 'categoryId' }"
+      :showLine="false" :defaultCheckedKeys="1" :defaultExpandAll="true" :blockNode="true" @select="treeSelectChange">
       <template #title="item">
-          {{ item.categoryName }}
+        {{ item.categoryName }}
       </template>
     </a-tree>
     <div class="no-data" v-else>暂无结果</div>
@@ -52,11 +55,8 @@ const props = defineProps({
 
 // ----------------------- 目录树的展示 ---------------------
 const topCategoryId = ref();
-// 所有目录列表
 const categoryList = ref([]);
-// 目录树形数据
 const categoryTreeData = ref([]);
-// 存放目录id和目录，用于查找
 const idInfoMap = ref(new Map());
 
 onMounted(() => {
@@ -125,7 +125,6 @@ function updateCategoryPreIdAndNextId(data) {
 
 // ----------------------- 树的选中 ---------------------
 const selectedKeys = ref([]);
-const checkedKeys = ref([]);
 const currentSelectedCategoryId = ref();
 const selectedCategoryChildren = ref([]);
 
@@ -143,6 +142,7 @@ function treeSelectChange(idList) {
   }
 
   let id = idList[0];
+  currentSelectedCategoryId.value = id;
   selectedCategoryChildren.value = categoryList.value.filter((e) => e.pid === id);
   let filterCategoryList = [];
   recursionFilterCategory(filterCategoryList, id, true);
@@ -167,15 +167,17 @@ function onSearch() {
   if (!originData) {
     return;
   }
+
   // 筛选出名称符合的目录
-  let filterCategoryResultList = originData.filter((e) => e.categoryName.indexOf(keywords.value) > -1);
-  let filterCategoryList = [];
+  let filterResultList = originData.filter((e) => e.categoryName.indexOf(keywords.value) > -1);
+  let treeList = [];
+
   // 循环筛选出的目录 构建目录树
-  filterCategoryResultList.forEach((e) => {
-    recursionFilterCategory(filterCategoryList, e.categoryId, false);
+  filterResultList.forEach((e) => {
+    recursionFilterCategory(treeList, e.categoryId, false);
   });
 
-  categoryTreeData.value = buildTree(filterCategoryList, DEFAULT_CATEGORY_PID);
+  categoryTreeData.value = buildTree(treeList, DEFAULT_CATEGORY_PID);
 }
 
 // 根据ID递归筛选目录
@@ -200,7 +202,7 @@ const categoryFormModal = ref();
 // 添加
 function topAdd() {
   let data = {
-    categoryId: 0,
+    categoryId: undefined,
     categoryName: '',
     pid: currentSelectedCategoryId.value,
     isDefault: false,
@@ -211,12 +213,13 @@ function topAdd() {
 
 // 编辑
 function topEdit() {
-  currentSelectedCategoryId.value = e.categoryId;
+  let e = idInfoMap.value.get(currentSelectedCategoryId.value);
   categoryFormModal.value.showModal(e);
 }
 
 // 删除
-function topDelete(id) {
+function topDelete() {
+  let id = currentSelectedCategoryId.value;
   Modal.confirm({
     title: '提醒',
     icon: createVNode(ExclamationCircleOutlined),
@@ -226,19 +229,16 @@ function topDelete(id) {
     async onOk() {
       SmartLoading.show();
       try {
-        // 若删除的是当前的目录 先找到上级目录
+        //删除之后,自动选中上级目录
         let selectedKey = null;
-        if (!_.isEmpty(selectedKeys.value)) {
-          selectedKey = selectedKeys.value[0];
-          if (selectedKey === id) {
-            let selectInfo = categoryList.value.find((e) => e.categoryId === id);
-            if (selectInfo && selectInfo.pid) {
-              selectedKey = selectInfo.pid;
-            }
-          }
+        let selectedNode = categoryList.value.find((e) => e.categoryId === id);
+        if (selectedNode && selectedNode.pid) {
+          selectedKey = selectedNode.pid;
         }
+
         await categoryApi.delete(id);
         await queryTree();
+
         // 刷新选中目录
         if (selectedKey) {
           selectTree(selectedKey);
@@ -263,7 +263,6 @@ defineExpose({
   queryTree,
   selectedCategoryChildren,
   selectedKeys,
-  checkedKeys,
   keywords,
 });
 </script>
