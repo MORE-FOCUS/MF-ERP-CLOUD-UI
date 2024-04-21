@@ -6,11 +6,11 @@
     <a-row>
       <a-input v-model:value.trim="keywords" placeholder="请输入类别名称" />
     </a-row>
-    <a-row class="operate-row" v-if="props.showMenu">
-      <a-button class="operate-row-button"  shape="circle" @click="addTop" size="small" v-privilege="'business:category:add'"><PlusOutlined /></a-button>
-      <a-button type="primary" class="operate-row-button" shape="circle" @click="addTop" size="small" v-privilege="'business:category:edit'"><EditOutlined /></a-button>
-      <a-button type="primary" class="operate-row-button" shape="circle" @click="addTop" size="small" v-privilege="'business:category:delete'" danger><DeleteOutlined /></a-button>
-      <a-button class="operate-row-button" shape="circle" @click="addTop" size="small"><SyncOutlined /></a-button>
+    <a-row class="operate-row">
+      <a-button class="operate-row-button"  shape="circle" @click="topAdd" size="small" v-privilege="'business:category:add'"><PlusOutlined /></a-button>
+      <a-button type="primary" class="operate-row-button" shape="circle" @click="topEdit" size="small" v-privilege="'business:category:edit'"><EditOutlined /></a-button>
+      <a-button type="primary" class="operate-row-button" shape="circle" @click="topDelete" size="small" v-privilege="'business:category:delete'" danger><DeleteOutlined /></a-button>
+      <a-button class="operate-row-button" shape="circle" @click="refresh" size="small"><SyncOutlined /></a-button>
     </a-row>
     <a-tree v-if="!_.isEmpty(categoryTreeData)" 
       class="tree"
@@ -46,25 +46,7 @@ import { smartSentry } from '/@/lib/smart-sentry';
 const DEFAULT_CATEGORY_PID = 0;
 
 // ----------------------- 组件参数 ---------------------
-
 const props = defineProps({
-  // 是否可以选中
-  checkable: {
-    type: Boolean,
-    default: false,
-  },
-  // 父子节点选中状态不再关联
-  checkStrictly: {
-    type: Boolean,
-    default: false,
-  },
-  // 树高度 超出出滚动条
-  height: Number,
-  // 显示菜单
-  showMenu: {
-    type: Boolean,
-    default: true,
-  },
   categoryType: Number,
 });
 
@@ -76,31 +58,29 @@ const categoryList = ref([]);
 const categoryTreeData = ref([]);
 // 存放目录id和目录，用于查找
 const idInfoMap = ref(new Map());
-// 是否显示排序字段
-const showSortFlag = ref(false);
 
 onMounted(() => {
-  queryCategoryTree();
+  queryTree();
 });
 
 // 刷新
 async function refresh() {
-  await queryCategoryTree();
+  await queryTree();
   if (currentSelectedCategoryId.value) {
     selectTree(currentSelectedCategoryId.value);
   }
 }
 
 // 类别树
-async function queryCategoryTree() {
+async function queryTree() {
   let params = {
     categoryType: props.categoryType
   };
 
-  let res = await categoryApi.queryTree(params);
+  let res = await categoryApi.queryAll(params);
   let data = res.data;
   categoryList.value = data;
-  categoryTreeData.value = buildCategoryTree(data, DEFAULT_CATEGORY_PID);
+  categoryTreeData.value = buildTree(data, DEFAULT_CATEGORY_PID);
 
   data.forEach((e) => {
     idInfoMap.value.set(e.categoryId, e);
@@ -109,16 +89,16 @@ async function queryCategoryTree() {
   // 默认显示 最顶级ID为列表中返回的第一条数据的ID
   if (!_.isEmpty(categoryTreeData.value) && categoryTreeData.value.length > 0) {
     topCategoryId.value = categoryTreeData.value[0].categoryId;
-    selectTree(categoryTreeData.value[0].categoryId);
+    selectTree(topCategoryId.value);
   }
 }
 
 // 构建目录树
-function buildCategoryTree(data, pid) {
+function buildTree(data, pid) {
   let children = data.filter((e) => e.pid === pid) || [];
-  children = _.sortBy(children, (e) => e.sort);
+  children = _.sortBy(children, (e) => e.sortValue);
   children.forEach((e) => {
-    e.children = buildCategoryTree(data, e.categoryId);
+    e.children = buildTree(data, e.categoryId);
   });
   updateCategoryPreIdAndNextId(children);
   return children;
@@ -146,7 +126,6 @@ function updateCategoryPreIdAndNextId(data) {
 // ----------------------- 树的选中 ---------------------
 const selectedKeys = ref([]);
 const checkedKeys = ref([]);
-const breadcrumb = ref([]);
 const currentSelectedCategoryId = ref();
 const selectedCategoryChildren = ref([]);
 
@@ -159,15 +138,14 @@ function selectTree(id) {
 
 function treeSelectChange(idList) {
   if (_.isEmpty(idList)) {
-    breadcrumb.value = [];
     selectedCategoryChildren.value = [];
     return;
   }
+
   let id = idList[0];
   selectedCategoryChildren.value = categoryList.value.filter((e) => e.pid === id);
   let filterCategoryList = [];
   recursionFilterCategory(filterCategoryList, id, true);
-  breadcrumb.value = filterCategoryList.map((e) => e.categoryName);
 }
 
 // -----------------------  筛选 ---------------------
@@ -182,7 +160,7 @@ watch(
 // 筛选
 function onSearch() {
   if (!keywords.value) {
-    categoryTreeData.value = buildCategoryTree(categoryList.value, DEFAULT_CATEGORY_PID);
+    categoryTreeData.value = buildTree(categoryList.value, DEFAULT_CATEGORY_PID);
     return;
   }
   let originData = categoryList.value.concat();
@@ -197,7 +175,7 @@ function onSearch() {
     recursionFilterCategory(filterCategoryList, e.categoryId, false);
   });
 
-  categoryTreeData.value = buildCategoryTree(filterCategoryList, DEFAULT_CATEGORY_PID);
+  categoryTreeData.value = buildTree(filterCategoryList, DEFAULT_CATEGORY_PID);
 }
 
 // 根据ID递归筛选目录
@@ -220,41 +198,29 @@ function recursionFilterCategory(resList, id, unshift) {
 const categoryFormModal = ref();
 
 // 添加
-function addCategory(e) {
+function topAdd() {
   let data = {
     categoryId: 0,
     categoryName: '',
-    pid: e.categoryId,
+    pid: currentSelectedCategoryId.value,
     isDefault: false,
     categoryType: props.categoryType
   };
+  categoryFormModal.value.showModal(data);
+}
 
-  currentSelectedCategoryId.value = e.categoryId;
-  categoryFormModal.value.showModal(data);
-}
-// 添加
-function addTop() {
-  let data = {
-    categoryId: 0,
-    categoryName: '',
-    pid: 0,
-    isDefault: false,
-    categoryType: props.categoryType
-  };
-  categoryFormModal.value.showModal(data);
-}
 // 编辑
-function updateCategory(e) {
+function topEdit() {
   currentSelectedCategoryId.value = e.categoryId;
   categoryFormModal.value.showModal(e);
 }
 
 // 删除
-function deleteCategory(id) {
+function topDelete(id) {
   Modal.confirm({
     title: '提醒',
     icon: createVNode(ExclamationCircleOutlined),
-    content: '确定要删除该目录吗?',
+    content: '确定要删除该类别吗?',
     okText: '删除',
     okType: 'danger',
     async onOk() {
@@ -272,7 +238,7 @@ function deleteCategory(id) {
           }
         }
         await categoryApi.delete(id);
-        await queryCategoryTree();
+        await queryTree();
         // 刷新选中目录
         if (selectedKey) {
           selectTree(selectedKey);
@@ -294,9 +260,8 @@ onUnmounted(() => {
 
 // ----------------------- 以下是暴露的方法内容 ----------------------------
 defineExpose({
-  queryCategoryTree,
+  queryTree,
   selectedCategoryChildren,
-  breadcrumb,
   selectedKeys,
   checkedKeys,
   keywords,

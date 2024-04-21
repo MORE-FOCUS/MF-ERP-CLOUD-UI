@@ -4,6 +4,16 @@
 import { getRequest, postRequest } from '/@/lib/axios';
 
 export const categoryApi = {
+  // 查询类目层级树
+  queryTree: (param) => {
+    return postRequest('/category/tree', param);
+  },
+
+  // 查询类目列表
+  queryAll: (param) => {
+    return postRequest('/category/queryAll', param);
+  },
+
   // 添加类目
   add: (param) => {
     return postRequest('/category/add', param);
@@ -14,10 +24,6 @@ export const categoryApi = {
     return getRequest(`/category/delete/${categoryId}`);
   },
 
-  // 查询类目层级树
-  queryTree: (param) => {
-    return postRequest('/category/tree', param);
-  },
   // 更新类目
   update: (param) => {
     return postRequest('/category/update', param);
