@@ -2,43 +2,63 @@
   *  员工 表单 弹窗
 -->
 <template>
-    <a-drawer :title="form.categoryId ? '编辑' : '添加'" :width="800" :open="visible"
-        :body-style="{ paddingBottom: '80px' }" @close="onClose" destroyOnClose>
-        <a-form ref="formRef" :model="form" :rules="rules" layout="vertical">
-            <a-form-item label="分类" name="categoryId">
+    <a-drawer :title="form.id ? '编辑' : '添加'" :width="600" :open="visible" :body-style="{ paddingBottom: '80px' }"
+        @close="onClose" destroyOnClose>
+        <a-form ref="formRef" :model="form" :rules="rules" layout="horizontal" :label-col="{ span: 4 }"
+            :wrapper-col="{ span: 20 }">
+            <a-form-item label="编码" name="code">
+                <a-input v-model:value.trim="form.code" placeholder="请输入供应商编码" />
+            </a-form-item>
+            <a-form-item label="简称" name="name">
+                <div style="display: inline-block; width: 70%;"><a-input v-model:value.trim="form.name"
+                        placeholder="请输入供应商简称" /></div>
+                <div style="display: inline-block; margin-left: 10px;">
+                    <a-checkbox v-model:value="form.isDefault" @click.prevent>默认供应商</a-checkbox>
+                </div>
+            </a-form-item>
+            <a-form-item label="全称" name="fullName">
+                <a-input v-model:value.trim="form.fullName" placeholder="请输入供应商全称" />
+            </a-form-item>
+            <a-form-item label="供应商分类" name="categoryId">
                 <CategoryTreeSelect v-model:value="form.categoryId" placeholder="请选择类别"
                     :categoryType="form.categoryType" :currentSelectedCategoryId="form.categoryId" />
             </a-form-item>
-            <a-form-item label="名称" name="name">
-                <a-input v-model:value.trim="form.name" placeholder="请输入名称" />
+            <a-form-item label="单位电话" name="workTelephone">
+                <a-input v-model:value.trim="form.workTelephone" placeholder="请输入单位电话" />
             </a-form-item>
             <a-form-item label="联系人" name="contacts">
                 <a-input v-model:value.trim="form.contacts" placeholder="请输入联系人" />
             </a-form-item>
-            <a-form-item label="微信" name="wechat">
-                <a-input v-model:value.trim="form.wechat" placeholder="请输入微信" />
+            <a-form-item label="联系电话" name="phone">
+                <a-input v-model:value.trim="form.phone" placeholder="请输入联系电话" />
             </a-form-item>
-            <a-form-item label="传真" name="tax">
-                <a-input v-model:value.trim="form.tax" placeholder="请输入传真" />
+            <a-form-item label="联系地址" name="address">
+                <a-textarea style="width: 100%" :rows="3" v-model:value.trim="form.address" placeholder="请输入联系地址"
+                    showCount :maxlength="64" />
             </a-form-item>
-            <a-form-item label="初始欠款" name="originDebt">
-                <a-input v-model:value.trim="form.originDebt" placeholder="请输入初始欠款" />
+            <a-form-item label="期初欠款" name="originDebt">
+                <a-input v-model:value.trim="form.originDebt" prefix="￥" suffix="RMB" />
             </a-form-item>
-            <a-form-item label="欠款" name="debt">
-                <a-input v-model:value.trim="form.debt" placeholder="请输入欠款" />
-            </a-form-item>
-            <a-form-item label="状态" name="isDisabled">
-                <a-select v-model:value="form.isDisabled" placeholder="请选择状态">
-                    <a-select-option :value="0">启用</a-select-option>
-                    <a-select-option :value="1">禁用</a-select-option>
-                </a-select>
-            </a-form-item>
-            <a-form-item label="默认" name="isDisabled">
-                <a-select v-model:value="form.isDisabled" placeholder="请选择状态">
-                    <a-select-option :value="1">是</a-select-option>
-                    <a-select-option :value="0">否</a-select-option>
-                </a-select>
-            </a-form-item>
+            <a-divider orientation="left">
+                <a-button type="link" @click="changeMore">更多</a-button>
+            </a-divider>
+            <div v-if="moreRef">
+                <a-form-item label="邮箱" name="email">
+                    <a-input v-model:value.trim="form.email" />
+                </a-form-item>
+                <a-form-item label="微信" name="wechat">
+                    <a-input v-model:value.trim="form.wechat" />
+                </a-form-item>
+                <a-form-item label="邮编" name="postal">
+                    <a-input v-model:value.trim="form.postal" />
+                </a-form-item>
+                <a-form-item label="QQ" name="qq">
+                    <a-input v-model:value.trim="form.qq" />
+                </a-form-item>
+                <a-form-item label="传真" name="tax">
+                    <a-input v-model:value.trim="form.tax" />
+                </a-form-item>
+            </div>
         </a-form>
         <div class="footer">
             <a-button style="margin-right: 8px" @click="onClose">取消</a-button>
@@ -99,12 +119,18 @@ function reset() {
     formRef.value.resetFields();
 }
 
+const moreRef = ref(false);
+
+function changeMore() {
+    moreRef.value = !moreRef.value;
+}
+
 // ----------------------- 表单提交 ---------------------
 // 表单规则
 const rules = {
     name: [
-        { required: true, message: '登录账号不能为空' },
-        { max: 30, message: '登录账号不能大于30个字符', trigger: 'blur' },
+        { required: true, message: '供应商全称不能为空' },
+        { max: 30, message: '供应商全称不能大于30个字符', trigger: 'blur' },
     ],
 };
 // 点击确定，验证表单
