@@ -13,7 +13,7 @@
                 <div style="display: inline-block; width: 70%;"><a-input v-model:value.trim="form.name"
                         placeholder="请输入供应商简称" /></div>
                 <div style="display: inline-block; margin-left: 10px;">
-                    <a-checkbox v-model:value="form.isDefault" @click.prevent>默认供应商</a-checkbox>
+                    <a-checkbox v-model:value="form.isDefault">默认供应商</a-checkbox>
                 </div>
             </a-form-item>
             <a-form-item label="全称" name="fullName">
@@ -40,7 +40,7 @@
                 <a-input v-model:value.trim="form.originDebt" prefix="￥" suffix="RMB" />
             </a-form-item>
             <a-divider orientation="left">
-                <a-button type="link" @click="changeMore">更多</a-button>
+                <a-button type="link" @click="changeMore">{{ moreTextRef }}</a-button>
             </a-divider>
             <div v-if="moreRef">
                 <a-form-item label="邮箱" name="email">
@@ -57,6 +57,10 @@
                 </a-form-item>
                 <a-form-item label="传真" name="tax">
                     <a-input v-model:value.trim="form.tax" />
+                </a-form-item>
+                <a-form-item label="备注" name="remark">
+                    <a-textarea style="width: 100%" :rows="3" v-model:value.trim="form.remark" showCount
+                        :maxlength="128" />
                 </a-form-item>
             </div>
         </a-form>
@@ -77,7 +81,7 @@ import { smartSentry } from '/@/lib/smart-sentry';
 import CategoryTreeSelect from '/@/components/business/category-tree-select/index.vue'
 // ----------------------- 以下是字段定义 emits props ---------------------
 // emit
-const emit = defineEmits(['reloadList']);
+const emits = defineEmits(['reloadList']);
 
 // ----------------------- 显示/隐藏 ---------------------
 
@@ -120,9 +124,11 @@ function reset() {
 }
 
 const moreRef = ref(false);
+const moreTextRef = ref('展开更多');
 
 function changeMore() {
     moreRef.value = !moreRef.value;
+    moreTextRef.value = moreRef.value ? '收起' : '展开更多';
 }
 
 // ----------------------- 表单提交 ---------------------

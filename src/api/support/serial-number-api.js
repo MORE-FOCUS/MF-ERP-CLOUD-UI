@@ -4,16 +4,16 @@
 import { postRequest, getRequest } from '/src/lib/axios';
 
 export const serialNumberApi = {
-  // 生成单号 @author loki
+  // 生成单号
   generate: (generateForm) => {
-    return postRequest('/support/serialNumber/generate', generateForm);
+    return postRequest('/support/serial-number/generate', generateForm);
   },
-  // 获取所有单号定义 @author loki
+  // 获取所有单号定义
   getAll: () => {
-    return getRequest('/support/serialNumber/all');
+    return getRequest('/support/serial-number/all');
   },
-  // 获取生成记录 @author loki
+  // 获取生成记录
   queryRecord: (form) => {
-    return postRequest('/support/serialNumber/queryRecord', form);
+    return postRequest('/support/serial-number/queryRecord', form);
   },
 };

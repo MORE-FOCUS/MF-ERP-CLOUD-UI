@@ -57,8 +57,8 @@
                 <template v-if="column.dataIndex === 'no'">
                     {{ index + 1 }}
                 </template>
-                <template v-if="column.dataIndex === 'idDefault'">
-                    <a-tag :color="record.isDefaut ? 'processing' : 'error'">{{ record.isDefaut ? '是' : '否' }}</a-tag>
+                <template v-if="column.dataIndex === 'isDisabled'">
+                    <a-switch :checked="!record.isDisabled" />
                 </template>
                 <template v-if="column.dataIndex === 'action'">
                     <div class="smart-table-operate">
@@ -113,35 +113,28 @@ const columns = ref([
         align: 'center'
     },
     {
-        title: '是否默认',
-        dataIndex: 'isDefault',
-        ellipsis: true,
-        align: 'center',
-    },
-
-    {
         title: '联系人',
         dataIndex: 'contacts',
         ellipsis: true,
         align: 'center',
     },
     {
-        title: '初始欠款',
+        title: '期初欠款(元)',
         dataIndex: 'originDebt',
         ellipsis: true,
         align: 'center',
     },
     {
-        title: '欠款',
+        title: '应付欠款(元)',
         dataIndex: 'debt',
         ellipsis: true,
         align: 'center',
     },
     {
-        title: '更新时间',
-        dataIndex: 'updateTime',
+        title: '状态',
+        dataIndex: 'isDisabled',
         ellipsis: true,
-        align: 'center'
+        align: 'center',
     },
     {
         title: '操作',
