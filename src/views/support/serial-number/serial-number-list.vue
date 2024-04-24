@@ -72,6 +72,8 @@
 
   <!---生成记录--->
   <SerialNumberRecordList ref="recordList" />
+
+  <SerialNumberFormModel ref="serialNumberFormModelRef" @refresh="queryData"/>
 </template>
 <script setup>
 import { onMounted, ref, reactive } from 'vue';
@@ -82,7 +84,7 @@ import TableOperator from '/@/components/support/table-operator/index.vue';
 import { TABLE_ID_CONST } from '/@/constants/support/table-id-const';
 import { smartSentry } from '/@/lib/smart-sentry';
 import { SmartLoading } from '/@/components/framework/smart-loading';
-
+import SerialNumberFormModel from './components/serial-number-form-model.vue'
 //------------------------ 表格渲染 ---------------------
 
 const columns = ref([
@@ -93,18 +95,23 @@ const columns = ref([
     align: 'center'
   },
   {
-    title: '业务',
+    title: '业务名称',
     dataIndex: 'businessName',
     align: 'center'
   },
   {
-    title: '格式',
-    dataIndex: 'format',
+    title: '编码前缀',
+    dataIndex: 'serialNumberPrefix',
     align: 'center'
   },
   {
     title: '循环周期',
     dataIndex: 'ruleType',
+    align: 'center'
+  },
+  {
+    title: '编码格式',
+    dataIndex: 'format',
     align: 'center'
   },
   {
@@ -177,12 +184,15 @@ async function queryData() {
 onMounted(queryData);
 
 // ------------------------------ 表格操作列： 新增 ------------------------------
-function addSerialNumber() {
 
+const serialNumberFormModelRef = ref();
+
+function addSerialNumber() {
+  serialNumberFormModelRef.value.showDrawer();
 }
 
-function editSerialNumber() {
-
+function editSerialNumber(data) {
+  serialNumberFormModelRef.value.showDrawer(data);
 }
 
 // ------------------------------ 表格操作列： 生成 ------------------------------

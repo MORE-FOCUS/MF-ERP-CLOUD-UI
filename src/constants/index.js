@@ -15,6 +15,7 @@ import codeGeneratorConst from './support/code-generator-const';
 import changeLogConst from './support/change-log-const';
 import jobConst from './support/job-const';
 import tenant from './business/tenant/tenant-const';
+import { RULE_TYPE_ENUM } from './support/serial-number-const';
 
 export default {
   FLAG_NUMBER_ENUM,
@@ -22,6 +23,7 @@ export default {
   GENDER_ENUM,
   USER_TYPE_ENUM,
   LAYOUT_ENUM,
+  RULE_TYPE_ENUM,
   ...loginLog,
   ...menu,
   ...goods,
@@ -32,5 +34,5 @@ export default {
   ...codeGeneratorConst,
   ...changeLogConst,
   ...jobConst,
-  ...tenant
+  ...tenant,
 };

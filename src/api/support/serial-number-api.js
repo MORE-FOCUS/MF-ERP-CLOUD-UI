@@ -16,4 +16,12 @@ export const serialNumberApi = {
   queryRecord: (form) => {
     return postRequest('/support/serial-number/queryRecord', form);
   },
+  //编辑
+  update:(form) => {
+    return postRequest('/support/serial-number/update', form);
+  },
+  //删除
+  delete:(id) => {
+    return postRequest(`/support/serial-number/delete/${id}`);
+  },
 };

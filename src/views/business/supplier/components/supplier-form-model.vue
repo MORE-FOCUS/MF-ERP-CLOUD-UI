@@ -40,7 +40,7 @@
                 <a-input v-model:value.trim="form.originDebt" prefix="￥" suffix="RMB" />
             </a-form-item>
             <a-divider orientation="left">
-                <a-button type="link" @click="changeMore">{{ moreTextRef }}</a-button>
+                <a-button type="link" @click="changeMore">{{ moreRef ? "收起" : "展开更多" }}</a-button>
             </a-divider>
             <div v-if="moreRef">
                 <a-form-item label="邮箱" name="email">
@@ -128,7 +128,6 @@ const moreTextRef = ref('展开更多');
 
 function changeMore() {
     moreRef.value = !moreRef.value;
-    moreTextRef.value = moreRef.value ? '收起' : '展开更多';
 }
 
 // ----------------------- 表单提交 ---------------------
@@ -182,7 +181,7 @@ defineExpose({
     border-top: 1px solid #e9e9e9;
     padding: 10px 16px;
     background: #fff;
-    text-align: right;
+    text-align: left;
     z-index: 1;
 }
 
