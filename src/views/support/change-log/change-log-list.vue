@@ -9,7 +9,7 @@
         <SmartEnumSelect width="200px" v-model:value="queryForm.type" enumName="CHANGE_LOG_TYPE_ENUM" placeholder="更新类型" />
       </a-form-item>
       <a-form-item label="关键字" class="smart-query-form-item">
-        <a-input style="width: 200px" v-model:value="queryForm.keyword" placeholder="关键字" />
+        <a-input style="width: 200px" v-model:value="queryForm.keywords" placeholder="关键字" />
       </a-form-item>
       <a-form-item label="发布日期" class="smart-query-form-item">
         <a-range-picker v-model:value="queryForm.publicDate" :presets="defaultTimeRanges" style="width: 240px" @change="onChangePublicDate" />
@@ -185,7 +185,7 @@
 
   const queryFormState = {
     type: undefined, //更新类型:[1:特大版本功能更新;2:功能更新;3:bug修复]
-    keyword: undefined, //关键字
+    keywords: undefined, //关键字
     publicDate: [], //发布日期
     publicDateBegin: undefined, //发布日期 开始
     publicDateEnd: undefined, //发布日期 结束

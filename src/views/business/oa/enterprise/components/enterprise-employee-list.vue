@@ -6,7 +6,7 @@
     <div class="header">
       <div>
         关键字：
-        <a-input style="width: 250px" v-model:value="queryForm.keyword" placeholder="姓名/手机号/登录账号" />
+        <a-input style="width: 250px" v-model:value="queryForm.keywords" placeholder="姓名/手机号/登录账号" />
         <a-button class="button-style" type="primary" @click="onSearch">搜索</a-button>
         <a-button class="button-style" type="default" @click="resetQueryEmployee">重置</a-button>
       </div>
@@ -116,7 +116,7 @@
     pageNum: 1,
     pageSize: PAGE_SIZE,
     enterpriseId: undefined,
-    keyword: undefined,
+    keywords: undefined,
   };
   // 查询表单
   const queryForm = reactive({ ...defaultQueryForm });
@@ -125,7 +125,7 @@
   const tableLoading = ref(false);
 
   function resetQueryEmployee() {
-    queryForm.keyword = '';
+    queryForm.keywords = '';
     queryEmployee();
   }
 

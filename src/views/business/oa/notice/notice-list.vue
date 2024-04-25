@@ -125,8 +125,8 @@
     documentNumber: '', //文号
     createUserId: undefined, //创建人
     deletedFlag: undefined, //删除标识
-    createTimeBegin: null, //创建-开始时间
-    createTimeEnd: null, //创建-截止时间
+    beginDate: null, //创建-开始时间
+    endDate: null, //创建-截止时间
     publishTimeBegin: null, //发布-开始时间
     publishTimeEnd: null, //发布-截止时间
     pageNum: 1,
@@ -276,8 +276,8 @@
   // 创建日期选择
   const createDate = ref([]);
   function createDateChange(dates, dateStrings) {
-    queryForm.createTimeBegin = dateStrings[0];
-    queryForm.createTimeEnd = dateStrings[1];
+    queryForm.beginDate = dateStrings[0];
+    queryForm.endDate = dateStrings[1];
   }
 
   // ------------------ 新建、编辑 ------------------

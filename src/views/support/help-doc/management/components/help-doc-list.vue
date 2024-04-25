@@ -110,8 +110,8 @@
   const queryFormState = {
     helpDocCatalogId: props.helpDocCatalogId, //目录
     keywords: '', //标题、作者
-    createTimeBegin: null, //创建-开始时间
-    createTimeEnd: null, //创建-截止时间
+    beginDate: null, //创建-开始时间
+    endDate: null, //创建-截止时间
     pageNum: 1,
     pageSize: PAGE_SIZE,
   };
@@ -210,8 +210,8 @@
   // 创建日期选择
   const createDate = ref([]);
   function createDateChange(dates, dateStrings) {
-    queryForm.createTimeBegin = dateStrings[0];
-    queryForm.createTimeEnd = dateStrings[1];
+    queryForm.beginDate = dateStrings[0];
+    queryForm.endDate = dateStrings[1];
   }
 
   // ------------------ 新建、编辑 ------------------

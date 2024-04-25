@@ -197,8 +197,8 @@ function publishDateChange(dates, dateStrings) {
 // 创建日期选择
 const createDate = ref([]);
 function createDateChange(dates, dateStrings) {
-  queryForm.createTimeBegin = dateStrings[0];
-  queryForm.createTimeEnd = dateStrings[1];
+  queryForm.beginDate = dateStrings[0];
+  queryForm.endDate = dateStrings[1];
 }
 
 // ------------------ 详情 ------------------

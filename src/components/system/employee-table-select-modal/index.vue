@@ -6,7 +6,7 @@
     <a-form class="smart-query-form">
       <a-row class="smart-query-form-row">
         <a-form-item label="关键字" class="smart-query-form-item">
-          <a-input style="width: 150px" v-model:value="params.keyword" placeholder="关键字" />
+          <a-input style="width: 150px" v-model:value="params.keywords" placeholder="关键字" />
         </a-form-item>
         <a-form-item label="部门" class="smart-query-form-item">
           <DepartmentTreeSelect style="width: 200px" ref="departmentTreeSelect" v-model:value="params.deptId" />
@@ -107,7 +107,7 @@
     deptId: undefined,
     isDisabled: undefined,
     employeeIdList: undefined,
-    keyword: undefined,
+    keywords: undefined,
     searchCount: undefined,
     pageNum: 1,
     pageSize: PAGE_SIZE,

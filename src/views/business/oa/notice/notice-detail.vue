@@ -3,7 +3,7 @@
 -->
 <template>
   <a-card style="margin-bottom: 15px" size="small">
-    <a-descriptions :title="noticeDetail.title" :columns="4" size="small">
+    <a-descriptions :title="noticeDetail.title" :column="4" size="small">
       <template #extra>
         <a-button v-if="!noticeDetail.publishFlag" type="primary" size="small" @click="onEdit">编辑</a-button>
       </template>
@@ -22,7 +22,7 @@
           <a class="file-item" v-for="item in noticeDetail.attachment" :key="item.fileId" @click="onPrevFile(item)">{{ item.fileName }}</a>
         </div>
       </a-descriptions-item>
-      <a-descriptions-item label="可见范围" :span="2">
+      <a-descriptions-item label="可见范围">
         <template v-if="noticeDetail.allisVisible">全部可见</template>
         <div class="visible-list">
           <div class="visible-item" v-for="item in noticeDetail.visibleRangeList" :key="item.dataId">

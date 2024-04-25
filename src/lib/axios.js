@@ -17,6 +17,12 @@ const smartAxios = axios.create({
   baseURL: import.meta.env.VITE_APP_API_URL,
 });
 
+// 退出系统
+function logout() {
+  localClear();
+  location.href = '/';
+}
+
 // ================================= 请求拦截器 =================================
 
 smartAxios.interceptors.request.use(
@@ -68,9 +74,7 @@ smartAxios.interceptors.response.use(
         message.destroy();
         message.error('您没有登录，请重新登录');
         localClear();
-        setTimeout(() => {
-          location.href = '/';
-        }, 300);
+        setTimeout(logout, 300);
         return Promise.reject(response);
       }
 
@@ -88,15 +92,9 @@ smartAxios.interceptors.response.use(
         Modal.error({
           title: '重要提醒',
           content: res.msg,
-          onOk() {
-            return new Promise((resolve, reject) => {
-              localClear();
-              setTimeout(() => {
-                location.href = '/';
-              }, 300);
-            }).catch(() => console.log('Oops errors!'));
-          },
+          onOk: logout,
         });
+        setTimeout(logout, 3000);
         return Promise.reject(response);
       }
       message.destroy();

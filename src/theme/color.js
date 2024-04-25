@@ -5,11 +5,11 @@ export const themeColors = [
     activeColor: '#0958d9',
     hoverColor: '#bae0ff',
   },
-  // 紫色
+  // 绿色
   {
-    primaryColor: '#722ED1',
-    activeColor: '#531dab',
-    hoverColor: '#9254de',
+    primaryColor: '#00b96b',
+    activeColor: '#00945b',
+    hoverColor: '#20c77c',
   },
   // 红色
   {
@@ -29,10 +29,10 @@ export const themeColors = [
     activeColor: '#c41d7f',
     hoverColor: '#f759ab',
   },
-  // 绿色
+  // 紫色
   {
-    primaryColor: '#52C41A',
-    activeColor: '#389e0d',
-    hoverColor: '#73d13d',
+    primaryColor: '#722ED1',
+    activeColor: '#531dab',
+    hoverColor: '#9254de',
   },
 ];

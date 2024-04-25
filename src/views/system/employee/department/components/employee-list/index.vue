@@ -13,7 +13,7 @@
           <a-radio-button :value="false">启用</a-radio-button>
           <a-radio-button :value="true">禁用</a-radio-button>
         </a-radio-group>
-        <a-input-search v-model:value.trim="params.keyword" placeholder="姓名/手机号/登录账号"
+        <a-input-search v-model:value.trim="params.keywords" placeholder="姓名/手机号/登录账号"
           @search="queryEmployeeByKeyword(true)">
           <template #enterButton>
             <a-button style="margin-left: 8px" type="primary">
@@ -165,7 +165,7 @@ const tableData = ref();
 let defaultParams = {
   deptId: undefined,
   isDisabled: false,
-  keyword: undefined,
+  keywords: undefined,
   searchCount: undefined,
   pageNum: 1,
   pageSize: PAGE_SIZE,

@@ -25,7 +25,7 @@
 </template>
 <script setup>
   import { ref } from 'vue';
-  import { getDownload } from '/@/lib/axios';
+  import { fileApi } from '/src/api/support/file-api';
 
   let props = defineProps({
     fileList: {
@@ -42,7 +42,7 @@
     // image宽度
     width: {
       type: Number,
-      default: 150,
+      default: 100,
     },
     // 分隔符 可设置html标签 例如：<br/>
     separator: {
@@ -58,7 +58,7 @@
       previewCurrent.value = index;
       visible.value = true;
     } else {
-      window.open(file.fileUrl);
+      fileApi.downLoadFile(file.fileKey);
     }
   }
 

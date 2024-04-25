@@ -188,8 +188,8 @@
     fileType: undefined, //文件类型
     creatorName: undefined, //创建人
     createTime: [], //创建时间
-    createTimeBegin: undefined, //创建时间 开始
-    createTimeEnd: undefined, //创建时间 结束
+    beginDate: undefined, //创建时间 开始
+    endDate: undefined, //创建时间 结束
     pageNum: 1,
     pageSize: 10,
   };
@@ -234,8 +234,8 @@
   }
 
   function onChangeCreateTime(dates, dateStrings) {
-    queryForm.createTimeBegin = dateStrings[0];
-    queryForm.createTimeEnd = dateStrings[1];
+    queryForm.beginDate = dateStrings[0];
+    queryForm.endDate = dateStrings[1];
   }
 
   function getFileSize(size) {

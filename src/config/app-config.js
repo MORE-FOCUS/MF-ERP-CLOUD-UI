@@ -42,5 +42,5 @@ export const appDefaultConfig =
     watermarkFlag: false,
     colorIndex: 0,
     compactFlag: false,
-    primaryColor: 'blue',
+    primaryColor: '#1677ff',
   };

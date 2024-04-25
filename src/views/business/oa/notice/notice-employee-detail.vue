@@ -21,15 +21,16 @@
       <!--endprint-->
     </div>
     <a-divider />
-    <div>附件：<file-preview :fileList="noticeDetail.attachment" /></div>
+    <div>
+      附件：
+      <file-preview v-if="!$lodash.isEmpty(noticeDetail.attachment)" :fileList="noticeDetail.attachment" />
+      <span v-else>无</span>
+    </div>
   </a-card>
 
   <a-card title="记录" size="small" class="smart-margin-top10">
     <NoticeViewRecordList ref="noticeViewRecordList" :noticeId="route.query.noticeId" />
   </a-card>
-
-  <!-- 预览附件 -->
-  <FilePreviewModal ref="filePreviewRef" />
 </template>
 
 <script setup>
@@ -38,13 +39,10 @@ import { useRoute } from 'vue-router';
 import NoticeViewRecordList from './components/notice-view-record-list.vue';
 import { noticeApi } from '/@/api/business/oa/notice-api';
 import { SmartLoading } from '/@/components/framework/smart-loading';
-import FilePreviewModal from '/@/components/support/file-preview-modal/index.vue';
 import FilePreview from '/@/components/support/file-preview/index.vue';
 import { smartSentry } from '/@/lib/smart-sentry';
 
 const route = useRoute();
-
-const activeKey = ref(1);
 
 const noticeDetail = ref({});
 
@@ -77,12 +75,6 @@ function onEdit() {
   noticeFormDrawerRef.value.showModal(noticeDetail.value.noticeId);
 }
 
-// 预览附件
-const filePreviewRef = ref();
-function onPrevFile(fileItem) {
-  filePreviewRef.value.showPreview(fileItem);
-}
-
 // 打印
 function print() {
   let bdhtml = window.document.body.innerHTML;
@@ -104,23 +96,28 @@ function print() {
   flex: 1;
   overflow: hidden;
 }
+
 .file-list {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
+
   .file-item {
     display: block;
     margin-right: 10px;
   }
 }
+
 .visible-list {
   display: flex;
   flex-wrap: wrap;
+
   .visible-item {
     margin-right: 10px;
     color: #666;
   }
 }
+
 .content-header {
   .content-header-title {
     margin: 10px 0px;
@@ -128,17 +125,20 @@ function print() {
     font-weight: bold;
     text-align: center;
   }
+
   .content-header-info {
     margin: 10px 0px;
     font-size: 14px;
     color: #888;
     text-align: center;
+
     span {
       margin: 0 10px;
       cursor: pointer;
     }
   }
 }
+
 .content-html {
   img {
     max-width: 100%;
