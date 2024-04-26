@@ -33,7 +33,7 @@ export const appDefaultConfig =
     language: 'zh_CN',
     layout: 'side',
     pageWidth: '99%',
-    sideMenuWidth: 200,
+    sideMenuWidth: 180,
     sideMenuTheme: 'light',
     pageTagFlag: true,
     breadCrumbFlag: true,
@@ -43,4 +43,5 @@ export const appDefaultConfig =
     colorIndex: 0,
     compactFlag: false,
     primaryColor: '#1677ff',
+    websiteName: 'SMART ERP',
   };

@@ -2,14 +2,7 @@
   *  帮助文档 layout
 -->
 <template>
-  <!--
-      中间内容，一共三部分：
-      1、顶部
-      2、中间内容区域
-      3、底部（一般是公司版权信息）
-     -->
   <a-layout class="help-doc-layout" id="layoutMain">
-    <!-- 顶部头部信息 -->
     <a-layout-header class="layout-header">
       <a-row class="layout-header-title">
         <img class="logo-img" :src="logoImg" />
@@ -21,10 +14,8 @@
       </a-row>
     </a-layout-header>
     <a-layout :style="`height: ${windowHeight}px`">
-      <!-- 侧边目录 side-menu -->
       <a-layout-sider class="side-menu" :style="`height: ${windowHeight}px`" :collapsed="false" theme="light" :width="300">
         <div class="help-doc-tree">
-          <!-- 目录内容 -->
           <div>
             <a-directory-tree
               v-model:expandedKeys="expandedKeys"
@@ -35,15 +26,12 @@
           </div>
         </div>
       </a-layout-sider>
-
-      <!--中间内容-->
       <a-layout-content id="layoutContent" class="help-doc-layout-content">
         <router-view v-slot="{ Component }">
           <div :key="route.fullPath">
             <component :is="Component" />
           </div>
         </router-view>
-        <!-- footer 版权公司信息 -->
         <a-layout-footer class="layout-footer">
           <SmartFooter />
         </a-layout-footer>

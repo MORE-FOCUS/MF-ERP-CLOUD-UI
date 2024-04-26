@@ -38,9 +38,9 @@
     "sortablejs": "1.15.2",
     "ua-parser-js": "1.0.37",
     "v-viewer": "~1.6.4",
-    "vue": "3.4.21",
-    "vue-i18n": "9.10.0",
-    "vue-router": "4.3.0",
+    "vue": "3.4.25",
+    "vue-i18n": "9.13.1",
+    "vue-router": "4.3.2",
     "vue3-json-viewer": "2.2.2"
   },
   "devDependencies": {
