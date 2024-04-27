@@ -28,6 +28,10 @@ export const SERIAL_NUMBER_ID_ENUM = {
   SPBM: {
     value: '2',
     desc: '商品编码',
+  },
+  DEPT: {
+    value: '3',
+    desc: '部门编码',
   }
 };
 

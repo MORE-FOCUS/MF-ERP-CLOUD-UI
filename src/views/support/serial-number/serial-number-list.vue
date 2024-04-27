@@ -67,9 +67,6 @@
     </div>
   </a-card>
 
-  <!---生成表单--->
-  <SerialNumberGenerateFormModal ref="generateForm" @refresh="queryData" />
-
   <!---生成记录--->
   <SerialNumberRecordList ref="recordList" />
 
@@ -77,13 +74,11 @@
 </template>
 <script setup>
 import { onMounted, ref, reactive } from 'vue';
-import SerialNumberGenerateFormModal from './serial-number-generate-form-modal.vue';
 import SerialNumberRecordList from './serial-number-record-list.vue';
 import { serialNumberApi } from '/@/api/support/serial-number-api';
 import TableOperator from '/@/components/support/table-operator/index.vue';
 import { TABLE_ID_CONST } from '/@/constants/support/table-id-const';
 import { smartSentry } from '/@/lib/smart-sentry';
-import { SmartLoading } from '/@/components/framework/smart-loading';
 import SerialNumberFormModel from './components/serial-number-form-model.vue'
 //------------------------ 表格渲染 ---------------------
 

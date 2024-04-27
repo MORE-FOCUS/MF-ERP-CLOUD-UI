@@ -136,11 +136,11 @@ watch(
 
 function buildFormat(prefix) {
     let format = prefix;
-    if (RULE_TYPE_ENUM.NONE === form.ruleType) {
+    if (RULE_TYPE_ENUM.YEAR.value === form.ruleType) {
         format = format + '[yyyy][nnnnn]';
-    } else if (RULE_TYPE_ENUM.MONTH === form.ruleType) {
+    } else if (RULE_TYPE_ENUM.MONTH.value === form.ruleType) {
         format = format + '[yyyy][mm][nnnnn]';
-    } else if (RULE_TYPE_ENUM.DAY === form.ruleType) {
+    } else if (RULE_TYPE_ENUM.DAY.value === form.ruleType) {
         format = format + '[yyyy][mm][dddd][nnnnn]';
     } else {
         format = format + '[nnnnn]'

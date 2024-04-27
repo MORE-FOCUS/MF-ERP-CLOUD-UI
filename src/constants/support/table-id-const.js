@@ -6,26 +6,16 @@ let systemInitTableId = 10000;
 let supportInitTableId = 20000;
 
 //业务表格初始化id
-let businessOAInitTableId = 30000;
-
-let businessBasicInitTableId = 40000;
+let businessInitTableId = 30000;
 
 export const TABLE_ID_CONST = {
   /**
    * 业务
    */
   BUSINESS: {
-    OA: {
-      NOTICE: businessOAInitTableId + 1, //通知公告
-      ENTERPRISE: businessOAInitTableId + 2, //企业信息
-      ENTERPRISE_EMPLOYEE: businessOAInitTableId + 3, //企业员工
-      ENTERPRISE_BANK: businessOAInitTableId + 4, //企业银行
-      ENTERPRISE_INVOICE: businessOAInitTableId + 5, //企业发票
-    },
-    BUSINESS: {
-      GOODS: businessBasicInitTableId + 1, //商品管理
-      SUPPLIER: businessBasicInitTableId + 2, //供应商列表
-    },
+      GOODS: businessInitTableId + 1, //商品管理
+      GOODS_CATEGORY: businessInitTableId + 2, //商品类目列表
+      SUPPLIER: businessInitTableId + 3, //供应商列表
   },
 
   /**
@@ -34,7 +24,9 @@ export const TABLE_ID_CONST = {
   SYSTEM: {
     EMPLOYEE: systemInitTableId + 1, //员工
     MENU: systemInitTableId + 2, //菜单
+    DEPARTMENT: systemInitTableId + 3, //组织机构树
   },
+
   /**
    * 支撑
    */
