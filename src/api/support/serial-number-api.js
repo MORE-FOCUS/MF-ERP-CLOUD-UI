@@ -6,7 +6,7 @@ import { postRequest, getRequest } from '/src/lib/axios';
 export const serialNumberApi = {
   // 生成单号
   generate: (generateForm) => {
-    return postRequest('/support/serial-number/generate', generateForm);
+    return postRequest('/support/serial-number/generate-one', generateForm);
   },
   // 获取所有单号定义
   getAll: () => {

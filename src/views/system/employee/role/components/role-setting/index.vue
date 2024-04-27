@@ -35,4 +35,7 @@
   .role-container {
     height: 100%;
   }
+  :deep(.ant-card-body) {
+    padding: 10px;
+  }
 </style>

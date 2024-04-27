@@ -67,7 +67,7 @@
         <div class="footer">
             <a-button style="margin-right: 8px" @click="onClose">取消</a-button>
             <a-button type="primary" style="margin-right: 8px" @click="onSubmit(false)">保存</a-button>
-            <a-button v-if="!form.employeeId" type="primary" @click="onSubmit(true)">保存并继续添加</a-button>
+            <a-button v-if="!form.supplierId" type="primary" @click="onSubmit(true)">保存并继续添加</a-button>
         </div>
     </a-drawer>
 </template>
@@ -124,7 +124,6 @@ function reset() {
 }
 
 const moreRef = ref(false);
-const moreTextRef = ref('展开更多');
 
 function changeMore() {
     moreRef.value = !moreRef.value;
@@ -139,17 +138,17 @@ const rules = {
     ],
 };
 // 点击确定，验证表单
-async function onSubmit() {
+async function onSubmit(keepAdding) {
     try {
         await formRef.value.validateFields();
-        save();
+        save(keepAdding);
     } catch (err) {
         message.error('参数验证错误，请仔细填写表单数据!');
     }
 }
 
 // 新建、编辑API
-async function save() {
+async function save(keepAdding) {
     SmartLoading.show();
     try {
         if (form.id) {
@@ -159,7 +158,12 @@ async function save() {
         }
         message.success('操作成功');
         emits('reloadList');
-        onClose();
+        if (keepAdding) {
+            reset();
+        }
+        else {
+            onClose();
+        }
     } catch (err) {
         smartSentry.captureError(err);
     } finally {

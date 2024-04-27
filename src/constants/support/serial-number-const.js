@@ -1,5 +1,5 @@
 /*
- * 登录日志
+ * 单号规则
  */
 export const RULE_TYPE_ENUM = {
   NONE: {
@@ -20,6 +20,18 @@ export const RULE_TYPE_ENUM = {
   },
 };
 
+export const SERIAL_NUMBER_ID_ENUM = {
+  GYS: {
+    value: '1',
+    desc: '供应商',
+  },
+  SPBM: {
+    value: '2',
+    desc: '商品编码',
+  }
+};
+
 export default {
   RULE_TYPE_ENUM,
+  SERIAL_NUMBER_ID_ENUM
 };

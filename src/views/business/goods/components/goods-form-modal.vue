@@ -149,4 +149,3 @@
     showDrawer,
   });
 </script>
-../../../../../api/business/erp/goods/goods-api../../../../../constants/business/goodscategory/category-const../../../../api/goods/goods-api

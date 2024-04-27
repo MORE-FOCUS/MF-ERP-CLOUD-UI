@@ -1,9 +1,9 @@
 <!--
-  * 目录  demo
+  * 目录  商品
 -->
 <template>
   <div>
-    <CategoryTreeTable :category-type="CATEGORY_TYPE_ENUM.DEMO.value" :privilegePrefix="'custom:'"/>
+    <CategoryTreeTable :category-type="CATEGORY_TYPE_ENUM.GOODS.value" />
   </div>
 </template>
 <script setup>

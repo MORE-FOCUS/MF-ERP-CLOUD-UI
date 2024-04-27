@@ -29,7 +29,6 @@
 </template>
 <script setup>
 import { computed, ref, watch } from 'vue';
-import { message } from 'ant-design-vue';
 import { fileApi } from '/src/api/support/file-api';
 import { useUserStore } from '/@/store/modules/system/user';
 import { SmartLoading } from '/@/components/framework/smart-loading';

@@ -45,7 +45,7 @@ import { SmartLoading } from '/@/components/framework/smart-loading';
 import { serialNumberApi } from '/@/api/support/serial-number-api';
 import { smartSentry } from '/@/lib/smart-sentry';
 import SmartEnumSelect from '/@/components/framework/smart-enum-select/index.vue';
-
+import { RULE_TYPE_ENUM } from '/@/constants/support/serial-number-const';
 // ----------------------- 以下是字段定义 emits props ---------------------
 const emits = defineEmits(['refresh']);
 
@@ -136,11 +136,11 @@ watch(
 
 function buildFormat(prefix) {
     let format = prefix;
-    if ('year' === form.ruleType) {
+    if (RULE_TYPE_ENUM.NONE === form.ruleType) {
         format = format + '[yyyy][nnnnn]';
-    } else if ('month' === form.ruleType) {
+    } else if (RULE_TYPE_ENUM.MONTH === form.ruleType) {
         format = format + '[yyyy][mm][nnnnn]';
-    } else if ('day' === form.ruleType) {
+    } else if (RULE_TYPE_ENUM.DAY === form.ruleType) {
         format = format + '[yyyy][mm][dddd][nnnnn]';
     } else {
         format = format + '[nnnnn]'
