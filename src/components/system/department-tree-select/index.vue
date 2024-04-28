@@ -35,10 +35,10 @@
   const emit = defineEmits(['update:value']);
 
   let treeData = ref([]);
-  onMounted(queryDepartmentTree);
+  onMounted(queryTree);
 
-  async function queryDepartmentTree() {
-    let res = await departmentApi.queryDepartmentTree();
+  async function queryTree() {
+    let res = await departmentApi.queryTree();
     treeData.value = res.data;
   }
 
@@ -47,6 +47,6 @@
   }
 
   defineExpose({
-    queryDepartmentTree,
+    queryTree,
   });
 </script>

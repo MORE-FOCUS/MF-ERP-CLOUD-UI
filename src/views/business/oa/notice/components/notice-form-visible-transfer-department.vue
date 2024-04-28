@@ -45,9 +45,9 @@
   const emits = defineEmits(['onChange']);
 
   const treeData = ref([]);
-  async function queryDepartmentTree() {
+  async function queryTree() {
     try {
-      const result = await departmentApi.queryDepartmentTree();
+      const result = await departmentApi.queryTree();
       if (!_.isEmpty(result.data)) {
         treeData.value = result.data;
         setExpanded();
@@ -108,7 +108,7 @@
   }
 
   onMounted(() => {
-    queryDepartmentTree();
+    queryTree();
   });
 </script>
 

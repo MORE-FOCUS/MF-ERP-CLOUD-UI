@@ -55,9 +55,9 @@
   const treeData = ref([]);
 
   // 查询部门树形
-  async function queryDepartmentTree() {
+  async function queryTree() {
     try {
-      const departmentResult = await departmentApi.queryDepartmentTree();
+      const departmentResult = await departmentApi.queryTree();
       const employeeResult = await employeeApi.queryAll();
       const departmentTree = departmentResult.data;
       buildDepartmentEmployeeTree(departmentTree, employeeResult.data);
@@ -156,7 +156,7 @@
   }
 
   onMounted(() => {
-    queryDepartmentTree();
+    queryTree();
   });
 </script>
 

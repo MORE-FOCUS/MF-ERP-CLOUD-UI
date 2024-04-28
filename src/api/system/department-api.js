@@ -7,14 +7,14 @@ export const departmentApi = {
   /**
    * 查询部门列表
    */
-  queryAllDepartment: () => {
+  queryAll: () => {
     return getRequest('/department/queryAll');
   },
 
   /**
    * 查询部门树形列表
    */
-  queryDepartmentTree: () => {
+  queryTree: () => {
     return getRequest('/department/tree');
   },
 

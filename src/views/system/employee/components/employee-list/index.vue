@@ -74,11 +74,11 @@
         :total="total" @change="queryEmployee" @showSizeChange="queryEmployee" :show-total="showTableTotal" />
     </div>
     <EmployeeFormModal ref="employeeFormModal" @refresh="queryEmployee" @show-account="showAccount" />
-    <EmployeeDepartmentFormModal ref="employeeDepartmentFormModal" @refresh="queryEmployee" />
+    <!-- <EmployeeDepartmentFormModal ref="employeeDepartmentFormModal" @refresh="queryEmployee" /> -->
     <EmployeePasswordDialog ref="employeePasswordDialog" />
   </a-card>
 </template>
-<script setup lang="ts">
+<script setup>
 import _ from 'lodash';
 import { computed, createVNode, reactive, ref, watch } from 'vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
@@ -87,7 +87,7 @@ import { employeeApi } from '/@/api/system/employee-api';
 import { PAGE_SIZE } from '/@/constants/common-const';
 import { SmartLoading } from '/@/components/framework/smart-loading';
 import EmployeeFormModal from '../employee-form-modal/index.vue';
-import EmployeeDepartmentFormModal from '../employee-department-form-modal/index.vue';
+// import EmployeeDepartmentFormModal from '../employee-department-form-modal/index.vue';
 import EmployeePasswordDialog from '../employee-password-dialog/index.vue';
 import { PAGE_SIZE_OPTIONS, showTableTotal } from '/@/constants/common-const';
 import { smartSentry } from '/@/lib/smart-sentry';

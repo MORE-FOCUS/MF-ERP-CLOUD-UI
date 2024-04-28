@@ -96,7 +96,7 @@ onMounted(queryTree);
 
 // 部门树
 async function queryTree() {
-  let res = await departmentApi.queryDepartmentTree();
+  let res = await departmentApi.queryTree();
   departmentTreeData.value = res.data;
 }
 // ------------------------------ 添加 ------------------------------
