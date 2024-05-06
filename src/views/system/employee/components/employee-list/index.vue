@@ -3,47 +3,58 @@
 -->
 
 <template>
-  <a-card class="employee-container">
-    <div class="header">
-      <a-typography-title :level="5">部门人员</a-typography-title>
-      <div class="query-operate">
-        <a-radio-group v-model:value="params.isDisabled" style="margin: 8px; flex-shrink: 0"
-          @change="queryEmployeeByKeyword(false)">
-          <a-radio-button :value="undefined">全部</a-radio-button>
-          <a-radio-button :value="false">启用</a-radio-button>
-          <a-radio-button :value="true">禁用</a-radio-button>
-        </a-radio-group>
-        <a-input-search v-model:value.trim="params.keywords" placeholder="姓名/手机号/登录账号"
-          @search="queryEmployeeByKeyword(true)">
-          <template #enterButton>
-            <a-button style="margin-left: 8px" type="primary">
-              <template #icon>
-                <SearchOutlined />
-              </template>
-              查询
-            </a-button>
+  <!---------- 查询表单form begin ----------->
+  <a-form class="smart-query-form">
+    <a-row class="smart-query-form-row">
+      <a-form-item label="关键字" class="smart-query-form-item">
+        <a-input style="" v-model:value="params.keywords" placeholder="姓名/手机号" />
+      </a-form-item>
+
+      <a-form-item class="smart-query-form-item">
+        <a-button type="primary" @click="queryData">
+          <template #icon>
+            <SearchOutlined />
           </template>
-        </a-input-search>
-        <a-button @click="reset">
+          查询
+        </a-button>
+        <a-button @click="reset" class="smart-margin-left10">
           <template #icon>
             <ReloadOutlined />
           </template>
           重置
         </a-button>
+      </a-form-item>
+    </a-row>
+  </a-form>
+  <!---------- 查询表单form end ----------->
+  <a-card size="small" :bordered="false" :hoverable="true">
+    <!---------- 表格操作行 begin ----------->
+    <a-row class="smart-table-btn-block">
+      <div class="smart-table-operate-block">
+        <a-button @click="showDrawer" type="primary" size="small" v-privilege="'system:employee:add'">
+          <template #icon>
+            <PlusOutlined />
+          </template>
+          新建
+        </a-button>
+        <a-button @click="updateEmployeeDepartment" type="primary" size="small" v-privilege="'system:employee:department:update'" :disabled="selectedRowKeys.length == 0">
+          <template #icon>
+            <EditOutlined />
+          </template>
+          调整部门
+        </a-button>
+        <a-button @click="confirmBatchDelete" type="danger" size="small" v-privilege="'system:employee:delete'" :disabled="selectedRowKeys.length == 0">
+          <template #icon>
+            <DeleteOutlined />
+          </template>
+          批量删除
+        </a-button>
       </div>
-    </div>
-    <div class="btn-group">
-      <a-button class="btn" type="primary" @click="showDrawer" v-privilege="'system:employee:add'"
-        size="small">添加成员</a-button>
-      <a-button class="btn" size="small" @click="updateEmployeeDepartment"
-        v-privilege="'system:employee:department:update'">调整部门</a-button>
-      <a-button class="btn" size="small" @click="batchDelete" v-privilege="'system:employee:delete'">批量删除</a-button>
-
-      <span class="smart-table-column-operate">
-        <TableOperator v-model="columns" :tableId="TABLE_ID_CONST.SYSTEM.EMPLOYEE" :refresh="queryEmployee" />
-      </span>
-    </div>
-
+      <div class="smart-table-setting-block">
+        <TableOperator v-model="columns" :tableId="TABLE_ID_CONST.BUSINESS.SUPPLIER" :refresh="queryData" />
+      </div>
+    </a-row>
+    <!---------- 表格操作行 end ----------->
     <a-table :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" size="small"
       :columns="columns" :data-source="tableData" :pagination="false" :loading="tableLoading" :scroll="{ x: 1200 }"
       row-key="employeeId" bordered>
@@ -62,8 +73,8 @@
               @click="resetPassword(record.employeeId, record.loginName)">重置密码</a-button>
             <a-button v-privilege="'system:employee:disabled'" type="link"
               @click="updateDisabled(record.employeeId, record.isDisabled)">{{
-        record.isDisabled ? '启用' : '禁用'
-      }}</a-button>
+          record.isDisabled ? '启用' : '禁用'
+        }}</a-button>
           </div>
         </template>
       </template>
@@ -203,7 +214,7 @@ async function queryEmployee() {
 }
 
 // 根据关键字 查询
-async function queryEmployeeByKeyword(allDepartment) {
+async function queryData(allDepartment) {
   tableLoading.value = true;
   try {
     params.pageNum = 1;
@@ -245,7 +256,7 @@ function onSelectChange(keyArray, selectRows) {
 }
 
 // 批量删除员工
-function batchDelete() {
+function confirmBatchDelete() {
   if (!hasSelected.value) {
     message.warning('请选择要删除的员工');
     return;
