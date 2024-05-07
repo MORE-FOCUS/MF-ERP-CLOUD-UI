@@ -9,7 +9,7 @@
           <template #icon>
             <PlusOutlined />
           </template>
-          新增部门
+          新增
         </a-button>
       </div>
       <div class="smart-table-setting-block">

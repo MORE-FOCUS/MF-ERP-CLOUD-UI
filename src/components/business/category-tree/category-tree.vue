@@ -24,8 +24,9 @@
       </a-button>
     </a-row>
     <a-tree v-if="!_.isEmpty(categoryTreeData)" class="tree" v-model:selectedKeys="selectedKeys"
-      :treeData="categoryTreeData" :fieldNames="{ title: 'categoryName', key: 'categoryId', value: 'categoryId' }"
-      :showLine="false" :defaultCheckedKeys="1" :defaultExpandAll="true" :blockNode="true" @select="treeSelectChange">
+      :treeData="categoryTreeData" 
+      :fieldNames="{ title: 'categoryName', key: 'categoryId', value: 'categoryId' }"
+      :defaultCheckedKeys="1" :blockNode="true" @select="treeSelectChange">
       <template #title="item">
         {{ item.categoryName }}
       </template>
