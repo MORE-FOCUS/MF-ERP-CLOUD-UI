@@ -125,6 +125,9 @@
 
   const { useToken } = theme;
   const { token } = useToken();
+  const borderRadius = computed(() => {
+    return token.value.borderRadius + 'px';
+  });
 </script>
 
 <style scoped lang="less">
@@ -194,6 +197,7 @@
 
     :deep(.ant-tabs-small > .ant-tabs-nav .ant-tabs-tab) {
       padding: 5px 8px 3px 10px;
+      border-radius: v-bind(borderRadius);
     }
 
     :deep(.ant-tabs-tab-active) {

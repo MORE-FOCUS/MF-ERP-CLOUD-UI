@@ -29,6 +29,9 @@
           </template>
         </div>
       </a-form-item>
+      <a-form-item :label="$t('setting.border.radius')">
+        <a-slider v-model:value="formState.borderRadius" :min="0" :max="6" @change="changeBorderRadius" />
+      </a-form-item>
       <a-form-item :label="$t('setting.compact')">
         <a-radio-group v-model:value="formState.compactFlag" button-style="solid" @change="changeCompactFlag">
           <a-radio-button :value="false">默认</a-radio-button>
@@ -163,6 +166,8 @@
     sideMenuTheme: appConfigStore.sideMenuTheme,
     // 页面紧凑
     compactFlag: appConfigStore.compactFlag,
+    // 页面圆角
+    borderRadius: appConfigStore.borderRadius,
     // 标签页
     pageTagFlag: appConfigStore.pageTagFlag,
     // 面包屑
@@ -219,6 +224,11 @@
   function changeCompactFlag(e) {
     appConfigStore.$patch({
       compactFlag: e.target.value,
+    });
+  }
+  function changeBorderRadius(e) {
+    appConfigStore.$patch({
+      borderRadius: e,
     });
   }
 

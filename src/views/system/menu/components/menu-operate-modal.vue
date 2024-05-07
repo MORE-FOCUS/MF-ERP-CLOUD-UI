@@ -85,9 +85,8 @@
         </a-form-item>
       </template>
       <!--      按钮 end   -->
-      <a-form-item label="排序" name="sortValue">
+      <a-form-item label="排序" name="sortValue" help="值越小越靠前">
         <a-input-number v-model:value="form.sortValue" :min="0" placeholder="请输入排序" style="width: 100px" />
-        <h6 style="color: #ababab">值越小越靠前</h6>
       </a-form-item>
     </a-form>
     <div class="footer">

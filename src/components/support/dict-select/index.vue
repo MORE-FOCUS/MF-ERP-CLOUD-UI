@@ -102,7 +102,7 @@
       emit('update:value', valueList);
       emit('change', valueList);
     } else {
-      let findValue = dictValueList.value.find((e) => e.valueCode == value);
+      let findValue = dictValueList.value.find((e) => e.valueCode === value);
       emit('update:value', findValue.valueCode);
       emit('change', findValue.valueCode);
     }

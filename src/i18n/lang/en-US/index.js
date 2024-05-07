@@ -14,6 +14,7 @@ export default {
   'setting.menu.theme': 'Menu Theme',
   'setting.page.width': 'Page Width',
   'setting.compact': 'Page Compact',
+  'setting.border.radius': 'Border Radius',
   'setting.bread': 'Show Bread',
   'setting.pagetag': 'Show PageTag',
   'setting.footer': 'Show Footer',

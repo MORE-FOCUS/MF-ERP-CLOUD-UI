@@ -51,7 +51,7 @@
         </a-button>
       </div>
       <div class="smart-table-setting-block">
-        <TableOperator v-model="columns" :tableId="TABLE_ID_CONST.BUSINESS.SUPPLIER" :refresh="queryData" />
+        <TableOperator v-model="columns" :tableId="TABLE_ID_CONST.BUSINESS.EMPLOYEE" :refresh="queryData" />
       </div>
     </a-row>
     <!---------- 表格操作行 end ----------->
@@ -156,12 +156,6 @@ const columns = ref([
     title: '状态',
     dataIndex: 'isDisabled',
     width: 60,
-    align: 'center'
-  },
-  {
-    title: '角色',
-    dataIndex: 'roleNameList',
-    width: 100,
     align: 'center'
   },
   {

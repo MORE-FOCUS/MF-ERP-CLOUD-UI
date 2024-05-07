@@ -41,6 +41,7 @@ export const appDefaultConfig =
     helpDocFlag: false,
     watermarkFlag: false,
     colorIndex: 0,
+    borderRadius: 6,
     compactFlag: false,
     primaryColor: '#1677ff',
     websiteName: 'SMART ERP',

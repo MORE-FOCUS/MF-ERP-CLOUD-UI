@@ -10,7 +10,7 @@
       <a-form-item label="目录名称" name="name">
         <a-input v-model:value.trim="formState.name" placeholder="请输入目录名称" />
       </a-form-item>
-      <a-form-item label="目录排序 （值越小越靠前！）" name="sortValue">
+      <a-form-item label="目录排序" name="sortValue" help="值越小越靠前">
         <a-input-number style="width: 100%" v-model:value="formState.sortValue" :min="0" placeholder="请输入目录名称" />
       </a-form-item>
     </a-form>
