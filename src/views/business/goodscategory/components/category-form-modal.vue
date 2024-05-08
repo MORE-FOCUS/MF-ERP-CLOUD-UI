@@ -104,8 +104,6 @@ async function updateFormData(data) {
     let res = await serialNumberApi.generate({ "serialNumberId": SERIAL_NUMBER_ID_ENUM.SPBM.value });
     form.categoryCode = res.data;
   }
-
-  visible.value = true;
 }
 
 // 重置表单数据

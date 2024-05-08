@@ -4,10 +4,10 @@
 <template>
     <a-row :gutter="24">
         <a-col :span="5">
-            <CategoryTree ref="categoryTreeRef" :categoryType="CATEGORY_TYPE_ENUM.SUPPLIER.value" />
+            <CategoryTree ref="categoryTreeRef" :categoryType="CATEGORY_TYPE_ENUM.WAREHOUSE.value" />
         </a-col>
         <a-col :span="19">
-            <SupplierList :selectedCategoryId="selectedCategoryId" />
+            <WarehouseList :selectedCategoryId="selectedCategoryId" />
         </a-col>
     </a-row>
 </template>
@@ -16,7 +16,7 @@
 import _ from 'lodash';
 import { computed, ref } from 'vue';
 import CategoryTree from '/@/components/business/category-tree/category-tree.vue';
-import SupplierList from './components/supplier-list.vue'
+import WarehouseList from './components/warehouse-list.vue'
 import { CATEGORY_TYPE_ENUM } from '/@/constants/business/category/category-const';
 
 const categoryTreeRef = ref();
@@ -31,4 +31,8 @@ const selectedCategoryId = computed(() => {
 });
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.height100 {
+    height: 100%;
+}
+</style>

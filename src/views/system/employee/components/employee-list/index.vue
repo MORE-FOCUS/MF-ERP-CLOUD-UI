@@ -27,7 +27,7 @@
     </a-row>
   </a-form>
   <!---------- 查询表单form end ----------->
-  <a-card size="small" :bordered="false" :hoverable="true">
+  <a-card size="small" hoverable="true">
     <!---------- 表格操作行 begin ----------->
     <a-row class="smart-table-btn-block">
       <div class="smart-table-operate-block">

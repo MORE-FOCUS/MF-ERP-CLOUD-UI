@@ -32,7 +32,11 @@ export const SERIAL_NUMBER_ID_ENUM = {
   DEPT: {
     value: '3',
     desc: '部门编码',
-  }
+  },
+  CK: {
+    value: '4',
+    desc: '仓库编码',
+  },
 };
 
 export default {

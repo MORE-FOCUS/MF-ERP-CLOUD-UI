@@ -10,6 +10,10 @@ export const CATEGORY_TYPE_ENUM = {
     value: 2,
     desc: '供应商',
   },
+  WAREHOUSE: {
+    value: 3,
+    desc: '仓库',
+  },
 };
 
 export default {

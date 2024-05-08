@@ -6,7 +6,7 @@
     <a-form class="smart-query-form">
       <a-row class="smart-query-form-row">
         <a-form-item label="表名" class="smart-query-form-item">
-          <a-input style="width: 300px" v-model:value="queryForm.tableNameKeywords" placeholder="请输入表名关键字" />
+          <a-input style="width: 300px" v-model:value="queryForm.keywords" placeholder="请输入表名关键字" />
         </a-form-item>
 
         <a-form-item class="smart-query-form-item smart-margin-left10">
@@ -122,7 +122,7 @@
     configKey: '',
     pageNum: 1,
     pageSize: 10,
-    tableNameKeywords: undefined,
+    keywords: undefined,
   };
   const queryForm = reactive({ ...queryFormState });
 

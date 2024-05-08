@@ -2,19 +2,15 @@
   * 组织架构
 -->
 <template>
-  <div class="height100">
-    <a-row :gutter="24" class="height100">
-      <a-col :span="5">
-        <DepartmentTree ref="departmentTree" />
-      </a-col>
+  <a-row :gutter="24">
+    <a-col :span="5">
+      <DepartmentTree ref="departmentTree" />
+    </a-col>
 
-      <a-col :span="19" class="height100">
-        <div class="employee-box height100">
-          <EmployeeList class="employee" :deptId="selectedDeptId" />
-        </div>
-      </a-col>
-    </a-row>
-  </div>
+    <a-col :span="19">
+      <EmployeeList class="employee" :deptId="selectedDeptId" />
+    </a-col>
+  </a-row>
 </template>
 <script setup>
 import _ from 'lodash';
@@ -34,16 +30,5 @@ const selectedDeptId = computed(() => {
 });
 </script>
 <style scoped lang="less">
-.height100 {
-  height: 100%;
-}
 
-.employee-box {
-  display: flex;
-  flex-direction: column;
-
-  .employee {
-    flex-grow: 2;
-  }
-}
 </style>

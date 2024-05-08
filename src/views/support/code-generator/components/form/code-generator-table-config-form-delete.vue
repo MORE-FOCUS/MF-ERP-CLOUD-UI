@@ -18,7 +18,7 @@
       </a-radio-group>
       <div class="smart-margin-top10" v-if="!formData.isPhysicallyDeleted">
         <span v-if="isDeletedColumnName"> 假删字段为：{{ isDeletedColumnName }} </span>
-        <span stlye="color:red" v-else> 系统未检测出假删字段，假删字段名词应该为 ： <strong>deleted_flag</strong> </span>
+        <span stlye="color:red" v-else> 系统未检测出假删字段，假删字段名词应该为 ： <strong>is_deleted</strong> </span>
       </div>
     </a-form-item>
     <a-form-item label="删除类型" name="deleteEnum" v-if="formData.isSupportDelete">
@@ -77,7 +77,7 @@
       return null;
     }
 
-    let result = configFields.filter((e) => _.startsWith(e.columnName, 'deleted_flag' || _.startsWith(e.columnName, 'delete_flag')));
+    let result = configFields.filter((e) => _.startsWith(e.columnName, 'is_deleted' || _.startsWith(e.columnName, 'is_deleted')));
     return result && result.length > 0 ? result[0] : null;
   }
 
