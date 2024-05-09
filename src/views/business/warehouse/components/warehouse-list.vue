@@ -170,6 +170,8 @@ const props = defineProps({
 const queryFormState = {
     pageNum: 1,
     pageSize: 10,
+    keywords: undefined,
+    isDeleted: 0,
 };
 // 查询表单form
 const queryForm = reactive({ ...queryFormState });
