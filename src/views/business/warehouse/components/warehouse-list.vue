@@ -8,7 +8,11 @@
     <!---------- 查询表单form begin ----------->
     <a-form class="smart-query-form">
         <a-row class="smart-query-form-row">
+            <a-form-item label="关键字" class="smart-query-form-item">
+                <a-input class="smart-query-keywords" v-model:value="queryForm.keywords" placeholder="编码/名称" />
+            </a-form-item>
             <a-form-item class="smart-query-form-item">
+
                 <a-button type="primary" @click="queryData">
                     <template #icon>
                         <SearchOutlined />
@@ -56,6 +60,12 @@
             <template #bodyCell="{ record, index, column }">
                 <template v-if="column.dataIndex === 'no'">
                     {{ index + 1 }}
+                </template>
+                <template v-if="column.dataIndex === 'isDefault'">
+                    <a-tag :color="record.isDefault ? 'processing' : 'error'">{{ record.isDefault ? "是" : "否" }}</a-tag>
+                </template>
+                <template v-if="column.dataIndex === 'isLocked'">
+                    <a-tag :color="record.isLocked ? 'processing' : 'error'">{{ record.isLocked ? "是" : "否" }}</a-tag>
                 </template>
                 <template v-if="column.dataIndex === 'isDisabled'">
                     <a-switch :checked="!record.isDisabled" />
