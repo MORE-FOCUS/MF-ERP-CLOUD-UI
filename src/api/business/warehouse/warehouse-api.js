@@ -27,4 +27,11 @@ export const warehouseApi = {
   update: (param) => {
     return postRequest('/warehouse/update', param);
   },
+
+  /**
+   * 更新禁用状态
+   */
+  updateDisabled: (id) => {
+    return postRequest(`/warehouse/disabled/${id}`);
+  },
 };

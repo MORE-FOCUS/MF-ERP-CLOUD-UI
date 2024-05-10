@@ -68,7 +68,7 @@
                     <a-tag :color="record.isLocked ? 'processing' : 'error'">{{ record.isLocked ? "是" : "否" }}</a-tag>
                 </template>
                 <template v-if="column.dataIndex === 'isDisabled'">
-                    <a-switch :checked="!record.isDisabled" />
+                    <a-switch :checked="!record.isDisabled" @change="updateDisabled(record.id, record.isDisabled)"/>
                 </template>
                 <template v-if="column.dataIndex === 'action'">
                     <div class="smart-table-operate">
@@ -92,7 +92,8 @@
     </a-card>
 </template>
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref,createVNode } from 'vue';
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { message, Modal } from 'ant-design-vue';
 import { SmartLoading } from '/@/components/framework/smart-loading';
 import { warehouseApi } from '/@/api/business/warehouse/warehouse-api';
@@ -294,5 +295,31 @@ async function requestBatchDelete() {
     } finally {
         SmartLoading.hide();
     }
+}
+
+
+// 禁用 / 启用
+function updateDisabled(id, isDisabled) {
+  Modal.confirm({
+    title: '提醒',
+    icon: createVNode(ExclamationCircleOutlined),
+    content: `确定要${isDisabled ? '启用' : '禁用'}吗?`,
+    okText: '确定',
+    okType: 'danger',
+    async onOk() {
+      SmartLoading.show();
+      try {
+        await warehouseApi.updateDisabled(id);
+        message.success(`${isDisabled ? '启用' : '禁用'}成功`);
+        queryData();
+      } catch (error) {
+        smartSentry.captureError(error);
+      } finally {
+        SmartLoading.hide();
+      }
+    },
+    cancelText: '取消',
+    onCancel() { },
+  });
 }
 </script>
