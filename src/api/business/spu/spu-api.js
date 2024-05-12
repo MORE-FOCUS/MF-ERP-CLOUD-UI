@@ -15,7 +15,7 @@ export const spuApi = {
   },
   // 分页查询 @author loki
   querySpuList: (param) => {
-    return postRequest('/spu/query', param);
+    return postRequest('/spu/queryPage', param);
   },
   // 更新商品 @author loki
   updateSpu: (param) => {

@@ -5,7 +5,7 @@
   <!---------- 查询表单form begin ----------->
   <a-form class="smart-query-form">
     <a-row class="smart-query-form-row" v-privilege="'business:spu:query'">
-      <a-form-item  class="smart-query-form-item">
+      <a-form-item class="smart-query-form-item">
         <a-input style="width: 200px" v-model:value="queryForm.searchWord" placeholder="商品名称/编码" />
       </a-form-item>
 
@@ -13,7 +13,7 @@
         <DictSelect key-code="GODOS_PLACE" v-model:value="queryForm.place" width="120px" />
       </a-form-item> -->
 
-      <a-form-item name="status" class="smart-query-form-item">
+      <a-form-item class="smart-query-form-item">
         <SmartEnumSelect enum-name="SPU_STATUS_ENUM" v-model:value="queryForm.status" width="150px" placeholder="状态" />
       </a-form-item>
 
@@ -99,6 +99,14 @@
       <template #bodyCell="{ index, record, column }">
         <template v-if="column.dataIndex === 'no'">
           {{ index + 1 }}
+        </template>
+        <template v-if="column.dataIndex === 'mainPicture'">
+          <a-tooltip>
+            <template slot="title">
+              <img src="https://zhjg.sz.gov.cn/zhcy/web/group2/M00/04/4A/CuIvUGHOvAKAFex4AABU7pg91qM129.jpg" style="width: 30px; height: 30px" />
+            </template>
+          </a-tooltip>
+          <img src="https://zhjg.sz.gov.cn/zhcy/web/group2/M00/04/4A/CuIvUGHOvAKAFex4AABU7pg91qM129.jpg" style="width: 30px; height: 30px" />
         </template>
         <template v-if="column.dataIndex === 'status'">
           <span>{{ $smartEnumPlugin.getDescByValue('SPU_STATUS_ENUM', record.status) }}</span>
@@ -188,9 +196,10 @@
       align: 'center',
     },
     {
-      title: '商品图片',
-      dataIndex: 'categoryName',
+      title: '图片',
+      dataIndex: 'mainPicture',
       align: 'center',
+      width: 60,
     },
     {
       title: '商品名称',
