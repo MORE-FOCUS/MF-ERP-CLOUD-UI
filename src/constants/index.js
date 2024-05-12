@@ -2,7 +2,7 @@
  * 所有常量入口
  */
 import menu from './system/menu-const';
-import goods from './business/goods/goods-const';
+import spu from './business/spu/spu-const';
 import category from './business/category/category-const';
 import { LOGIN_DEVICE_ENUM } from './system/login-device-const';
 import { FLAG_NUMBER_ENUM, GENDER_ENUM, USER_TYPE_ENUM } from './common-const';
@@ -25,7 +25,7 @@ export default {
   LAYOUT_ENUM,
   ...loginLog,
   ...menu,
-  ...goods,
+  ...spu,
   ...category,
   ...file,
   ...notice,

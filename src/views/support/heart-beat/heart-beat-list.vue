@@ -57,7 +57,7 @@
       class="smart-margin-top10"
       :dataSource="tableData"
       :columns="columns"
-      rowKey="goodsId"
+      rowKey="id"
       :pagination="false"
     />
     <div class="smart-query-table-page">

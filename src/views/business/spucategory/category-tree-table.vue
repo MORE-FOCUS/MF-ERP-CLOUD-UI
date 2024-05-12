@@ -94,7 +94,7 @@ const columns = reactive([
   },
 ]);
 
-const categoryType = CATEGORY_TYPE_ENUM.GOODS.value;
+const categoryType = CATEGORY_TYPE_ENUM.SPU.value;
 
 const categoryTreeData = ref([]);
 

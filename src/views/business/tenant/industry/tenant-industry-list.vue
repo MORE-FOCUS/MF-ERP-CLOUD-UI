@@ -193,9 +193,6 @@ function onDelete(data) {
 async function requestDelete(data) {
     SmartLoading.show();
     try {
-        let deleteForm = {
-            goodsIdList: selectedRowKeyList.value,
-        };
         await tenantIndustryApi.delete(data.id);
         message.success('删除成功');
         queryData();

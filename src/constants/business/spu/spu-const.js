@@ -1,7 +1,7 @@
 /*
  * 商品
  */
-export const GOODS_STATUS_ENUM = {
+export const SPU_STATUS_ENUM = {
   APPOINTMENT: {
     value: 1,
     desc: '预约中',
@@ -16,5 +16,5 @@ export const GOODS_STATUS_ENUM = {
   },
 };
 export default {
-  GOODS_STATUS_ENUM,
+  SPU_STATUS_ENUM,
 };

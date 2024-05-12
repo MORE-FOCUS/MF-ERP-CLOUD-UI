@@ -20,7 +20,7 @@
       <a-form-item class="smart-query-form-item">
         <a-button type="primary" @click="onSearch">
           <template #icon>
-            <ReloadOutlined />
+            <SearchOutlined />
           </template>
           查询
         </a-button>

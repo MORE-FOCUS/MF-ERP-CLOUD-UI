@@ -23,7 +23,7 @@
       <a-form-item class="smart-query-form-item smart-margin-left10">
         <a-button type="primary" @click="ajaxQuery" class="smart-margin-right10">
           <template #icon>
-            <ReloadOutlined />
+            <SearchOutlined />
           </template>
           查询
         </a-button>

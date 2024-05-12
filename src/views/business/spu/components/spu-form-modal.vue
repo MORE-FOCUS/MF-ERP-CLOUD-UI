@@ -2,16 +2,16 @@
   * 商品表单
 -->
 <template>
-  <a-drawer :title="form.goodsId ? '编辑' : '添加'" :width="500" :open="visible" :body-style="{ paddingBottom: '80px' }" @close="onClose">
+  <a-drawer :title="form.spuId ? '编辑' : '添加'" :width="500" :open="visible" :body-style="{ paddingBottom: '80px' }" @close="onClose">
     <a-form ref="formRef" :model="form" :rules="rules" :label-col="{ span: 5 }">
       <a-form-item label="商品分类" name="categoryId">
-        <CategoryTree v-model:value="form.categoryId" placeholder="请选择商品分类" :categoryType="CATEGORY_TYPE_ENUM.GOODS.value" />
+        <CategoryTree v-model:value="form.categoryId" placeholder="请选择商品分类" :categoryType="CATEGORY_TYPE_ENUM.SPU.value" />
       </a-form-item>
-      <a-form-item label="商品名称" name="goodsName">
-        <a-input v-model:value="form.goodsName" placeholder="请输入商品名称" />
+      <a-form-item label="商品名称" name="spuName">
+        <a-input v-model:value="form.name" placeholder="请输入商品名称" />
       </a-form-item>
-      <a-form-item label="商品状态" name="goodsStatus">
-        <SmartEnumSelect enum-name="GOODS_STATUS_ENUM" v-model:value="form.goodsStatus" />
+      <a-form-item label="商品状态" name="status">
+        <SmartEnumSelect enum-name="SPU_STATUS_ENUM" v-model:value="form.status" />
       </a-form-item>
       <a-form-item label="产地" name="place">
         <DictSelect key-code="GODOS_PLACE" v-model:value="form.place" />
@@ -53,9 +53,9 @@
   import { CATEGORY_TYPE_ENUM } from '/@/constants/business/category/category-const';
   import { message } from 'ant-design-vue';
   import { SmartLoading } from '/@/components/framework/smart-loading';
-  import { GOODS_STATUS_ENUM } from '/@/constants/business/goods/goods-const';
+  import { SPU_STATUS_ENUM } from '/@/constants/business/spu/spu-const';
   import _ from 'lodash';
-  import { goodsApi } from '/@/api/business/goods/goods-api';
+  import { spuApi } from '/@/api/business/spu/spu-api';
   import { smartSentry } from '/@/lib/smart-sentry';
   import SmartEnumSelect from '/@/components/framework/smart-enum-select/index.vue';
   import DictSelect from '/@/components/support/dict-select/index.vue';
@@ -70,9 +70,9 @@
     //商品分类
     categoryId: undefined,
     //商品名称
-    goodsName: undefined,
+    name: undefined,
     //商品状态
-    goodsStatus: GOODS_STATUS_ENUM.APPOINTMENT.value,
+    status: SPU_STATUS_ENUM.APPOINTMENT.value,
     //产地
     place: undefined,
     //商品价格
@@ -82,13 +82,13 @@
     //备注
     remark: '',
     //商品id
-    goodsId: undefined,
+    id: undefined,
   };
   let form = reactive({ ...formDefault });
   const rules = {
     categoryId: [{ required: true, message: '请选择商品分类' }],
-    goodsName: [{ required: true, message: '商品名称不能为空' }],
-    goodsStatus: [{ required: true, message: '商品状态不能为空' }],
+    spuName: [{ required: true, message: '商品名称不能为空' }],
+    spuStatus: [{ required: true, message: '商品状态不能为空' }],
     price: [{ required: true, message: '商品价格不能为空' }],
     place: [{ required: true, message: '产地不能为空' }],
   };
@@ -125,12 +125,12 @@
           if (params.place && Array.isArray(params.place) && params.place.length > 0) {
             params.place = params.place[0].valueCode;
           }
-          if (form.goodsId) {
-            await goodsApi.updateGoods(params);
+          if (form.spuId) {
+            await spuApi.updateSpu(params);
           } else {
-            await goodsApi.addGoods(params);
+            await spuApi.addSpu(params);
           }
-          message.success(`${form.goodsId ? '修改' : '添加'}成功`);
+          message.success(`${form.spuId ? '修改' : '添加'}成功`);
           onClose();
           emit('reloadList');
         } catch (error) {

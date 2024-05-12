@@ -2,7 +2,7 @@
  * 类别
  */
 export const CATEGORY_TYPE_ENUM = {
-  GOODS: {
+  SPU: {
     value: 1,
     desc: '商品',
   },
