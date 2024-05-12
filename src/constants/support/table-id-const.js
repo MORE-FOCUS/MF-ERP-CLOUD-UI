@@ -1,4 +1,3 @@
-
 //system系统功能表格初始化id
 let systemInitTableId = 10000;
 
@@ -13,9 +12,10 @@ export const TABLE_ID_CONST = {
    * 业务
    */
   BUSINESS: {
-      GOODS: businessInitTableId + 1, //商品管理
-      GOODS_CATEGORY: businessInitTableId + 2, //商品类目列表
-      SUPPLIER: businessInitTableId + 3, //供应商列表
+    GOODS: businessInitTableId + 1, //商品管理
+    GOODS_CATEGORY: businessInitTableId + 2, //商品类目列表
+    SUPPLIER: businessInitTableId + 3, //供应商列表
+    UNIT: businessInitTableId + 3, //单位列表
   },
 
   /**

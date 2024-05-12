@@ -1,5 +1,5 @@
 <!--
-  * 供应商
+  * 仓库
   *
   * @author:    loki
   * @date:      2024-04-09 00:04:56
@@ -12,7 +12,6 @@
                 <a-input class="smart-query-keywords" v-model:value="queryForm.keywords" placeholder="编码/名称" />
             </a-form-item>
             <a-form-item class="smart-query-form-item">
-
                 <a-button type="primary" @click="queryData">
                     <template #icon>
                         <SearchOutlined />
