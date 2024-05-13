@@ -110,7 +110,7 @@
             </template>
             <img
               src="https://zhjg.sz.gov.cn/zhcy/web/group2/M00/04/4A/CuIvUGHOvAKAFex4AABU7pg91qM129.jpg"
-              style="width: 30px; height: 30px; cursor: pointer"
+              style="width: 30px; height: 30px;"
             />
           </a-popover>
         </template>
