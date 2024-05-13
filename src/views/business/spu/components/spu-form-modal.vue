@@ -2,49 +2,8 @@
   * 商品表单
 -->
 <template>
-  <a-drawer :title="form.spuId ? '编辑' : '添加'" :width="500" :open="visible" :body-style="{ paddingBottom: '80px' }" @close="onClose">
-    <a-form ref="formRef" :model="form" :rules="rules" :label-col="{ span: 5 }">
-      <a-form-item label="商品分类" name="categoryId">
-        <CategoryTree v-model:value="form.categoryId" placeholder="请选择商品分类" :categoryType="CATEGORY_TYPE_ENUM.SPU.value" />
-      </a-form-item>
-      <a-form-item label="商品名称" name="spuName">
-        <a-input v-model:value="form.name" placeholder="请输入商品名称" />
-      </a-form-item>
-      <a-form-item label="商品状态" name="status">
-        <SmartEnumSelect enum-name="SPU_STATUS_ENUM" v-model:value="form.status" />
-      </a-form-item>
-      <a-form-item label="产地" name="place">
-        <DictSelect key-code="GODOS_PLACE" v-model:value="form.place" />
-      </a-form-item>
-      <a-form-item label="上架状态" name="shelvesFlag">
-        <a-radio-group v-model:value="form.shelvesFlag">
-          <a-radio :value="true">上架</a-radio>
-          <a-radio :value="false">下架</a-radio>
-        </a-radio-group>
-      </a-form-item>
-      <a-form-item label="商品价格" name="price">
-        <a-input-number style="width: 100%" placeholder="请输入商品价格" v-model:value="form.price" :min="0" />
-      </a-form-item>
-      <a-form-item label="备注" name="remark">
-        <a-input style="width: 100%" placeholder="请输入备注" v-model:value="form.remark" />
-      </a-form-item>
-    </a-form>
-    <div
-      :style="{
-        position: 'absolute',
-        right: 0,
-        bottom: 0,
-        width: '100%',
-        borderTop: '1px solid #e9e9e9',
-        padding: '10px 16px',
-        background: '#fff',
-        textAlign: 'right',
-        zIndex: 1,
-      }"
-    >
-      <a-button style="margin-right: 8px" @click="onClose">取消</a-button>
-      <a-button type="primary" @click="onSubmit">提交</a-button>
-    </div>
+  <a-drawer :title="form.spuId ? '编辑' : '添加'" width="60%" :open="visible" :body-style="{ paddingBottom: '80px' }" @close="onClose">
+    
   </a-drawer>
 </template>
 <script setup>

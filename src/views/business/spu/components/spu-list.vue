@@ -18,7 +18,7 @@
       </a-form-item>
 
       <a-form-item class="smart-query-form-item">
-        <a-radio-group v-model:value="queryForm.shelvesFlag" @change="onSearch">
+        <a-radio-group v-model:value="queryForm.isListed" @change="onSearch">
           <a-radio-button :value="undefined">全部</a-radio-button>
           <a-radio-button :value="true">上架</a-radio-button>
           <a-radio-button :value="false">下架</a-radio-button>
@@ -101,18 +101,24 @@
           {{ index + 1 }}
         </template>
         <template v-if="column.dataIndex === 'mainPicture'">
-          <a-tooltip>
-            <template slot="title">
-              <img src="https://zhjg.sz.gov.cn/zhcy/web/group2/M00/04/4A/CuIvUGHOvAKAFex4AABU7pg91qM129.jpg" style="width: 30px; height: 30px" />
+          <a-popover placement="right">
+            <template #content>
+              <img
+                src="https://zhjg.sz.gov.cn/zhcy/web/group2/M00/04/4A/CuIvUGHOvAKAFex4AABU7pg91qM129.jpg"
+                style="width: 100px; height: 100px;"
+              />
             </template>
-          </a-tooltip>
-          <img src="https://zhjg.sz.gov.cn/zhcy/web/group2/M00/04/4A/CuIvUGHOvAKAFex4AABU7pg91qM129.jpg" style="width: 30px; height: 30px" />
+            <img
+              src="https://zhjg.sz.gov.cn/zhcy/web/group2/M00/04/4A/CuIvUGHOvAKAFex4AABU7pg91qM129.jpg"
+              style="width: 30px; height: 30px; cursor: pointer"
+            />
+          </a-popover>
         </template>
         <template v-if="column.dataIndex === 'status'">
           <span>{{ $smartEnumPlugin.getDescByValue('SPU_STATUS_ENUM', record.status) }}</span>
         </template>
-        <template v-if="column.dataIndex === 'shelvesFlag'">
-          <span>{{ record.shelvesFlag ? '上架' : '下架' }}</span>
+        <template v-if="column.dataIndex === 'isListed'">
+          <span>{{ record.isListed ? '上架' : '下架' }}</span>
         </template>
         <template v-if="column.dataIndex === 'action'">
           <div class="smart-table-operate">
@@ -139,7 +145,7 @@
       />
     </div>
 
-    <!-- <SpuFormModal ref="formModal" @reloadList="queryData" /> -->
+    <SpuFormModal ref="formModal" @reloadList="queryData" />
 
     <a-modal v-model:open="importModalShowFlag" title="导入" @onCancel="hideImportModal" @ok="hideImportModal">
       <div style="text-align: center; width: 400px; margin: 0 auto">
@@ -207,18 +213,33 @@
       align: 'center',
     },
     {
+      title: '商品规格',
+      dataIndex: 'specs',
+      align: 'center',
+    },
+    {
+      title: '产地',
+      dataIndex: 'place',
+      align: 'center',
+    },
+    {
       title: '商品状态',
       dataIndex: 'status',
       align: 'center',
     },
     {
-      title: '价格(元)',
+      title: '零售价',
       dataIndex: 'price',
       align: 'center',
     },
     {
+      title: '基本单位',
+      dataIndex: 'unit',
+      align: 'center',
+    },
+    {
       title: '上架状态',
-      dataIndex: 'shelvesFlag',
+      dataIndex: 'isListed',
       align: 'center',
     },
     {
@@ -237,7 +258,7 @@
     searchWord: '',
     status: undefined,
     place: undefined,
-    shelvesFlag: undefined,
+    isListed: undefined,
     pageNum: 1,
     pageSize: 10,
   };
