@@ -3,18 +3,18 @@
 -->
 <template>
   <a-drawer :title="form.spuId ? '编辑' : '添加'" width="60%" :open="visible" @close="onClose">
-    <div style="margin-top: -25px">
-      <a-tabs v-model:activeKey="activeKey">
-        <a-tab-pane key="1" tab="基本信息">
-          <a-card title="基本信息" :bordered="false" style="width: 100%"> </a-card>
-        </a-tab-pane>
-        <a-tab-pane key="2" tab="图片附件">Content of tab 2</a-tab-pane>
-        <a-tab-pane key="3" tab="商品特性">Content of tab 3</a-tab-pane>
-        <a-tab-pane key="4" tab="商品条码">Content of tab 3</a-tab-pane>
-        <a-tab-pane key="5" tab="商品价格">Content of tab 3</a-tab-pane>
-        <a-tab-pane key="6" tab="期初库存">Content of tab 3</a-tab-pane>
-        <a-tab-pane key="7" tab="库存预警">Content of tab 3</a-tab-pane>
-      </a-tabs>
+    <div style="margin-top: -20px">
+      <a-menu v-model:selectedKeys="selectedKeys" mode="horizontal" @select="onMenuSelect">
+        <a-menu-item v-for="item in menuList" :key="item.key">{{ item.value }}</a-menu-item>
+      </a-menu>
+
+      <!-- 基本信息 -->
+      <!-- 图片附件 -->
+      <!-- 商品特性 -->
+      <!-- 商品条码 -->
+      <!-- 价格管理 -->
+      <!-- 期初库存 -->
+      <!-- 库存预警 -->
     </div>
     <div class="footer">
       <a-button style="margin-right: 8px" @click="onClose">取消</a-button>
@@ -39,7 +39,7 @@
   // emit
   const emit = defineEmits(['reloadList']);
 
-  const activeKey = ref('1');
+  const selectedKeys = ref(['base']);
 
   // 组件ref
   const formRef = ref();
@@ -62,6 +62,39 @@
     //商品id
     id: undefined,
   };
+
+  //菜单
+  const menuList = ref([
+    {
+      key: 'base',
+      value: '基本信息',
+    },
+    {
+      key: 'baseImg',
+      value: '图片附件',
+    },
+    {
+      key: 'special',
+      value: '商品特性',
+    },
+    {
+      key: 'barcode',
+      value: '商品条码',
+    },
+    {
+      key: 'price',
+      value: '价格管理',
+    },
+    {
+      key: 'stock',
+      value: '期初库存',
+    },
+    {
+      key: 'stockWarn',
+      value: '库存预警',
+    },
+  ]);
+
   let form = reactive({ ...defaultForm });
   const rules = {
     categoryId: [{ required: true, message: '请选择商品分类' }],
@@ -110,6 +143,14 @@
         console.log('error', error);
         message.error('参数验证错误，请仔细填写表单数据!');
       });
+  }
+
+  //菜单选择
+  function onMenuSelect(item) {
+    const element = document.getElementById(item.key);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 
   defineExpose({
