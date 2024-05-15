@@ -9,12 +9,21 @@
       </a-menu>
 
       <!-- 基本信息 -->
-      <!-- 图片附件 -->
-      <!-- 商品特性 -->
-      <!-- 商品条码 -->
-      <!-- 价格管理 -->
-      <!-- 期初库存 -->
-      <!-- 库存预警 -->
+      <div id="container" @scroll="scrollChange" style="max-height:700px;overflow-y: scroll;">
+        <SpuBase style="margin-top: 20px"></SpuBase>
+        <!-- 图片附件 -->
+        <SpuBaseImg></SpuBaseImg>
+        <!-- 商品特性 -->
+        <SpuSpecial></SpuSpecial>
+        <!-- 商品条码 -->
+        <SpuBarcode></SpuBarcode>
+        <!-- 价格管理 -->
+        <SpuPrice></SpuPrice>
+        <!-- 期初库存 -->
+        <SpuStock></SpuStock>
+        <!-- 库存预警 -->
+        <SpuStockWarn></SpuStockWarn>
+      </div>
     </div>
     <div class="footer">
       <a-button style="margin-right: 8px" @click="onClose">取消</a-button>
@@ -35,7 +44,13 @@
   import { smartSentry } from '/@/lib/smart-sentry';
   import SmartEnumSelect from '/@/components/framework/smart-enum-select/index.vue';
   import DictSelect from '/@/components/support/dict-select/index.vue';
-
+  import SpuBase from './spu-base.vue';
+  import SpuBaseImg from './spu-base-img.vue';
+  import SpuSpecial from './spu-special.vue';
+  import SpuBarcode from './spu-barcode.vue';
+  import SpuPrice from './spu-price.vue';
+  import SpuStock from './spu-stock.vue';
+  import SpuStockWarn from './spu-stock-warn.vue';
   // emit
   const emit = defineEmits(['reloadList']);
 
@@ -149,8 +164,15 @@
   function onMenuSelect(item) {
     const element = document.getElementById(item.key);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({ behavior: 'smooth'});
     }
+  }
+
+  //滚动事件
+  function scrollChange(e) {
+    // 当前顶部值，向上取整
+    let currentTop = Math.ceil(e.srcElement.scrollTop);
+    console.log(currentTop);
   }
 
   defineExpose({

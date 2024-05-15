@@ -1,5 +1,5 @@
 <!--
-  *  员工 表单 弹窗
+  *  供应商 表单 弹窗
 -->
 <template>
     <a-drawer :title="form.id ? '编辑' : '添加'" :width="600" :open="visible" :body-style="{ paddingBottom: '80px' }"
