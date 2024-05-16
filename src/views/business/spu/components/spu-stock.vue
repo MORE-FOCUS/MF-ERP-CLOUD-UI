@@ -1,5 +1,5 @@
 <template>
-    <a-card title="| 期初库存" headStyle="color: #f90; font-size:15px;" id="stock">
+    <a-card title="| 期初库存" headStyle="color: #f90; font-size:15px;" id="stock" style="margin-top:10px; margin-right:15px;">
       <a-form ref="formRef" :model="form" :rules="rules" layout="horizontal" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
         <a-form-item label="编码" name="code">
           <a-input placeholder="请输入编码"></a-input>

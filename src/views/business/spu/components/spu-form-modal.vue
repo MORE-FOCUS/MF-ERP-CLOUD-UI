@@ -2,15 +2,17 @@
   * 商品表单
 -->
 <template>
-  <a-drawer :title="form.spuId ? '编辑' : '添加'" width="60%" :open="visible" @close="onClose">
+  <a-drawer :title="form.spuId ? '编辑' : '添加'" width="65%" :open="visible" @close="onClose">
     <div style="margin-top: -20px">
       <a-menu v-model:selectedKeys="selectedKeys" mode="horizontal" @select="onMenuSelect">
         <a-menu-item v-for="item in menuList" :key="item.key">{{ item.value }}</a-menu-item>
       </a-menu>
 
       <!-- 基本信息 -->
-      <div id="container" @scroll="scrollChange" style="max-height:700px;overflow-y: scroll;">
+      <div id="container" @scroll="scrollChange" class="container">
         <SpuBase style="margin-top: 20px"></SpuBase>
+        <!-- 商品单位 -->
+        <SpuBaseUnit></SpuBaseUnit>
         <!-- 图片附件 -->
         <SpuBaseImg></SpuBaseImg>
         <!-- 商品特性 -->
@@ -51,6 +53,7 @@
   import SpuPrice from './spu-price.vue';
   import SpuStock from './spu-stock.vue';
   import SpuStockWarn from './spu-stock-warn.vue';
+  import SpuBaseUnit from './spu-base-unit.vue'
   // emit
   const emit = defineEmits(['reloadList']);
 
@@ -83,6 +86,10 @@
     {
       key: 'base',
       value: '基本信息',
+    },
+    {
+      key: 'baseUnit',
+      value: '商品单位',
     },
     {
       key: 'baseImg',
@@ -164,7 +171,7 @@
   function onMenuSelect(item) {
     const element = document.getElementById(item.key);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth'});
+      element.scrollIntoView({ behavior: 'smooth' });
     }
   }
 
@@ -191,5 +198,9 @@
     background: #fff;
     text-align: left;
     z-index: 1;
+  }
+  .container {
+    max-height: 800px;
+    overflow-y: scroll;
   }
 </style>

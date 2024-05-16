@@ -15,6 +15,13 @@ export const unitApi = {
   },
 
   /**
+   * 查询所有  @author  loki
+   */
+    queryAll: (param) => {
+      return postRequest('/unit/queryAll', param);
+    },
+
+  /**
    * 增加  @author  loki
    */
   add: (param) => {
