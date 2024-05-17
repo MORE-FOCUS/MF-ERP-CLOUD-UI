@@ -95,6 +95,7 @@
       bordered
       :pagination="false"
       :row-selection="{ selectedRowKeys: selectedRowKeyList, onChange: onSelectChange }"
+      :scroll="{ x: 1300 }"
     >
       <template #bodyCell="{ index, record, column }">
         <template v-if="column.dataIndex === 'no'">
@@ -200,17 +201,20 @@
       dataIndex: 'no',
       width: 50,
       align: 'center',
+      fixed: 'left'
+    },
+    {
+      title: '商品名称',
+      dataIndex: 'name',
+      align: 'center',
+      fixed: 'left'
     },
     {
       title: '图片',
       dataIndex: 'mainPicture',
       align: 'center',
       width: 60,
-    },
-    {
-      title: '商品名称',
-      dataIndex: 'name',
-      align: 'center',
+      fixed: 'left'
     },
     {
       title: '商品规格',

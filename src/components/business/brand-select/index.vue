@@ -1,4 +1,3 @@
-
 <!--
   * 品牌下拉选择框
 -->
@@ -38,7 +37,11 @@
     size: {
       type: String,
       default: 'default',
-    }
+    },
+    isDisabled: {
+      type: Boolean,
+      default: false,
+    },
   });
 
   const emit = defineEmits(['update:value', 'change']);
@@ -49,8 +52,8 @@
   const brandList = ref([]);
   async function query() {
     try {
-      let params = {isDisabled:false};
-      
+      let params = { isDisabled: props.isDisabled };
+
       let resp = await brandApi.queryAll(params);
       brandList.value = resp.data;
     } catch (e) {
@@ -60,7 +63,7 @@
   onMounted(query);
 
   // =========== 选择 监听、事件 =============
-  
+
   const selectValue = ref(props.value);
   watch(
     () => props.value,

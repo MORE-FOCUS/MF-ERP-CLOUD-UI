@@ -14,7 +14,7 @@
         <CategoryTreeSelect v-model:value="form.categoryId" placeholder="请选择分类" :categoryType="CATEGORY_TYPE_ENUM.SPU.value" width="50%" />
       </a-form-item>
       <a-form-item label="商品品牌" name="brand">
-        <a-input placeholder="请选择品牌"></a-input>
+        <BrandSelect v-model:value="form.unitId" width="50%" />
       </a-form-item>
       <a-form-item label="商品规格" name="specs">
         <a-input placeholder="请输入规格"></a-input>
@@ -35,6 +35,8 @@
   import CategoryTreeSelect from '/@/components/business/category-tree-select/index.vue';
   import { CATEGORY_TYPE_ENUM } from '/@/constants/business/category/category-const';
   import { message } from 'ant-design-vue';
+  import BrandSelect from '/@/components/business/brand-select/index.vue';
+
   const rules = {
     code: [{ required: true, message: '商品编码不能为空' }],
     name: [{ required: true, message: '商品编码不能为空' }],
