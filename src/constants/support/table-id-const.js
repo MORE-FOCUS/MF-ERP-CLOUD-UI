@@ -15,7 +15,8 @@ export const TABLE_ID_CONST = {
     GOODS: businessInitTableId + 1, //商品管理
     GOODS_CATEGORY: businessInitTableId + 2, //商品类目列表
     SUPPLIER: businessInitTableId + 3, //供应商列表
-    UNIT: businessInitTableId + 3, //单位列表
+    UNIT: businessInitTableId + 4, //单位列表
+    BRAND: businessInitTableId + 5, //品牌列表
   },
 
   /**
