@@ -27,11 +27,11 @@
         <SpuStockWarn></SpuStockWarn>
       </div>
     </div>
-    <div class="footer">
+    <!-- <div class="footer">
       <a-button style="margin-right: 8px" @click="onClose">取消</a-button>
       <a-button type="primary" style="margin-right: 8px" @click="onSubmit(false)">保存</a-button>
       <a-button v-if="!form.supplierId" type="primary" @click="onSubmit(true)">保存并继续添加</a-button>
-    </div>
+    </div> -->
   </a-drawer>
 </template>
 <script setup>
@@ -200,7 +200,7 @@
     z-index: 1;
   }
   .container {
-    max-height: 800px;
+    max-height: 830px;
     overflow-y: scroll;
   }
 </style>
