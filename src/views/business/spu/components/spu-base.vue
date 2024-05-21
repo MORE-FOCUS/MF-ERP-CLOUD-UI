@@ -15,14 +15,14 @@
         >
       </template>
       <a-form ref="formRef" :model="form" :rules="rules" layout="horizontal" :label-col="{ span: 2 }" :wrapper-col="{ span: 10 }">
-        <a-form-item label="商品编码" name="code">
-          <a-input v-model:value="form.code" placeholder="请输入编码"></a-input>
+        <a-form-item label="商品编码" name="spuNo">
+          <a-input v-model:value="form.spuNo" placeholder="请输入编码" />
         </a-form-item>
         <a-form-item label="商品全称" name="name">
-          <a-input v-model:value="form.name" placeholder="请输入名称"></a-input>
+          <a-input v-model:value="form.name" placeholder="请输入名称" />
         </a-form-item>
         <a-form-item label="商品别名" name="alias">
-          <a-input v-model:value="form.alias" placeholder="请输入别名"></a-input>
+          <a-input v-model:value="form.alias" placeholder="请输入别名" />
         </a-form-item>
         <a-form-item label="商品分类" name="categoryId">
           <CategoryTreeSelect v-model:value="form.categoryId" placeholder="请选择分类" :categoryType="CATEGORY_TYPE_ENUM.SPU.value" width="50%" />
@@ -31,16 +31,19 @@
           <UnitSelect v-model:value="form.unitId" width="50%" />
         </a-form-item>
         <a-form-item label="商品品牌" name="brand">
-          <BrandSelect v-model:value="form.unitId" width="50%" />
+          <BrandSelect v-model:value="form.brand" width="50%" />
         </a-form-item>
         <a-form-item label="商品规格" name="specs">
-          <a-input placeholder="请输入规格"></a-input>
+          <a-input v-model:value="form.specs" placeholder="请输入规格" />
         </a-form-item>
         <a-form-item label="商品产地" name="place">
-          <a-input placeholder="请输入产地"></a-input>
+          <a-input v-model:value="form.place" placeholder="请输入产地" />
         </a-form-item>
-        <a-form-item label="启用" name="idDisabled">
+        <a-form-item label="启用" name="isDisabled">
           <a-switch v-model:checked="form.isDisabled" />
+        </a-form-item>
+        <a-form-item label="上架" name="isListed">
+          <a-switch v-model:checked="form.isListed" />
         </a-form-item>
       </a-form>
     </a-card>
@@ -48,19 +51,24 @@
 </template>
 
 <script setup>
-  import { ref, reactive } from 'vue';
+  import { ref, reactive, onMounted } from 'vue';
   import _ from 'lodash';
   import CategoryTreeSelect from '/@/components/business/category-tree-select/index.vue';
   import { CATEGORY_TYPE_ENUM } from '/@/constants/business/category/category-const';
   import { message } from 'ant-design-vue';
+  import { SmartLoading } from '/@/components/framework/smart-loading';
+  import { smartSentry } from '/@/lib/smart-sentry';
   import BrandSelect from '/@/components/business/brand-select/index.vue';
   import UnitSelect from '/@/components/business/unit-select/index.vue';
+  import { serialNumberApi } from '/@/api/support/serial-number-api';
+  import { SERIAL_NUMBER_ID_ENUM } from '/@/constants/support/serial-number-const';
+  import { spuApi } from '/@/api/business/spu/spu-api';
 
   const rules = {
-    code: [{ required: true, message: '商品编码不能为空' }],
-    name: [{ required: true, message: '商品编码不能为空' }],
-    categoryId: [{ required: true, message: '类别不能为空' }],
-    unitId: [{ required: true, message: '单位不能为空' }],
+    spuNo: [{ required: true, message: '商品编码不能为空' }],
+    name: [{ required: true, message: '商品名称不能为空' }],
+    categoryId: [{ required: true, message: '商品类别不能为空' }],
+    unitId: [{ required: true, message: '商品单位不能为空' }],
   };
 
   const props = defineProps({
@@ -74,7 +82,7 @@
   const formRef = ref();
   const formDefault = {
     id: props.spuid,
-    code: undefined,
+    spuNo: undefined,
     name: undefined,
     alias: undefined,
     categoryId: undefined,
@@ -82,13 +90,48 @@
     brand: undefined,
     place: undefined,
     specs: undefined,
-    idDisabled: false,
-    enableMultiUnit: false,
+    isDisabled: false,
+    isListed: true,
   };
 
   let form = reactive(_.cloneDeep(formDefault));
 
-  function extraClick() {}
+  onMounted(() => {
+    querySpuBase();
+    genSpuNo();
+  });
+
+  async function querySpuBase() {
+    if (form.id) {
+      const res = await spuApi.querySpuBase(form.id);
+      if (res.data) {
+        Object.assign(form, res.data);
+      }
+    }
+  }
+
+  async function genSpuNo() {
+    if (!form.id) {
+      let res = await serialNumberApi.generate({ serialNumberId: SERIAL_NUMBER_ID_ENUM.SPBM.value });
+      form.spuNo = res.data;
+    }
+  }
+
+  async function extraClick() {
+    SmartLoading.show();
+    try {
+      if (form.id) {
+        await spuApi.updateSpuBase(form);
+      } else {
+        await spuApi.addSpuBase(form);
+      }
+      message.success('操作成功');
+    } catch (err) {
+      smartSentry.captureError(err);
+    } finally {
+      SmartLoading.hide();
+    }
+  }
 </script>
 
 <style lang="less" scoped>
