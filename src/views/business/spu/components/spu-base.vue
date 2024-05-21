@@ -1,32 +1,50 @@
 <template>
-  <a-card title="| 基本信息" headStyle="color: #f90; font-size:15px;" id="base" style="margin-right: 15px">
-    <a-form ref="formRef" :model="form" :rules="rules" layout="horizontal" :label-col="{ span: 2 }" :wrapper-col="{ span: 10 }">
-      <a-form-item label="商品编码" name="code">
-        <a-input placeholder="请输入编码"></a-input>
-      </a-form-item>
-      <a-form-item label="商品全称" name="name">
-        <a-input placeholder="请输入名称"></a-input>
-      </a-form-item>
-      <a-form-item label="商品别名" name="name">
-        <a-input placeholder="请输入别名"></a-input>
-      </a-form-item>
-      <a-form-item label="商品分类" name="categoryId">
-        <CategoryTreeSelect v-model:value="form.categoryId" placeholder="请选择分类" :categoryType="CATEGORY_TYPE_ENUM.SPU.value" width="50%" />
-      </a-form-item>
-      <a-form-item label="商品品牌" name="brand">
-        <BrandSelect v-model:value="form.unitId" width="50%" />
-      </a-form-item>
-      <a-form-item label="商品规格" name="specs">
-        <a-input placeholder="请输入规格"></a-input>
-      </a-form-item>
-      <a-form-item label="商品产地" name="place">
-        <a-input placeholder="请输入产地"></a-input>
-      </a-form-item>
-      <a-form-item label="启用" name="idDisabled">
-        <a-switch v-model:checked="form.idDisabled" />
-      </a-form-item>
-    </a-form>
-  </a-card>
+  <div class="card-container">
+    <a-card size="small" id="base">
+      <template #title>
+        <div class="title">
+          <span class="smart-margin-left10">基本信息</span>
+        </div>
+      </template>
+      <template #extra>
+        <a-button type="link" @click="extraClick">
+          <template #icon>
+            <SaveOutlined />
+          </template>
+          保存</a-button
+        >
+      </template>
+      <a-form ref="formRef" :model="form" :rules="rules" layout="horizontal" :label-col="{ span: 2 }" :wrapper-col="{ span: 10 }">
+        <a-form-item label="商品编码" name="code">
+          <a-input v-model:value="form.code" placeholder="请输入编码"></a-input>
+        </a-form-item>
+        <a-form-item label="商品全称" name="name">
+          <a-input v-model:value="form.name" placeholder="请输入名称"></a-input>
+        </a-form-item>
+        <a-form-item label="商品别名" name="alias">
+          <a-input v-model:value="form.alias" placeholder="请输入别名"></a-input>
+        </a-form-item>
+        <a-form-item label="商品分类" name="categoryId">
+          <CategoryTreeSelect v-model:value="form.categoryId" placeholder="请选择分类" :categoryType="CATEGORY_TYPE_ENUM.SPU.value" width="50%" />
+        </a-form-item>
+        <a-form-item label="基础单位" name="unitId">
+          <UnitSelect v-model:value="form.unitId" width="50%" />
+        </a-form-item>
+        <a-form-item label="商品品牌" name="brand">
+          <BrandSelect v-model:value="form.unitId" width="50%" />
+        </a-form-item>
+        <a-form-item label="商品规格" name="specs">
+          <a-input placeholder="请输入规格"></a-input>
+        </a-form-item>
+        <a-form-item label="商品产地" name="place">
+          <a-input placeholder="请输入产地"></a-input>
+        </a-form-item>
+        <a-form-item label="启用" name="idDisabled">
+          <a-switch v-model:checked="form.isDisabled" />
+        </a-form-item>
+      </a-form>
+    </a-card>
+  </div>
 </template>
 
 <script setup>
@@ -36,21 +54,62 @@
   import { CATEGORY_TYPE_ENUM } from '/@/constants/business/category/category-const';
   import { message } from 'ant-design-vue';
   import BrandSelect from '/@/components/business/brand-select/index.vue';
+  import UnitSelect from '/@/components/business/unit-select/index.vue';
 
   const rules = {
     code: [{ required: true, message: '商品编码不能为空' }],
     name: [{ required: true, message: '商品编码不能为空' }],
     categoryId: [{ required: true, message: '类别不能为空' }],
+    unitId: [{ required: true, message: '单位不能为空' }],
   };
+
+  const props = defineProps({
+    value: [Number, Array],
+    spuid: {
+      type: Number,
+      default: undefined,
+    },
+  });
 
   const formRef = ref();
   const formDefault = {
-    categoryId: undefined,
-    name: undefined,
+    id: props.spuid,
     code: undefined,
+    name: undefined,
+    alias: undefined,
+    categoryId: undefined,
+    unitId: undefined,
+    brand: undefined,
+    place: undefined,
+    specs: undefined,
     idDisabled: false,
     enableMultiUnit: false,
   };
 
   let form = reactive(_.cloneDeep(formDefault));
+
+  function extraClick() {}
 </script>
+
+<style lang="less" scoped>
+  .card-container {
+    background-color: #fff;
+    height: 100%;
+    margin-right: 15px;
+    margin-top: 15px;
+
+    .title {
+      display: flex;
+      align-items: center;
+      &::before {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 0;
+        width: 3px;
+        height: 30px;
+        background-color: @primary-color;
+      }
+    }
+  }
+</style>

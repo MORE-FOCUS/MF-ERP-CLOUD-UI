@@ -3,14 +3,14 @@
 -->
 <template>
   <a-drawer :title="form.spuId ? '编辑' : '添加'" width="65%" :open="visible" @close="onClose">
-    <div style="margin-top: -20px">
+    <div style="margin-top: -20px;">
       <a-menu v-model:selectedKeys="selectedKeys" mode="horizontal" @select="onMenuSelect">
         <a-menu-item v-for="item in menuList" :key="item.key">{{ item.value }}</a-menu-item>
       </a-menu>
 
       <!-- 基本信息 -->
       <div id="container" @scroll="scrollChange" class="container">
-        <SpuBase style="margin-top: 20px"></SpuBase>
+        <SpuBase></SpuBase>
         <!-- 商品单位 -->
         <SpuBaseUnit></SpuBaseUnit>
         <!-- 图片附件 -->
@@ -93,7 +93,7 @@
     },
     {
       key: 'baseImg',
-      value: '图片附件',
+      value: '商品图片',
     },
     {
       key: 'special',
@@ -105,7 +105,7 @@
     },
     {
       key: 'price',
-      value: '价格管理',
+      value: '商品价格',
     },
     {
       key: 'stock',
