@@ -3,14 +3,14 @@
 -->
 <template>
   <a-drawer :title="form.spuId ? '编辑' : '添加'" width="65%" :open="visible" @close="onClose">
-    <div style="margin-top: -20px;">
+    <div style="margin-top: -20px">
       <a-menu v-model:selectedKeys="selectedKeys" mode="horizontal" @select="onMenuSelect">
         <a-menu-item v-for="item in menuList" :key="item.key">{{ item.value }}</a-menu-item>
       </a-menu>
 
       <!-- 基本信息 -->
       <div id="container" @scroll="scrollChange" class="container">
-        <SpuBase></SpuBase>
+        <SpuBase :spuData="spuData"/>
         <!-- 商品单位 -->
         <SpuBaseUnit></SpuBaseUnit>
         <!-- 图片附件 -->
@@ -35,17 +35,12 @@
   </a-drawer>
 </template>
 <script setup>
-  import { ref, nextTick, reactive } from 'vue';
-  import CategoryTree from '/@/components/business/category-tree-select/index.vue';
-  import { CATEGORY_TYPE_ENUM } from '/@/constants/business/category/category-const';
+  import { ref, reactive } from 'vue';
   import { message } from 'ant-design-vue';
   import { SmartLoading } from '/@/components/framework/smart-loading';
-  import { SPU_STATUS_ENUM } from '/@/constants/business/spu/spu-const';
   import _ from 'lodash';
   import { spuApi } from '/@/api/business/spu/spu-api';
   import { smartSentry } from '/@/lib/smart-sentry';
-  import SmartEnumSelect from '/@/components/framework/smart-enum-select/index.vue';
-  import DictSelect from '/@/components/support/dict-select/index.vue';
   import SpuBase from './spu-base.vue';
   import SpuBaseImg from './spu-base-img.vue';
   import SpuSpecial from './spu-special.vue';
@@ -53,7 +48,8 @@
   import SpuPrice from './spu-price.vue';
   import SpuStock from './spu-stock.vue';
   import SpuStockWarn from './spu-stock-warn.vue';
-  import SpuBaseUnit from './spu-base-unit.vue'
+  import SpuBaseUnit from './spu-base-unit.vue';
+
   // emit
   const emit = defineEmits(['reloadList']);
 
@@ -63,20 +59,6 @@
   const formRef = ref();
 
   const defaultForm = {
-    //商品分类
-    categoryId: undefined,
-    //商品名称
-    name: undefined,
-    //商品状态
-    status: SPU_STATUS_ENUM.APPOINTMENT.value,
-    //产地
-    place: undefined,
-    //商品价格
-    price: undefined,
-    //上架状态
-    isListed: true,
-    //备注
-    remark: '',
     //商品id
     id: undefined,
   };
@@ -118,18 +100,31 @@
   ]);
 
   let form = reactive({ ...defaultForm });
-  const rules = {
-    categoryId: [{ required: true, message: '请选择商品分类' }],
-    spuName: [{ required: true, message: '商品名称不能为空' }],
-    spuStatus: [{ required: true, message: '商品状态不能为空' }],
-    price: [{ required: true, message: '商品价格不能为空' }],
-    place: [{ required: true, message: '产地不能为空' }],
-  };
+
   // 是否展示抽屉
   const visible = ref(false);
 
   function showDrawer(rowData) {
     visible.value = true;
+
+    queryDetail(rowData);
+  }
+
+  const spuData = ref();
+
+  //查询商品详情
+  async function queryDetail(data) {
+    if (data && data.id) {
+      SmartLoading.show();
+      try {
+        const res = await spuApi.queryDetail(data.id);
+        spuData.value = res.data;
+      } catch (error) {
+        smartSentry.captureError(error);
+      } finally {
+        SmartLoading.hide();
+      }
+    }
   }
 
   function onClose() {

@@ -1,6 +1,10 @@
 import { postRequest, getRequest, getDownload } from '/@/lib/axios';
 
 export const spuApi = {
+  //查询商品详情
+  queryDetail: (id) => {
+    return getRequest(`/spu/queryDetail/${id}`);
+  },
   // 添加商品 @author loki
   addSpuBase: (param) => {
     return postRequest('/spu/base/add', param);
@@ -12,7 +16,7 @@ export const spuApi = {
 
   // 删除 @author loki
   deleteSpu: (id) => {
-    return getRequest(`/spu/delete/${d}`);
+    return getRequest(`/spu/delete/${id}`);
   },
   // 批量 @author loki
   batchDelete: (idList) => {
@@ -22,7 +26,6 @@ export const spuApi = {
   querySpuList: (param) => {
     return postRequest('/spu/queryPage', param);
   },
-
 
   // 导入 @author loki
   importSpu: (file) => {

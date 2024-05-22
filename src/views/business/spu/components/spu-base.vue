@@ -72,16 +72,17 @@
   };
 
   const props = defineProps({
-    value: [Number, Array],
-    spuid: {
-      type: Number,
-      default: undefined,
+    value: [Number, Array, Object],
+    spuData: {
+      type: Object,
+      default: {},
     },
   });
 
   const formRef = ref();
+
   const formDefault = {
-    id: props.spuid,
+    id: undefined,
     spuNo: undefined,
     name: undefined,
     alias: undefined,
@@ -92,21 +93,20 @@
     specs: undefined,
     isDisabled: false,
     isListed: true,
+    status: 1,
   };
 
   let form = reactive(_.cloneDeep(formDefault));
 
   onMounted(() => {
-    querySpuBase();
-    genSpuNo();
+    updateData();
+    //genSpuNo();
   });
 
-  async function querySpuBase() {
-    if (form.id) {
-      const res = await spuApi.querySpuBase(form.id);
-      if (res.data) {
-        Object.assign(form, res.data);
-      }
+  function updateData() {
+    Object.assign(form, formDefault);
+    if (props.spuData) {
+      Object.assign(form, props.spuData);
     }
   }
 
