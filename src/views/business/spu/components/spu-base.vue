@@ -31,7 +31,7 @@
           <UnitSelect v-model:value="form.unitId" width="50%" />
         </a-form-item>
         <a-form-item label="商品品牌" name="brand">
-          <BrandSelect v-model:value="form.brand" width="50%" />
+          <BrandSelect v-model:value="form.brandId" width="50%" />
         </a-form-item>
         <a-form-item label="商品规格" name="specs">
           <a-input v-model:value="form.specs" placeholder="请输入规格" />
@@ -51,7 +51,7 @@
 </template>
 
 <script setup>
-  import { ref, reactive, onMounted } from 'vue';
+  import { ref, reactive } from 'vue';
   import _ from 'lodash';
   import CategoryTreeSelect from '/@/components/business/category-tree-select/index.vue';
   import { CATEGORY_TYPE_ENUM } from '/@/constants/business/category/category-const';
@@ -71,14 +71,6 @@
     unitId: [{ required: true, message: '商品单位不能为空' }],
   };
 
-  const props = defineProps({
-    value: [Number, Array, Object],
-    spuData: {
-      type: Object,
-      default: {},
-    },
-  });
-
   const formRef = ref();
 
   const formDefault = {
@@ -88,7 +80,7 @@
     alias: undefined,
     categoryId: undefined,
     unitId: undefined,
-    brand: undefined,
+    brandId: undefined,
     place: undefined,
     specs: undefined,
     isDisabled: false,
@@ -98,15 +90,12 @@
 
   let form = reactive(_.cloneDeep(formDefault));
 
-  onMounted(() => {
-    updateData();
-    //genSpuNo();
-  });
-
-  function updateData() {
+  function updateData(rawData) {
     Object.assign(form, formDefault);
-    if (props.spuData) {
-      Object.assign(form, props.spuData);
+    if (rawData) {
+      Object.assign(form, rawData);
+    }else{
+      genSpuNo();
     }
   }
 
@@ -132,6 +121,10 @@
       SmartLoading.hide();
     }
   }
+
+  defineExpose({
+    updateData,
+  });
 </script>
 
 <style lang="less" scoped>

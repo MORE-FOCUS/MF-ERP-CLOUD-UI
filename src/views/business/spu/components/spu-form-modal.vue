@@ -2,17 +2,17 @@
   * 商品表单
 -->
 <template>
-  <a-drawer :title="form.spuId ? '编辑' : '添加'" width="65%" :open="visible" @close="onClose">
-    <div style="margin-top: -20px">
+  <a-drawer :title="form.id ? '编辑' : '添加'" width="60%" :open="visible" @close="onClose">
+    <div style="margin-top: -30px">
       <a-menu v-model:selectedKeys="selectedKeys" mode="horizontal" @select="onMenuSelect">
         <a-menu-item v-for="item in menuList" :key="item.key">{{ item.value }}</a-menu-item>
       </a-menu>
 
       <!-- 基本信息 -->
       <div id="container" @scroll="scrollChange" class="container">
-        <SpuBase :spuData="spuData"/>
+        <SpuBase ref="spuBaseRef" />
         <!-- 商品单位 -->
-        <SpuBaseUnit></SpuBaseUnit>
+        <SpuBaseUnit ref="spuUnitRef"/>
         <!-- 图片附件 -->
         <SpuBaseImg></SpuBaseImg>
         <!-- 商品特性 -->
@@ -104,27 +104,29 @@
   // 是否展示抽屉
   const visible = ref(false);
 
-  function showDrawer(rowData) {
+  const spuBaseRef = ref();
+  const spuUnitRef = ref();
+  function showDrawer(data) {
     visible.value = true;
-
-    queryDetail(rowData);
+    if (data && data.id) {
+      form.id = data.id;
+      updateSpu();
+    } else {
+      addSpu();
+    }
   }
 
-  const spuData = ref();
+  //新增spu
+  function addSpu() {
+    spuBaseRef.value.updateData();
+    spuUnitRef.value.updateData();
+  }
 
-  //查询商品详情
-  async function queryDetail(data) {
-    if (data && data.id) {
-      SmartLoading.show();
-      try {
-        const res = await spuApi.queryDetail(data.id);
-        spuData.value = res.data;
-      } catch (error) {
-        smartSentry.captureError(error);
-      } finally {
-        SmartLoading.hide();
-      }
-    }
+  //编辑spu
+  async function updateSpu() {
+    const res = await spuApi.queryDetail(form.id);
+    spuBaseRef.value.updateData(res.data);
+    spuUnitRef.value.updateData(res.data);
   }
 
   function onClose() {

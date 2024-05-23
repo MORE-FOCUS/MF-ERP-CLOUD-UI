@@ -53,8 +53,11 @@
 <script setup>
   import { ref, reactive, onMounted } from 'vue';
   import _ from 'lodash';
-  import { spuUnitApi } from '/src/api/business/spuunit/spu-unit-api';
+  import { spuApi } from '/src/api/business/spu/spu-api';
+  import UnitSelect from '/@/components/business/unit-select/index.vue';
   import { message } from 'ant-design-vue';
+  import { SmartLoading } from '/@/components/framework/smart-loading';
+  import { smartSentry } from '/@/lib/smart-sentry';
 
   const columns = ref([
     {
@@ -92,39 +95,29 @@
     },
   ]);
 
-  const props = defineProps({
-    spuid: {
-      type: Number,
-      default: undefined,
-    },
-  });
-
   const formRef = ref();
   const formDefault = {
-    unitId: undefined,
-    unitName: undefined,
-    supid: props.spuid,
+    enableMultiUnit: false,
+    spuId: undefined,
   };
 
   let form = reactive(_.cloneDeep(formDefault));
 
   const tableData = ref([]);
 
-  onMounted(() => {
-    querySpuUnit();
-  });
-
-  function querySpuUnit() {
-    if (form.spuid) {
-      let res = spuUnitApi.queryAll();
-      let data = res.data;
-      tableData.value = data;
+  function updateData(rawData) {
+    Object.assign(form, formDefault);
+    if (rawData) {
+      form.spuId = rawData.id;
+      form.enableMultiUnit = rawData.enableMultiUnit;
+      tableData.value = rawData.multiUnitList;
     }
   }
 
   //添加单位换算
   function addRow() {
     const newData = {
+      spuId:form.spuId,
       baseUnitId: undefined,
       baseUnitName: undefined,
       unitId: undefined,
@@ -135,13 +128,32 @@
     };
     tableData.value.push(newData);
   }
+
+  async function extraClick() {
+    SmartLoading.show();
+    try {
+      if (form.spuId) {
+        await spuApi.updateSpuUnit(form);
+      }
+      
+      message.success('操作成功');
+    } catch (err) {
+      smartSentry.captureError(err);
+    } finally {
+      SmartLoading.hide();
+    }
+  }
+
+  defineExpose({
+    updateData,
+  });
 </script>
 
 <style lang="less" scoped>
   .card-container {
     background-color: #fff;
     height: 100%;
-    margin-top: 15px; 
+    margin-top: 15px;
     margin-right: 15px;
 
     .title {
