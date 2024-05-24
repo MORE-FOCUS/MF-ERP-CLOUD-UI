@@ -11,16 +11,17 @@
           <template #icon>
             <SaveOutlined />
           </template>
-          保存</a-button
-        >
+          保存
+        </a-button>
       </template>
-      <a-form ref="formRef" :model="form" :rules="rules" layout="horizontal" :label-col="{ span: 2 }" :wrapper-col="{ span: 12 }">
+      <a-form ref="formRef" :model="form" :rules="rules" layout="horizontal" :label-col="{ span: 2 }" :wrapper-col="{ span: 22 }">
         <a-form-item label="多单位" name="enableMultiUnit">
           <a-switch v-model:checked="form.enableMultiUnit" />
         </a-form-item>
-        <div v-if="form.enableMultiUnit">
+        <a-form-item label="单位配置" name="enableMultiUnit" v-if="form.enableMultiUnit">
           <a-button type="primary" size="small" style="margin-bottom: 10px" @click="addRow">新增</a-button>
           <a-table
+            style="width: 100%"
             size="small"
             :dataSource="tableData"
             :columns="columns"
@@ -30,21 +31,23 @@
             :row-selection="{ selectedRowKeys: selectedRowKeyList, onChange: onSelectChange }"
           >
             <template #bodyCell="{ index, record, column }">
-              <template v-if="column.dataIndex === 'no'">
-                {{ index + 1 }}
+              <template v-if="column.dataIndex === 'exchange'">
+                <a-input-number v-model:value="exchange" />
+              </template>
+              <template v-if="column.dataIndex === 'unitName'">
+                <UnitSelect v-model:value="form.unitId" />
               </template>
               <template v-if="column.dataIndex === 'isDisabled'">
                 <a-switch :checked="!record.isDisabled" @change="updateDisabled(record.id, record.isDisabled)" />
               </template>
               <template v-if="column.dataIndex === 'action'">
                 <div class="smart-table-operate">
-                  <a-button @click="addSpu(record)" type="link" v-privilege="'business:spu-unit:update'">编辑</a-button>
-                  <a-button @click="deleteSpu(record)" danger type="link" v-privilege="'business:spu-unit:delete'">删除</a-button>
+                  <a-button @click="deleteRow(index)" danger type="link">删除</a-button>
                 </div>
               </template>
             </template>
           </a-table>
-        </div>
+        </a-form-item>
       </a-form>
     </a-card>
   </div>
@@ -61,30 +64,33 @@
 
   const columns = ref([
     {
-      title: '序号',
-      dataIndex: 'no',
-      width: 50,
-      align: 'center',
-    },
-    {
       title: '基础单位',
       dataIndex: 'baseUnitName',
       align: 'center',
+      width: 140,
     },
     {
       title: '辅助单位',
       dataIndex: 'unitName',
       align: 'center',
+      width: 140,
     },
     {
       title: '换算关系',
       dataIndex: 'exchange',
+      align: 'center',
+      width: 140,
+    },
+    {
+      title: '备注',
+      dataIndex: 'remark',
       align: 'center',
     },
     {
       title: '启用',
       dataIndex: 'isDisabled',
       align: 'center',
+      width: 120,
     },
     {
       title: '操作',
@@ -108,25 +114,12 @@
   function updateData(rawData) {
     Object.assign(form, formDefault);
     if (rawData) {
+      form.baseUnitId = rawData.unitId;
+      form.baseUnitName = rawData.unitName;
       form.spuId = rawData.id;
       form.enableMultiUnit = rawData.enableMultiUnit;
       tableData.value = rawData.multiUnitList;
     }
-  }
-
-  //添加单位换算
-  function addRow() {
-    const newData = {
-      spuId:form.spuId,
-      baseUnitId: undefined,
-      baseUnitName: undefined,
-      unitId: undefined,
-      unitName: undefined,
-      exchange: 0,
-      isDisabled: false,
-      remark: undefined,
-    };
-    tableData.value.push(newData);
   }
 
   async function extraClick() {
@@ -135,13 +128,32 @@
       if (form.spuId) {
         await spuApi.updateSpuUnit(form);
       }
-      
+
       message.success('操作成功');
     } catch (err) {
       smartSentry.captureError(err);
     } finally {
       SmartLoading.hide();
     }
+  }
+
+  function addRow() {
+    const newRow = {
+      index: undefined,
+      spuId: form.spuId,
+      baseUnitId: form.baseUnitId,
+      baseUnitName: form.baseUnitName,
+      unitId: undefined,
+      unitName: undefined,
+      exchange: 0,
+      isDisabled: false,
+      remark: undefined,
+    };
+    tableData.value.push(newRow);
+  }
+
+  function deleteRow(index) {
+    tableData.value.splice(index);
   }
 
   defineExpose({
