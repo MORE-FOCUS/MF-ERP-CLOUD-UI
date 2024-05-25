@@ -1,4 +1,3 @@
-
 <!--
   * 单位下拉选择框
 -->
@@ -27,6 +26,9 @@
 
   const props = defineProps({
     value: [Number, Array],
+    label: {
+      type: String,
+    },
     placeholder: {
       type: String,
       default: '请选择',
@@ -38,7 +40,7 @@
     size: {
       type: String,
       default: 'default',
-    }
+    },
   });
 
   const emit = defineEmits(['update:value', 'change']);
@@ -49,8 +51,8 @@
   const unitList = ref([]);
   async function query() {
     try {
-      let params = {isDisabled:false};
-      
+      let params = { isDisabled: false };
+
       let resp = await unitApi.queryAll(params);
       unitList.value = resp.data;
     } catch (e) {
@@ -60,7 +62,7 @@
   onMounted(query);
 
   // =========== 选择 监听、事件 =============
-  
+
   const selectValue = ref(props.value);
   watch(
     () => props.value,

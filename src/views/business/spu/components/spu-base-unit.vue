@@ -32,13 +32,13 @@
           >
             <template #bodyCell="{ index, record, column }">
               <template v-if="column.dataIndex === 'exchange'">
-                <a-input-number v-model:value="exchange" />
+                <a-input-number v-model:value="record.exchange" @change="onExchangeChange(record)" />
               </template>
               <template v-if="column.dataIndex === 'unitName'">
-                <UnitSelect v-model:value="form.unitId" />
+                <UnitSelect v-model:value="record.unitId" @change="onUnitChange(record)" />
               </template>
               <template v-if="column.dataIndex === 'isDisabled'">
-                <a-switch :checked="!record.isDisabled" @change="updateDisabled(record.id, record.isDisabled)" />
+                <a-switch :checked="!record.isDisabled" v-model:value="record.isDisabled" @change="onDisabledChange(record)"/>
               </template>
               <template v-if="column.dataIndex === 'action'">
                 <div class="smart-table-operate">
@@ -54,18 +54,19 @@
 </template>
 
 <script setup>
-  import { ref, reactive, onMounted } from 'vue';
+  import { ref, reactive } from 'vue';
   import _ from 'lodash';
   import { spuApi } from '/src/api/business/spu/spu-api';
   import UnitSelect from '/@/components/business/unit-select/index.vue';
   import { message } from 'ant-design-vue';
   import { SmartLoading } from '/@/components/framework/smart-loading';
   import { smartSentry } from '/@/lib/smart-sentry';
+  import { unitApi } from '/src/api/business/unit/unit-api';
 
   const columns = ref([
     {
       title: '基础单位',
-      dataIndex: 'baseUnitName',
+      dataIndex: 'basicUnitName',
       align: 'center',
       width: 140,
     },
@@ -82,7 +83,7 @@
       width: 140,
     },
     {
-      title: '备注',
+      title: '说明',
       dataIndex: 'remark',
       align: 'center',
     },
@@ -105,6 +106,7 @@
   const formDefault = {
     enableMultiUnit: false,
     spuId: undefined,
+    multiUnitList: [],
   };
 
   let form = reactive(_.cloneDeep(formDefault));
@@ -120,12 +122,27 @@
       form.enableMultiUnit = rawData.enableMultiUnit;
       tableData.value = rawData.multiUnitList;
     }
+
+    queryUnit();
+  }
+
+  const unitList = ref([]);
+  async function queryUnit() {
+    try {
+      let params = { isDisabled: false };
+
+      let resp = await unitApi.queryAll(params);
+      unitList.value = resp.data;
+    } catch (e) {
+      smartSentry.captureError(e);
+    }
   }
 
   async function extraClick() {
     SmartLoading.show();
     try {
       if (form.spuId) {
+        form.multiUnitList = tableData.value;
         await spuApi.updateSpuUnit(form);
       }
 
@@ -141,11 +158,11 @@
     const newRow = {
       index: undefined,
       spuId: form.spuId,
-      baseUnitId: form.baseUnitId,
-      baseUnitName: form.baseUnitName,
+      basicUnitId: form.baseUnitId,
+      basicUnitName: form.baseUnitName,
       unitId: undefined,
       unitName: undefined,
-      exchange: 0,
+      exchange: 1,
       isDisabled: false,
       remark: undefined,
     };
@@ -154,6 +171,24 @@
 
   function deleteRow(index) {
     tableData.value.splice(index);
+  }
+
+  function onExchangeChange(record) {
+    if (record.unitId) {
+      record.unitName = unitList.value.find((item) => item.id === record.unitId).name;
+      record.remark = '1' + record.unitName + '/' + record.exchange + record.basicUnitName;
+    }
+  }
+
+  function onUnitChange(record) {
+    if (record.unitId) {
+      record.unitName = unitList.value.find((item) => item.id === record.unitId).name;
+      record.remark = '1' + record.unitName + '/' + record.exchange + record.basicUnitName;
+    }
+  }
+
+  function onDisabledChange(record){
+    record.isDisabled = !record.isDisabled;
   }
 
   defineExpose({

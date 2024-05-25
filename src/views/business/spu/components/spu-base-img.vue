@@ -15,38 +15,35 @@
         >
       </template>
       <a-form ref="formRef" :model="form" :rules="rules" layout="horizontal" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
-        <a-form-item label="编码" name="code">
-          <a-input placeholder="请输入编码"></a-input>
-        </a-form-item>
-        <a-form-item label="编码" name="code">
-          <a-input placeholder="请输入编码"></a-input>
-        </a-form-item>
-        <a-form-item label="编码" name="code">
-          <a-input placeholder="请输入编码"></a-input>
-        </a-form-item>
-        <a-form-item label="编码" name="code">
-          <a-input placeholder="请输入编码"></a-input>
-        </a-form-item>
-        <a-form-item label="编码" name="code">
-          <a-input placeholder="请输入编码"></a-input>
-        </a-form-item>
-        <a-form-item label="编码" name="code">
-          <a-input placeholder="请输入编码"></a-input>
-        </a-form-item>
-        <a-form-item label="编码" name="code">
-          <a-input placeholder="请输入编码"></a-input>
-        </a-form-item>
-        <a-form-item label="编码" name="code">
-          <a-input placeholder="请输入编码"></a-input>
-        </a-form-item>
+        <file-preview v-if="!$lodash.isEmpty(form.images)" :fileList="form.images" />
+        <span v-else>无</span>
       </a-form>
     </a-card>
   </div>
 </template>
 
 <script setup>
-  import { ref } from 'vue';
-  const rules = ref([]);
+  import { ref,reactive } from 'vue';
+  import _ from 'lodash';
+  import FilePreview from '/@/components/support/file-preview/index.vue';
+
+  const formRef = ref();
+  const formDefault = {
+    images:'',
+  };
+
+  let form = reactive(_.cloneDeep(formDefault));
+
+  function updateData(rawData) {
+    Object.assign(form, formDefault);
+    if (rawData) {
+      form.images = rawData.images;
+    }
+  }
+
+  defineExpose({
+    updateData,
+  });
 </script>
 
 <style lang="less" scoped>
