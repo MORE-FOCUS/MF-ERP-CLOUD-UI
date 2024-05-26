@@ -2,7 +2,7 @@
   * 商品表单
 -->
 <template>
-  <a-drawer :title="form.id ? '编辑' : '添加'" width="60%" :open="visible" @close="onClose">
+  <a-drawer :title="form.id ? '编辑' : '添加'" width="70%" :open="visible" @close="onClose" :maskClosable="false" :destroyOnClose="true">
     <div style="margin-top: -30px">
       <a-menu v-model:selectedKeys="selectedKeys" mode="horizontal" @select="onMenuSelect">
         <a-menu-item v-for="item in menuList" :key="item.key">{{ item.value }}</a-menu-item>
@@ -12,19 +12,19 @@
       <div id="container" @scroll="scrollChange" class="container">
         <SpuBase ref="spuBaseRef" />
         <!-- 商品单位 -->
-        <SpuBaseUnit ref="spuUnitRef"/>
-        <!-- 图片附件 -->
-        <SpuBaseImg></SpuBaseImg>
+        <SpuBaseUnit ref="spuUnitRef" />
         <!-- 商品特性 -->
-        <SpuSpecial></SpuSpecial>
+        <SpuSpecial ref="spuSpecialRef" />
+        <!-- 图片附件 -->
+        <SpuBaseImg ref="spuBaseImgRef" />
         <!-- 商品条码 -->
-        <SpuBarcode></SpuBarcode>
+        <SpuBarcode ref="spuBarcodeRef" />
         <!-- 价格管理 -->
-        <SpuPrice></SpuPrice>
+        <SpuPrice ref="spuPriceRef" />
         <!-- 期初库存 -->
-        <SpuStock></SpuStock>
+        <SpuStock ref="spuStockRef" />
         <!-- 库存预警 -->
-        <SpuStockWarn></SpuStockWarn>
+        <SpuStockWarn ref="spuStockWarnRef" />
       </div>
     </div>
     <!-- <div class="footer">
@@ -35,7 +35,7 @@
   </a-drawer>
 </template>
 <script setup>
-  import { ref, reactive } from 'vue';
+  import { ref, reactive, nextTick } from 'vue';
   import { message } from 'ant-design-vue';
   import { SmartLoading } from '/@/components/framework/smart-loading';
   import _ from 'lodash';
@@ -55,14 +55,6 @@
 
   const selectedKeys = ref(['base']);
 
-  // 组件ref
-  const formRef = ref();
-
-  const defaultForm = {
-    //商品id
-    id: undefined,
-  };
-
   //菜单
   const menuList = ref([
     {
@@ -74,12 +66,12 @@
       value: '商品单位',
     },
     {
-      key: 'baseImg',
-      value: '商品图片',
-    },
-    {
       key: 'special',
       value: '商品特性',
+    },
+    {
+      key: 'baseImg',
+      value: '商品图片',
     },
     {
       key: 'barcode',
@@ -99,6 +91,13 @@
     },
   ]);
 
+
+  // 组件ref
+  const formRef = ref();
+
+  const defaultForm = {
+    id: undefined,
+  };
   let form = reactive({ ...defaultForm });
 
   // 是否展示抽屉
@@ -106,20 +105,36 @@
 
   const spuBaseRef = ref();
   const spuUnitRef = ref();
+  const spuBaseImgRef = ref();
+  const spuSpecialRef = ref();
+  const spuBarcodeRef = ref();
+  const spuPriceRef = ref();
+  const spuStockRef = ref();
+  const spuStockWarnRef = ref();
+
   function showDrawer(data) {
     visible.value = true;
-    if (data && data.id) {
-      form.id = data.id;
-      updateSpu();
-    } else {
-      addSpu();
-    }
+
+    nextTick(() => {
+      if (data && data.id) {
+        form.id = data.id;
+        updateSpu();
+      } else {
+        addSpu();
+      }
+    });
   }
 
   //新增spu
-  function addSpu() {
+  async function addSpu() {
     spuBaseRef.value.updateData();
     spuUnitRef.value.updateData();
+    spuBaseImgRef.value.updateData();
+    spuSpecialRef.value.updateData();
+    spuBarcodeRef.value.updateData();
+    spuPriceRef.value.updateData();
+    spuStockRef.value.updateData();
+    spuStockWarnRef.value.updateData();
   }
 
   //编辑spu
@@ -127,6 +142,12 @@
     const res = await spuApi.queryDetail(form.id);
     spuBaseRef.value.updateData(res.data);
     spuUnitRef.value.updateData(res.data);
+    spuBaseImgRef.value.updateData(res.data);
+    spuSpecialRef.value.updateData(res.data);
+    spuBarcodeRef.value.updateData(res.data);
+    spuPriceRef.value.updateData(res.data);
+    spuStockRef.value.updateData(res.data);
+    spuStockWarnRef.value.updateData(res.data);
   }
 
   function onClose() {

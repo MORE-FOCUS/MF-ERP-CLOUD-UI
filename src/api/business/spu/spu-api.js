@@ -20,6 +20,16 @@ export const spuApi = {
     return postRequest('/spu/unit/update', param);
   },
 
+  //更新商品图片
+  updateSpuImages: (param) => {
+    return postRequest('/spu/images/update', param);
+  },
+
+  //更新商品属性
+  updateSpuSpecial: (param) => {
+    return postRequest('/spu/special/update', param);
+  },
+
   // 删除
   deleteSpu: (id) => {
     return getRequest(`/spu/delete/${id}`);

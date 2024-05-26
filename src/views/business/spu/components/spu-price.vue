@@ -6,7 +6,7 @@
           <span class="smart-margin-left10">商品价格</span>
         </div>
       </template>
-      <template #extra>
+      <template #extra v-if="form.spuId">
         <a-button type="link" @click="extraClick">
           <template #icon>
             <SaveOutlined />
@@ -46,8 +46,30 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue';
+  import { ref, reactive } from 'vue';
+  import _ from 'lodash';
+  import { SmartLoading } from '/@/components/framework/smart-loading';
+  import { smartSentry } from '/@/lib/smart-sentry';
+  import { message } from 'ant-design-vue';
+  import { spuApi } from '/src/api/business/spu/spu-api';
   const rules = ref([]);
+  const formRef = ref();
+  const formDefault = {
+    spuId: undefined,
+  };
+
+  let form = reactive(_.cloneDeep(formDefault));
+
+  function updateData(rawData) {
+    Object.assign(form, formDefault);
+    if (rawData) {
+      form.spuId = rawData.id;
+    }
+  }
+
+  defineExpose({
+    updateData,
+  })
 </script>
 
 <style lang="less" scoped>

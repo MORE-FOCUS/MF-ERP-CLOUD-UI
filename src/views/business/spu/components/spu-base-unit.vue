@@ -6,7 +6,7 @@
           <span class="smart-margin-left10">商品单位</span>
         </div>
       </template>
-      <template #extra>
+      <template #extra v-if="form.spuId">
         <a-button type="link" @click="extraClick">
           <template #icon>
             <SaveOutlined />
@@ -104,8 +104,8 @@
 
   const formRef = ref();
   const formDefault = {
-    enableMultiUnit: false,
     spuId: undefined,
+    enableMultiUnit: false,
     multiUnitList: [],
   };
 

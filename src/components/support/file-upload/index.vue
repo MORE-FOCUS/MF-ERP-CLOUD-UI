@@ -80,7 +80,7 @@ const props = defineProps({
 });
 
 // 图片类型的后缀名
-const imgFileType = ['jpg', 'jpeg', 'png', 'gif'];
+const imgFileType = ['jpg', 'jpeg', 'png'];
 
 // 重新修改图片展示字段
 const files = computed(() => {
