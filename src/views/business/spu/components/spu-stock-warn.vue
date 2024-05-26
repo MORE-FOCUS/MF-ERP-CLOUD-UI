@@ -54,6 +54,7 @@
   import { spuApi } from '/src/api/business/spu/spu-api';
   const rules = ref([]);
   const formRef = ref();
+  
   const formDefault = {
     spuId: undefined,
   };

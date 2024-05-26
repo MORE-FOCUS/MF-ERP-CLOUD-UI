@@ -113,7 +113,7 @@
       } else {
         await spuApi.addSpuBase(form);
       }
-      message.success('操作成功');
+      message.success('基本信息保存成功');
     } catch (err) {
       smartSentry.captureError(err);
     } finally {

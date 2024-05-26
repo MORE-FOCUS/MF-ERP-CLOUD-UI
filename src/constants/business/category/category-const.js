@@ -14,6 +14,10 @@ export const CATEGORY_TYPE_ENUM = {
     value: 3,
     desc: '仓库',
   },
+  ATTRS: {
+    value: 4,
+    desc: '仓库',
+  },
 };
 
 export default {

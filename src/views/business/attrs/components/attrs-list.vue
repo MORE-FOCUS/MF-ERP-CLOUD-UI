@@ -30,7 +30,7 @@
     <!---------- 表格操作行 begin ----------->
     <a-row class="smart-table-btn-block">
       <div class="smart-table-operate-block">
-        <a-button @click="addSupplier" type="primary" size="small">
+        <a-button @click="addAttrs" type="primary" size="small">
           <template #icon>
             <PlusOutlined />
           </template>
@@ -69,8 +69,8 @@
         </template>
         <template v-if="column.dataIndex === 'action'">
           <div class="smart-table-operate">
-            <a-button @click="editSupplier(record)" type="link">编辑</a-button>
-            <a-button @click="deleteSupplier(record)" danger type="link">删除</a-button>
+            <a-button @click="editAttrs(record)" type="link">编辑</a-button>
+            <a-button @click="deleteAttrs(record)" danger type="link">删除</a-button>
           </div>
         </template>
       </template>
@@ -93,16 +93,16 @@
       />
     </div>
 
-    <SupplierFormModel ref="supplierFormModelRef" @reloadList="queryData" />
+    <AttrsFormModel ref="attrsFormModelRef" @reloadList="queryData" />
   </a-card>
 </template>
 <script setup>
   import { onMounted, reactive, ref } from 'vue';
   import { message, Modal } from 'ant-design-vue';
   import { SmartLoading } from '/@/components/framework/smart-loading';
-  import { supplierApi } from '/@/api/business/supplier/supplier-api';
+  import { attrsApi } from '/@/api/business/attrs/attrs-api';
   import { smartSentry } from '/@/lib/smart-sentry';
-  import SupplierFormModel from './supplier-form-model.vue';
+  import AttrsFormModel from './attrs-form-model.vue';
   import { TABLE_ID_CONST } from '/@/constants/support/table-id-const';
   import TableOperator from '/@/components/support/table-operator/index.vue';
   import { CATEGORY_TYPE_ENUM } from '/@/constants/business/category/category-const';
@@ -116,32 +116,8 @@
       align: 'center',
     },
     {
-      title: '编码',
-      dataIndex: 'code',
-      ellipsis: true,
-      align: 'center',
-    },
-    {
       title: '名称',
       dataIndex: 'name',
-      ellipsis: true,
-      align: 'center',
-    },
-    {
-      title: '联系人',
-      dataIndex: 'contacts',
-      ellipsis: true,
-      align: 'center',
-    },
-    {
-      title: '期初欠款(元)',
-      dataIndex: 'originDebt',
-      ellipsis: true,
-      align: 'center',
-    },
-    {
-      title: '应付欠款(元)',
-      dataIndex: 'debt',
       ellipsis: true,
       align: 'center',
     },
@@ -169,7 +145,6 @@
   const queryFormState = {
     pageNum: 1,
     pageSize: 10,
-    categoryId: props.selectedCategoryId,
   };
   // 查询表单form
   const queryForm = reactive({ ...queryFormState });
@@ -192,7 +167,8 @@
   async function queryData() {
     tableLoading.value = true;
     try {
-      let queryResult = await supplierApi.queryPage(queryForm);
+      queryForm.categoryId = props.selectedCategoryId;
+      let queryResult = await attrsApi.queryPage(queryForm);
       tableData.value = queryResult.data.list;
       total.value = queryResult.data.total;
     } catch (e) {
@@ -205,30 +181,30 @@
   onMounted(queryData);
 
   // ---------------------------- 添加/修改 ----------------------------
-  const supplierFormModelRef = ref();
+  const attrsFormModelRef = ref();
 
   //新增
-  function addSupplier() {
+  function addAttrs() {
     let data = {
       categoryId: props.selectedCategoryId,
-      categoryType: CATEGORY_TYPE_ENUM.SUPPLIER.value,
+      categoryType: CATEGORY_TYPE_ENUM.ATTRS.value,
     };
     showForm(data);
   }
 
   //编辑
-  function editSupplier(data) {
-    data.categoryType = CATEGORY_TYPE_ENUM.SUPPLIER.value;
+  function editAttrs(data) {
+    data.categoryType = CATEGORY_TYPE_ENUM.ATTRS.value;
     showForm(data);
   }
 
   function showForm(data) {
-    supplierFormModelRef.value.showDrawer(data);
+    attrsFormModelRef.value.showDrawer(data);
   }
 
   // ---------------------------- 单个删除 ----------------------------
   //确认删除
-  function deleteSupplier(data) {
+  function deleteAttrs(data) {
     Modal.confirm({
       title: '提示',
       content: '确定要删除吗?',
@@ -246,7 +222,7 @@
   async function requestDelete(data) {
     SmartLoading.show();
     try {
-      await supplierApi.delete(data.id);
+      await attrsApi.delete(data.id);
       message.success('删除成功');
       queryData();
     } catch (e) {
@@ -284,7 +260,7 @@
   async function requestBatchDelete() {
     try {
       SmartLoading.show();
-      await supplierApi.batchDelete(selectedRowKeyList.value);
+      await attrsApi.batchDelete(selectedRowKeyList.value);
       message.success('删除成功');
       queryData();
     } catch (e) {

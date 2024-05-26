@@ -55,7 +55,10 @@
         :row-selection="{ selectedRowKeys: selectedRowKeyList, onChange: onSelectChange }"
         bordered
       >
-        <template #bodyCell="{ record, column }">
+        <template #bodyCell="{ record, column, index }">
+          <template v-if="column.dataIndex === 'no'">
+            {{ index + 1 }}
+          </template>
           <template v-if="column.dataIndex === 'action'">
             <a-button @click="addOrUpdateValue(record)" type="link">编辑</a-button>
           </template>
@@ -89,7 +92,7 @@
   import { SmartLoading } from '/@/components/framework/smart-loading';
   import { Modal } from 'ant-design-vue';
   import { message } from 'ant-design-vue';
-import { smartSentry } from '/@/lib/smart-sentry';
+  import { smartSentry } from '/@/lib/smart-sentry';
 
   // 是否展示抽屉
   const visible = ref(false);
@@ -108,31 +111,37 @@ import { smartSentry } from '/@/lib/smart-sentry';
 
   const columns = reactive([
     {
-      title: 'ID',
-      width: 80,
-      dataIndex: 'dictValueId',
+      title: '序号',
+      dataIndex: 'no',
+      width: 50,
+      align: 'center',
     },
     {
       title: '编码',
       dataIndex: 'valueCode',
+      align: 'center',
     },
     {
       title: '名称',
       dataIndex: 'valueName',
+      align: 'center',
     },
     {
       title: '排序',
       width: 80,
-      dataIndex: 'sort',
+      dataIndex: 'sortValue',
+      align: 'center',
     },
     {
       title: '备注',
       dataIndex: 'remark',
+      align: 'center',
     },
     {
       title: '操作',
       dataIndex: 'action',
       fixed: 'right',
+      align: 'center',
     },
   ]);
 

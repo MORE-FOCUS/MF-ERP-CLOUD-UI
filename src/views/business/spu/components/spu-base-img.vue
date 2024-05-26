@@ -66,7 +66,7 @@
         await spuApi.updateSpuImages(form);
       }
 
-      message.success('操作成功');
+      message.success('商品图片保存成功');
     } catch (err) {
       smartSentry.captureError(err);
     } finally {
