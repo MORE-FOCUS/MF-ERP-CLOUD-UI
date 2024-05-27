@@ -33,7 +33,7 @@ export const appDefaultConfig =
     language: 'zh_CN',
     layout: 'side',
     pageWidth: '99%',
-    sideMenuWidth: 180,
+    sideMenuWidth: 160,
     sideMenuTheme: 'light',
     pageTagFlag: true,
     breadCrumbFlag: true,

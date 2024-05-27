@@ -31,17 +31,17 @@
             </div>
           </div>
         </a-form-item>
-        <a-form-item label="辅助属性" name="code">
+        <a-form-item label="辅助属性" name="enableAttr">
           <a-switch v-model:checked="form.enableAttr" />
         </a-form-item>
         <a-form-item label="属性配置" v-if="form.enableAttr">
-          <a-checkbox-group v-model:value="checkedAttrsList.value" :options="attrsList" />
+          <a-checkbox-group v-model:value="checkedCategoryList" :options="categoryList" />
         </a-form-item>
-        <a-form-item :label="checkedAttrs" v-for="checkedAttrs in checkedAttrsList.value">
-          <a-checkbox-group v-model:value="checkedAttrsList.value" :options="attrsList" />
-        </a-form-item>
-        <a-form-item label="属性组合">
-          <a-button type="primary" size="small" style="margin-bottom: 10px" @click="addRow">重新生成</a-button>
+        <!-- <a-form-item :label="checkedAttrs" v-for="checkedAttrs in checkedAttrsList.value" v-if="form.enableAttr">
+          <a-checkbox-group v-model:value="attrsList[index].checkedAttrsList" :options="attrsList" />
+        </a-form-item> -->
+        <a-form-item label="属性组合" v-if="form.enableAttr">
+          <!-- <a-button type="primary" size="small" style="margin-bottom: 10px" @click="addRow">重新生成</a-button>
           <a-table
             style="width: 100%"
             size="small"
@@ -68,7 +68,7 @@
                 </div>
               </template>
             </template>
-          </a-table>
+          </a-table> -->
         </a-form-item>
       </a-form>
     </a-card>
@@ -84,10 +84,12 @@
   import { spuApi } from '/src/api/business/spu/spu-api';
   import DictSelect from '/@/components/support/dict-select/index.vue';
   import { categoryApi } from '/src/api/business/category/category-api';
+  import { attrsApi } from '/src/api/business/attrs/attrs-api';
   import { CATEGORY_TYPE_ENUM } from '/@/constants/business/category/category-const';
 
-  const attrsList = ref([]);
-  const checkedAttrsList = ref([]);
+  const originalCategoryList = ref([]);
+  const categoryList = ref([]);
+  const checkedCategoryList = ref([]);
 
   const formRef = ref();
   const formDefault = {
@@ -115,28 +117,60 @@
     () => form.enableAttr,
     (newValue) => {
       if (newValue) {
-        getAttrsList();
+        getCategoryList();
       }
     }
   );
 
-  watch(
-    () => checkedAttrsList.value,
-    (newValue) => {
-      debugger;
-    }
-  );
-
-  //获取属性列表
-  async function getAttrsList() {
+  //获取辅助属性类别
+  async function getCategoryList() {
     let params = {
       isDisabled: false,
       isDeleted: false,
       categoryType: CATEGORY_TYPE_ENUM.ATTRS.value,
     };
     const res = await categoryApi.queryAll(params);
+    originalCategoryList.value = res.data;
+    categoryList.value = res.data.map((item) => item.categoryName);
+  }
 
-    attrsList.value = res.data.map((item) => item.categoryName);
+  watch(
+    () => checkedCategoryList.value,
+    (newValue) => {
+      buildAttrsList(newValue);
+    }
+  );
+
+  const attrsList = ref([]);
+  function buildAttrsList(categoryList) {
+    categoryList.forEach((categoryName) => {
+      attrsList.value.push(buildAttrs(categoryName));
+      debugger;
+    });
+  }
+
+  function buildAttrs(categoryName) {
+    const categoryAttrsObj = {
+      categoryName: categoryName,
+      attrsList: [],
+      checkedAttrsList: [],
+    };
+
+    const categoryId = originalCategoryList.value.find((c) => c.categoryName === categoryName).categoryId;
+    categoryAttrsObj.attrsList = getAttrs(categoryId);
+
+    //获取属性
+    return categoryAttrsObj;
+  }
+
+  async function getAttrs(categoryId) {
+    let params = {
+      isDisabled: false,
+      isDeleted: false,
+      categoryId: categoryId,
+    };
+    const res = await attrsApi.queryAll(params);
+    return res.data.map((item) => item.categoryName);
   }
 
   async function extraClick() {

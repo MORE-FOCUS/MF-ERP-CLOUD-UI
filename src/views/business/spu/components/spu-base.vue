@@ -27,7 +27,7 @@
         <a-form-item label="商品分类" name="categoryId">
           <CategoryTreeSelect v-model:value="form.categoryId" placeholder="请选择分类" :categoryType="CATEGORY_TYPE_ENUM.SPU.value" width="50%" />
         </a-form-item>
-        <a-form-item label="基础单位" name="unitId">
+        <a-form-item label="计量单位" name="unitId">
           <UnitSelect v-model:value="form.unitId" width="50%" />
         </a-form-item>
         <a-form-item label="商品品牌" name="brand">

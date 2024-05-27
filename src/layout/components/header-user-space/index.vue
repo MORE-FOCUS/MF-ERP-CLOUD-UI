@@ -10,7 +10,7 @@
         <template #icon><setting-outlined /></template>
       </a-button>
       <a-button type="text" @click="showHelpDoc" v-if="!showHelpDocFlag" class="operate-icon">
-        <template #icon><question-circle-outlined/></template>
+        <template #icon><CompassOutlined /></template>
       </a-button>
     </div>
     <div class="user-space-item">
