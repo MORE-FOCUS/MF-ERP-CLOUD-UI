@@ -37,11 +37,11 @@
         <a-form-item label="属性配置" v-if="form.enableAttr">
           <a-checkbox-group v-model:value="checkedCategoryList" :options="categoryList" />
         </a-form-item>
-        <!-- <a-form-item :label="checkedAttrs" v-for="checkedAttrs in checkedAttrsList.value" v-if="form.enableAttr">
-          <a-checkbox-group v-model:value="attrsList[index].checkedAttrsList" :options="attrsList" />
-        </a-form-item> -->
+        <a-form-item :label="item.categoryName" v-for="item in categoryAttrsList" v-if="form.enableAttr">
+          <a-checkbox-group v-model:value="item.checkedAttrsList" :options="item.attrsList" />
+        </a-form-item>
         <a-form-item label="属性组合" v-if="form.enableAttr">
-          <!-- <a-button type="primary" size="small" style="margin-bottom: 10px" @click="addRow">重新生成</a-button>
+          <a-button type="primary" size="small" style="margin-bottom: 10px" @click="reBuild">重新生成</a-button>
           <a-table
             style="width: 100%"
             size="small"
@@ -68,7 +68,7 @@
                 </div>
               </template>
             </template>
-          </a-table> -->
+          </a-table>
         </a-form-item>
       </a-form>
     </a-card>
@@ -90,6 +90,37 @@
   const originalCategoryList = ref([]);
   const categoryList = ref([]);
   const checkedCategoryList = ref([]);
+  const categoryAttrsList = ref([]);
+  const tableData = ref();
+
+  const columns = ref([
+    {
+      title: '序号',
+      dataIndex: 'no',
+      width: 50,
+      align: 'center',
+      fixed: 'left'
+    },
+    {
+      title: '辅助属性',
+      dataIndex: 'attrs',
+      align: 'center',
+      width: 100,
+    },
+    {
+      title: 'SKU编码',
+      dataIndex: 'skuid',
+      align: 'center',
+      width: 200,
+    },
+    {
+      title: '操作',
+      dataIndex: 'action',
+      fixed: 'right',
+      align: 'center',
+      width: 100,
+    },
+  ]);
 
   const formRef = ref();
   const formDefault = {
@@ -118,6 +149,9 @@
     (newValue) => {
       if (newValue) {
         getCategoryList();
+      } else {
+        categoryList.value = [];
+        originalCategoryList.value = [];
       }
     }
   );
@@ -136,41 +170,55 @@
 
   watch(
     () => checkedCategoryList.value,
-    (newValue) => {
-      buildAttrsList(newValue);
+    (checkedCategoryList) => {
+      categoryAttrsList.value = [];
+      checkedCategoryList.forEach((categoryName) => {
+        buildAttrs(categoryName);
+      });
     }
   );
 
-  const attrsList = ref([]);
-  function buildAttrsList(categoryList) {
-    categoryList.forEach((categoryName) => {
-      attrsList.value.push(buildAttrs(categoryName));
-      debugger;
-    });
-  }
+  async function buildAttrs(categoryName) {
+    const categoryId = originalCategoryList.value.find((c) => c.categoryName === categoryName).categoryId;
 
-  function buildAttrs(categoryName) {
     const categoryAttrsObj = {
+      categoryId: categoryId,
       categoryName: categoryName,
       attrsList: [],
       checkedAttrsList: [],
     };
 
-    const categoryId = originalCategoryList.value.find((c) => c.categoryName === categoryName).categoryId;
-    categoryAttrsObj.attrsList = getAttrs(categoryId);
-
-    //获取属性
-    return categoryAttrsObj;
-  }
-
-  async function getAttrs(categoryId) {
     let params = {
       isDisabled: false,
       isDeleted: false,
       categoryId: categoryId,
     };
     const res = await attrsApi.queryAll(params);
-    return res.data.map((item) => item.categoryName);
+    categoryAttrsObj.attrsList = res.data.map((item) => item.name);
+
+    categoryAttrsList.value.push(categoryAttrsObj);
+  }
+
+  
+  function reBuild() {
+    const columnTitle = ['序号', '辅助属性', 'SKU编码'];
+
+    //组装columns
+    //序号 颜色 尺码 辅助属性 SKU编码
+    columnTitle.splice(1, 0, ...checkedCategoryList.value);
+    columns.value = columnTitle.map((item) =>
+      Object.assign(
+        {},
+        {
+          title: item,
+          dataIndex: item,
+          ellipsis: true,
+          align: 'center',
+        }
+      )
+    );
+
+    //组装tableData
   }
 
   async function extraClick() {
