@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-  import { computed, onMounted, ref, watch } from 'vue';
+  import { onMounted, ref, watch } from 'vue';
   import { dictApi } from '/src/api/support/dict-api';
 
   const props = defineProps({

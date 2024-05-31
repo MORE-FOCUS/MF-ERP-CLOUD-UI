@@ -53,14 +53,8 @@
             :row-selection="{ selectedRowKeys: selectedRowKeyList, onChange: onSelectChange }"
           >
             <template #bodyCell="{ index, record, column }">
-              <template v-if="column.dataIndex === 'exchange'">
-                <a-input-number v-model:value="record.exchange" @change="onExchangeChange(record)" />
-              </template>
-              <template v-if="column.dataIndex === 'unitName'">
-                <UnitSelect v-model:value="record.unitId" @change="onUnitChange(record)" />
-              </template>
-              <template v-if="column.dataIndex === 'isDisabled'">
-                <a-switch :checked="!record.isDisabled" v-model:value="record.isDisabled" @change="onDisabledChange(record)" />
+              <template v-if="column.dataIndex === 'skuNo'">
+                <a-input v-model:value="record.skuNo" />
               </template>
               <template v-if="column.dataIndex === 'action'">
                 <div class="smart-table-operate">
@@ -76,7 +70,7 @@
 </template>
 
 <script setup>
-  import { ref, reactive, watch } from 'vue';
+  import { ref, reactive, watch, computed } from 'vue';
   import _ from 'lodash';
   import { SmartLoading } from '/@/components/framework/smart-loading';
   import { smartSentry } from '/@/lib/smart-sentry';
@@ -88,7 +82,6 @@
   import { CATEGORY_TYPE_ENUM } from '/@/constants/business/category/category-const';
 
   const originalCategoryList = ref([]);
-  const categoryList = ref([]);
   const checkedCategoryList = ref([]);
   const categoryAttrsList = ref([]);
   const tableData = ref();
@@ -99,7 +92,7 @@
       dataIndex: 'no',
       width: 50,
       align: 'center',
-      fixed: 'left'
+      fixed: 'left',
     },
     {
       title: '辅助属性',
@@ -109,7 +102,7 @@
     },
     {
       title: 'SKU编码',
-      dataIndex: 'skuid',
+      dataIndex: 'skuNo',
       align: 'center',
       width: 200,
     },
@@ -148,58 +141,70 @@
     () => form.enableAttr,
     (newValue) => {
       if (newValue) {
-        getCategoryList();
-      } else {
-        categoryList.value = [];
-        originalCategoryList.value = [];
+        queryCategoryList();
       }
     }
   );
 
+  const categoryList = computed(() => originalCategoryList.value.map((item) => item.categoryName));
+
   //获取辅助属性类别
-  async function getCategoryList() {
+  async function queryCategoryList() {
     let params = {
       isDisabled: false,
       isDeleted: false,
       categoryType: CATEGORY_TYPE_ENUM.ATTRS.value,
     };
+
     const res = await categoryApi.queryAll(params);
-    originalCategoryList.value = res.data;
-    categoryList.value = res.data.map((item) => item.categoryName);
+    if (res.data) {
+      Promise.all(res.data.map((category) => queryAttrsList(category))).then((value) => {
+        originalCategoryList.value = value;
+      });
+    } else {
+      originalCategoryList.value = [];
+    }
+  }
+
+  //属性
+  async function queryAttrsList(category) {
+    let params = {
+      isDisabled: false,
+      isDeleted: false,
+      categoryId: category.categoryId,
+    };
+
+    const res = await attrsApi.queryAll(params);
+
+    return {
+      categoryId: category.categoryId,
+      categoryName: category.categoryName,
+      attrsList: res.data,
+      checkedAttrsList: [],
+    };
   }
 
   watch(
     () => checkedCategoryList.value,
     (checkedCategoryList) => {
-      categoryAttrsList.value = [];
-      checkedCategoryList.forEach((categoryName) => {
-        buildAttrs(categoryName);
-      });
+      buildAttrs(checkedCategoryList);
     }
   );
 
-  async function buildAttrs(categoryName) {
-    const categoryId = originalCategoryList.value.find((c) => c.categoryName === categoryName).categoryId;
-
-    const categoryAttrsObj = {
-      categoryId: categoryId,
-      categoryName: categoryName,
-      attrsList: [],
-      checkedAttrsList: [],
-    };
-
-    let params = {
-      isDisabled: false,
-      isDeleted: false,
-      categoryId: categoryId,
-    };
-    const res = await attrsApi.queryAll(params);
-    categoryAttrsObj.attrsList = res.data.map((item) => item.name);
-
-    categoryAttrsList.value.push(categoryAttrsObj);
+  function buildAttrs(checkedCategoryList) {
+    categoryAttrsList.value = [];
+    originalCategoryList.value.forEach((category) => {
+      if (checkedCategoryList.includes(category.categoryName)) {
+        categoryAttrsList.value.push({
+          categoryId: category.categoryId,
+          categoryName: category.categoryName,
+          attrsList: category.attrsList.map((a) => a.name),
+          checkedAttrsList: [],
+        });
+      }
+    });
   }
 
-  
   function reBuild() {
     const columnTitle = ['序号', '辅助属性', 'SKU编码'];
 
