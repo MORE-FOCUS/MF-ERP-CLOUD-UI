@@ -38,23 +38,26 @@
           <a-checkbox-group v-model:value="checkedCategoryList" :options="categoryList" />
         </a-form-item>
         <a-form-item :label="item.categoryName" v-for="item in categoryAttrsList" v-if="form.enableAttr">
-          <a-checkbox-group v-model:value="item.checkedAttrsList" :options="item.attrsList" />
+          <a-checkbox-group v-model:value="item.selectedAttrsNameList" :options="item.attrsNameList" @change="attrsChanged(item)" />
         </a-form-item>
         <a-form-item label="属性组合" v-if="form.enableAttr">
-          <a-button type="primary" size="small" style="margin-bottom: 10px" @click="reBuild">重新生成</a-button>
+          <a-button type="primary" size="small" style="margin-bottom: 10px" @click="confirmReBuildColumns">重新生成</a-button>
           <a-table
             style="width: 100%"
             size="small"
             :dataSource="tableData"
-            :columns="columns"
+            :columns="dynamicColumns"
             rowKey="id"
             bordered
             :pagination="false"
             :row-selection="{ selectedRowKeys: selectedRowKeyList, onChange: onSelectChange }"
           >
             <template #bodyCell="{ index, record, column }">
+              <template v-if="column.dataIndex === 'no'">
+                {{ index + 1 }}
+              </template>
               <template v-if="column.dataIndex === 'skuNo'">
-                <a-input v-model:value="record.skuNo" />
+                <a-input v-model:value="record.skuNo" allowClear="true" />
               </template>
               <template v-if="column.dataIndex === 'action'">
                 <div class="smart-table-operate">
@@ -74,19 +77,22 @@
   import _ from 'lodash';
   import { SmartLoading } from '/@/components/framework/smart-loading';
   import { smartSentry } from '/@/lib/smart-sentry';
-  import { message } from 'ant-design-vue';
+  import { message, Modal } from 'ant-design-vue';
   import { spuApi } from '/src/api/business/spu/spu-api';
   import DictSelect from '/@/components/support/dict-select/index.vue';
   import { categoryApi } from '/src/api/business/category/category-api';
   import { attrsApi } from '/src/api/business/attrs/attrs-api';
   import { CATEGORY_TYPE_ENUM } from '/@/constants/business/category/category-const';
+  import { serialNumberApi } from '/@/api/support/serial-number-api';
+  import { SERIAL_NUMBER_ID_ENUM } from '/@/constants/support/serial-number-const';
 
   const originalCategoryList = ref([]);
   const checkedCategoryList = ref([]);
   const categoryAttrsList = ref([]);
-  const tableData = ref();
+  const tableData = ref([]);
+  const dynamicColumns = ref([]);
 
-  const columns = ref([
+  const columns = [
     {
       title: '序号',
       dataIndex: 'no',
@@ -96,7 +102,7 @@
     },
     {
       title: '辅助属性',
-      dataIndex: 'attrs',
+      dataIndex: 'attrsName',
       align: 'center',
       width: 100,
     },
@@ -113,7 +119,7 @@
       align: 'center',
       width: 100,
     },
-  ]);
+  ];
 
   const formRef = ref();
   const formDefault = {
@@ -150,6 +156,8 @@
 
   //获取辅助属性类别
   async function queryCategoryList() {
+    originalCategoryList.value = [];
+
     let params = {
       isDisabled: false,
       isDeleted: false,
@@ -161,8 +169,6 @@
       Promise.all(res.data.map((category) => queryAttrsList(category))).then((value) => {
         originalCategoryList.value = value;
       });
-    } else {
-      originalCategoryList.value = [];
     }
   }
 
@@ -180,56 +186,124 @@
       categoryId: category.categoryId,
       categoryName: category.categoryName,
       attrsList: res.data,
-      checkedAttrsList: [],
+      selectedAttrsList: [],
+      attrsNameList: res.data.map((a) => a.name),
+      selectedAttrsNameList: [],
     };
   }
 
   watch(
     () => checkedCategoryList.value,
     (checkedCategoryList) => {
-      buildAttrs(checkedCategoryList);
+      categoryAttrsList.value = originalCategoryList.value.filter((category) => checkedCategoryList.includes(category.categoryName));
     }
   );
 
-  function buildAttrs(checkedCategoryList) {
-    categoryAttrsList.value = [];
-    originalCategoryList.value.forEach((category) => {
-      if (checkedCategoryList.includes(category.categoryName)) {
-        categoryAttrsList.value.push({
-          categoryId: category.categoryId,
-          categoryName: category.categoryName,
-          attrsList: category.attrsList.map((a) => a.name),
-          checkedAttrsList: [],
-        });
-      }
+  //重新生成
+  function confirmReBuildColumns() {
+    Modal.confirm({
+      title: '提示',
+      content: '重新生成会清空已经生成的数据,是否继续?',
+      okText: '继续',
+      okType: 'danger',
+      onOk() {
+        reBuildColumns();
+      },
+      cancelText: '取消',
+      onCancel() {},
     });
   }
 
-  function reBuild() {
-    const columnTitle = ['序号', '辅助属性', 'SKU编码'];
+  //重新生成
+  async function reBuildColumns() {
+    dynamicColumns.value = [];
+    tableData.value = [];
+    Object.assign(dynamicColumns.value, columns);
 
-    //组装columns
-    //序号 颜色 尺码 辅助属性 SKU编码
-    columnTitle.splice(1, 0, ...checkedCategoryList.value);
-    columns.value = columnTitle.map((item) =>
+    const attrsColumns = checkedCategoryList.value.map((item, index) =>
       Object.assign(
         {},
         {
           title: item,
-          dataIndex: item,
+          dataIndex: 'attrs' + index,
           ellipsis: true,
           align: 'center',
+          width: 100,
         }
       )
     );
 
+    dynamicColumns.value.splice(1, 0, ...attrsColumns);
+
+    //笛卡尔乘积，计算规格
+    let cartesian = (arr) => {
+      if (arr.length < 2) return arr[0] || [];
+      return [].reduce.call(arr, function (col, set) {
+        let res = [];
+        col.forEach((c) => {
+          set.forEach((s) => {
+            let t = [].concat(Array.isArray(c) ? c : [c]);
+            t.push(s);
+            res.push(t);
+          });
+        });
+        return res;
+      });
+    };
+
+    const selectedAttrsList = [];
+    categoryAttrsList.value.forEach((item) => {
+      if (item.selectedAttrsList.length > 0) {
+        item.selectedAttrsList.forEach((attrs) => {
+          selectedAttrsList.push({ id: attrs.id, name: attrs.name });
+        });
+      }
+    });
+
+    console.log('selectedAttrsList:' + JSON.stringify(selectedAttrsList));
+
     //组装tableData
+    const skuList = cartesian(
+      categoryAttrsList.value.filter((item) => item.selectedAttrsNameList.length > 0).map((item) => item.selectedAttrsNameList)
+    );
+
+    console.log('skuList:' + JSON.stringify(skuList));
+
+    //生成SKU编码
+    const skuNoRes = await serialNumberApi.generateMulti({ serialNumberId: SERIAL_NUMBER_ID_ENUM.SKU.value, count: skuList.length });
+    const skuNoList = skuNoRes.data;
+    console.log('skuNoList:' + JSON.stringify(skuNoList));
+
+    tableData.value = skuList.map((sku, idx) => {
+      const data = {
+        attrsName: sku.join(','),
+        skuNo: skuNoList[idx],
+      };
+
+      const attrsList = [];
+      for (let index = 0; index < sku.length; index++) {
+        data['attrs' + index] = sku[index];
+        selectedAttrsList.forEach((item) => {
+          if (item.name === sku[index]) {
+            attrsList.push(item);
+          }
+        });
+      }
+
+      data.attrsList = attrsList;
+
+      return data;
+    });
   }
 
   async function extraClick() {
     SmartLoading.show();
     try {
       if (form.spuId) {
+        form.attrsList = categoryAttrsList.value.filter((item) => item.selectedAttrsNameList.length > 0);
+
+        form.skuList = tableData;
+
         await spuApi.updateSpuSpecial(form);
       }
 
@@ -239,6 +313,14 @@
     } finally {
       SmartLoading.hide();
     }
+  }
+
+  function deleteRow(index) {
+    tableData.value.splice(index);
+  }
+
+  function attrsChanged(data) {
+    data.selectedAttrsList = data.attrsList.filter((item) => data.selectedAttrsNameList.includes(item.name));
   }
 
   defineExpose({

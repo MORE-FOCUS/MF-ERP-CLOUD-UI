@@ -37,9 +37,13 @@ export const SERIAL_NUMBER_ID_ENUM = {
     value: '4',
     desc: '仓库编码',
   },
+  SKU: {
+    value: '5',
+    desc: 'SKU编码',
+  },
 };
 
 export default {
   RULE_TYPE_ENUM,
-  SERIAL_NUMBER_ID_ENUM
+  SERIAL_NUMBER_ID_ENUM,
 };

@@ -141,7 +141,7 @@ function buildFormat(prefix) {
     } else if (RULE_TYPE_ENUM.MONTH.value === form.ruleType) {
         format = format + '[yyyy][mm][nnnnn]';
     } else if (RULE_TYPE_ENUM.DAY.value === form.ruleType) {
-        format = format + '[yyyy][mm][dddd][nnnnn]';
+        format = format + '[yyyy][mm][dd][nnnnn]';
     } else {
         format = format + '[nnnnn]'
     }

@@ -8,6 +8,11 @@ export const serialNumberApi = {
   generate: (generateForm) => {
     return postRequest('/support/serial-number/generate-one', generateForm);
   },
+
+  generateMulti: (generateForm) => {
+    return postRequest('/support/serial-number/generate', generateForm);
+  },
+
   // 获取所有单号定义
   getAll: () => {
     return getRequest('/support/serial-number/all');
