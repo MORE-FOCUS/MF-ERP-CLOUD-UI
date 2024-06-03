@@ -86,6 +86,8 @@
   import { serialNumberApi } from '/@/api/support/serial-number-api';
   import { SERIAL_NUMBER_ID_ENUM } from '/@/constants/support/serial-number-const';
 
+  const emits = defineEmits(['reloadDetail']);
+
   const originalCategoryList = ref([]);
   const checkedCategoryList = ref([]);
   const categoryAttrsList = ref([]);
@@ -260,19 +262,14 @@
       }
     });
 
-    console.log('selectedAttrsList:' + JSON.stringify(selectedAttrsList));
-
     //组装tableData
     const skuList = cartesian(
       categoryAttrsList.value.filter((item) => item.selectedAttrsNameList.length > 0).map((item) => item.selectedAttrsNameList)
     );
 
-    console.log('skuList:' + JSON.stringify(skuList));
-
     //生成SKU编码
     const skuNoRes = await serialNumberApi.generateMulti({ serialNumberId: SERIAL_NUMBER_ID_ENUM.SKU.value, count: skuList.length });
     const skuNoList = skuNoRes.data;
-    console.log('skuNoList:' + JSON.stringify(skuNoList));
 
     tableData.value = skuList.map((sku, idx) => {
       const data = {
@@ -306,6 +303,9 @@
 
         await spuApi.updateSpuSpecial(form);
       }
+
+      //触发父组件刷新
+      emits('reloadDetail');
 
       message.success('商品特性保存成功');
     } catch (err) {

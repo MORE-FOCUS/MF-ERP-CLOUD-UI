@@ -97,6 +97,7 @@
   const defaultForm = {
     id: undefined,
   };
+
   let form = reactive({ ...defaultForm });
 
   // 是否展示抽屉
@@ -111,42 +112,31 @@
   const spuStockRef = ref();
   const spuStockWarnRef = ref();
 
-  function showDrawer(data) {
+  async function showDrawer(data) {
+    Object.assign(form, data);
     visible.value = true;
+    if (data && data.id) {
+      const res = await spuApi.queryDetail(form.id);
+      Object.assign(form, res.data);
+    }
 
     nextTick(() => {
-      if (data && data.id) {
-        form.id = data.id;
-        updateSpu();
-      } else {
-        addSpu();
-      }
+      spuBaseRef.value.updateData(form);
+      spuUnitRef.value.updateData(form);
+      spuBaseImgRef.value.updateData(form);
+      spuSpecialRef.value.updateData(form);
+      spuBarcodeRef.value.updateData(form);
+      spuPriceRef.value.updateData(form);
+      spuStockRef.value.updateData(form);
+      spuStockWarnRef.value.updateData(form);
+      debugger;
     });
   }
 
-  //新增spu
-  async function addSpu() {
-    spuBaseRef.value.updateData();
-    spuUnitRef.value.updateData();
-    spuBaseImgRef.value.updateData();
-    spuSpecialRef.value.updateData();
-    spuBarcodeRef.value.updateData();
-    spuPriceRef.value.updateData();
-    spuStockRef.value.updateData();
-    spuStockWarnRef.value.updateData();
-  }
-
-  //编辑spu
-  async function updateSpu() {
-    const res = await spuApi.queryDetail(form.id);
-    spuBaseRef.value.updateData(res.data);
-    spuUnitRef.value.updateData(res.data);
-    spuBaseImgRef.value.updateData(res.data);
-    spuSpecialRef.value.updateData(res.data);
-    spuBarcodeRef.value.updateData(res.data);
-    spuPriceRef.value.updateData(res.data);
-    spuStockRef.value.updateData(res.data);
-    spuStockWarnRef.value.updateData(res.data);
+  //查询spu详情
+  async function querySpuDetail(spuId) {
+    const res = await spuApi.queryDetail(spuId);
+    Object.assign(form, res.data);
   }
 
   function onClose() {

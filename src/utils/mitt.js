@@ -1,5 +1,5 @@
 /*
- * 类别 event bus
+ * event bus
  */
 import mitt from 'mitt';
 export default mitt();
