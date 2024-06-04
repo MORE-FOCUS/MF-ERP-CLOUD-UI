@@ -92,7 +92,6 @@
 
   let form = reactive(_.cloneDeep(formDefault));
   function updateData(rawData) {
-    debugger;
     Object.assign(form, formDefault);
     if (rawData) {
       Object.assign(form, rawData);

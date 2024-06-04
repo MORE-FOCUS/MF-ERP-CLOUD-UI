@@ -127,8 +127,6 @@
 
   //子组件调用该方法刷新子组件数据
   async function reloadDetail(spuId) {
-    debugger;
-
     const res = await spuApi.queryDetail(spuId);
     Object.assign(form, res.data);
 

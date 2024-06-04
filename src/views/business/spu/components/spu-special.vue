@@ -88,8 +88,11 @@
 
   const emits = defineEmits(['reloadDetail']);
 
+  //原始的属性
   const originalCategoryList = ref([]);
+  //['颜色','尺寸']
   const checkedCategoryList = ref([]);
+  //选中的类目对应的属性列表
   const categoryAttrsList = ref([]);
   const tableData = ref([]);
   const dynamicColumns = ref([]);
@@ -142,6 +145,17 @@
       form.enableAttr = rawData.enableAttr;
       form.shelfLifeType = String(rawData.shelfLifeType);
       form.shelfLifeDays = rawData.shelfLifeDays;
+      form.skuList = rawData.skuList;
+      form.attrsList = rawData.attrsList;
+
+      if (form.enableAttr) {
+        queryCategoryList();
+
+        //选中的类目
+        checkedCategoryList.value = form.attrsList.map((item) => item.categoryName);
+
+        buildColumns();
+      }
     }
   }
 
@@ -170,8 +184,31 @@
     if (res.data) {
       Promise.all(res.data.map((category) => queryAttrsList(category))).then((value) => {
         originalCategoryList.value = value;
+
+        //选中的属性
+        if (form.attrsList) {
+          categoryAttrsList.value = [];
+          form.attrsList.forEach((item) => {
+            const category = value.find((attrs) => attrs.categoryId === item.categoryId);
+            if (category) {
+              const data = {};
+              Object.assign(data, category);
+              data.selectedAttrsList = item.selectedAttrsList;
+              data.selectedAttrsNameList = item.selectedAttrsList.map((item) => item.name);
+              categoryAttrsList.value.push(data);
+            }
+          });
+        }
       });
     }
+  }
+
+  function getCategoryAttrsList(categoryId) {
+    originalCategoryList.value.forEach((category) => {
+      if (categoryId == category.categoryId) {
+        return category.attrsList;
+      }
+    });
   }
 
   //属性
@@ -216,8 +253,8 @@
     });
   }
 
-  //重新生成
-  async function reBuildColumns() {
+  //组装属性表格列
+  function buildDynamicColumns() {
     dynamicColumns.value = [];
     tableData.value = [];
     Object.assign(dynamicColumns.value, columns);
@@ -234,12 +271,39 @@
         }
       )
     );
-
     dynamicColumns.value.splice(1, 0, ...attrsColumns);
+  }
+
+  //生成
+  function buildColumns() {
+    buildDynamicColumns();
+
+    tableData.value = form.skuList.map((sku, idx) => {
+      const data = {
+        attrsName: sku.attrsList.map((item) => item.name).join(','),
+        skuNo: sku.skuNo,
+      };
+
+      for (let index = 0; index < sku.attrsList.length; index++) {
+        data['attrs' + index] = sku.attrsList[index].name;
+      }
+
+      data.attrsList = sku.attrsList;
+
+      return data;
+    });
+  }
+
+  //重新生成
+  async function reBuildColumns() {
+    buildDynamicColumns();
 
     //笛卡尔乘积，计算规格
     let cartesian = (arr) => {
-      if (arr.length < 2) return arr[0] || [];
+      if (arr.length < 2) {
+        return arr[0] || [];
+      }
+
       return [].reduce.call(arr, function (col, set) {
         let res = [];
         col.forEach((c) => {
@@ -253,15 +317,6 @@
       });
     };
 
-    const selectedAttrsList = [];
-    categoryAttrsList.value.forEach((item) => {
-      if (item.selectedAttrsList.length > 0) {
-        item.selectedAttrsList.forEach((attrs) => {
-          selectedAttrsList.push({ id: attrs.id, name: attrs.name });
-        });
-      }
-    });
-
     //组装tableData
     const skuList = cartesian(
       categoryAttrsList.value.filter((item) => item.selectedAttrsNameList.length > 0).map((item) => item.selectedAttrsNameList)
@@ -270,6 +325,16 @@
     //生成SKU编码
     const skuNoRes = await serialNumberApi.generateMulti({ serialNumberId: SERIAL_NUMBER_ID_ENUM.SKU.value, count: skuList.length });
     const skuNoList = skuNoRes.data;
+
+    //选择的属性
+    const selectedAttrsList = [];
+    categoryAttrsList.value.forEach((item) => {
+      if (item.selectedAttrsList.length > 0) {
+        item.selectedAttrsList.forEach((attrs) => {
+          selectedAttrsList.push({ id: attrs.id, name: attrs.name });
+        });
+      }
+    });
 
     tableData.value = skuList.map((sku, idx) => {
       const data = {
