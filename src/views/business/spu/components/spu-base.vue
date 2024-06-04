@@ -64,6 +64,8 @@
   import { SERIAL_NUMBER_ID_ENUM } from '/@/constants/support/serial-number-const';
   import { spuApi } from '/@/api/business/spu/spu-api';
 
+  const emit = defineEmits(['reloadDetail']);
+
   const rules = {
     spuNo: [{ required: true, message: '商品编码不能为空' }],
     name: [{ required: true, message: '商品名称不能为空' }],
@@ -90,11 +92,11 @@
 
   let form = reactive(_.cloneDeep(formDefault));
   function updateData(rawData) {
-    debugger
+    debugger;
     Object.assign(form, formDefault);
     if (rawData) {
       Object.assign(form, rawData);
-    }else{
+    } else {
       genSpuNo();
     }
   }
@@ -112,8 +114,12 @@
       if (form.id) {
         await spuApi.updateSpuBase(form);
       } else {
-        await spuApi.addSpuBase(form);
+        const res = await spuApi.addSpuBase(form);
+        form.id = res.data;
       }
+
+      //通知父节点,刷新商品详情,通知其他兄弟组件
+      emit('reloadDetail', form.id);
       message.success('基本信息保存成功');
     } catch (err) {
       smartSentry.captureError(err);

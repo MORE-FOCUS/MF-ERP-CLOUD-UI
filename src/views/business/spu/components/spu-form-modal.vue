@@ -10,21 +10,21 @@
 
       <!-- 基本信息 -->
       <div id="container" @scroll="scrollChange" class="container">
-        <SpuBase ref="spuBaseRef" />
+        <SpuBase ref="spuBaseRef" @reload-detail="reloadDetail" />
         <!-- 商品单位 -->
-        <SpuBaseUnit ref="spuUnitRef" />
+        <SpuBaseUnit ref="spuUnitRef" @reload-detail="reloadDetail" />
         <!-- 商品特性 -->
-        <SpuSpecial ref="spuSpecialRef" />
+        <SpuSpecial ref="spuSpecialRef" @reload-detail="reloadDetail" />
         <!-- 图片附件 -->
-        <SpuBaseImg ref="spuBaseImgRef" />
+        <SpuBaseImg ref="spuBaseImgRef" @reload-detail="reloadDetail" />
         <!-- 商品条码 -->
-        <SpuBarcode ref="spuBarcodeRef" />
+        <SpuBarcode ref="spuBarcodeRef" @reload-detail="reloadDetail" />
         <!-- 价格管理 -->
-        <SpuPrice ref="spuPriceRef" />
+        <SpuPrice ref="spuPriceRef" @reload-detail="reloadDetail" />
         <!-- 期初库存 -->
-        <SpuStock ref="spuStockRef" />
+        <SpuStock ref="spuStockRef" @reload-detail="reloadDetail" />
         <!-- 库存预警 -->
-        <SpuStockWarn ref="spuStockWarnRef" />
+        <SpuStockWarn ref="spuStockWarnRef" @reload-detail="reloadDetail" />
       </div>
     </div>
     <!-- <div class="footer">
@@ -121,22 +121,29 @@
     }
 
     nextTick(() => {
-      spuBaseRef.value.updateData(form);
-      spuUnitRef.value.updateData(form);
-      spuBaseImgRef.value.updateData(form);
-      spuSpecialRef.value.updateData(form);
-      spuBarcodeRef.value.updateData(form);
-      spuPriceRef.value.updateData(form);
-      spuStockRef.value.updateData(form);
-      spuStockWarnRef.value.updateData(form);
-      debugger;
+      updateChildComponent();
     });
   }
 
-  //查询spu详情
-  async function querySpuDetail(spuId) {
+  //子组件调用该方法刷新子组件数据
+  async function reloadDetail(spuId) {
+    debugger;
+
     const res = await spuApi.queryDetail(spuId);
     Object.assign(form, res.data);
+
+    updateChildComponent();
+  }
+
+  function updateChildComponent() {
+    spuBaseRef.value.updateData(form);
+    spuUnitRef.value.updateData(form);
+    spuBaseImgRef.value.updateData(form);
+    spuSpecialRef.value.updateData(form);
+    spuBarcodeRef.value.updateData(form);
+    spuPriceRef.value.updateData(form);
+    spuStockRef.value.updateData(form);
+    spuStockWarnRef.value.updateData(form);
   }
 
   function onClose() {
