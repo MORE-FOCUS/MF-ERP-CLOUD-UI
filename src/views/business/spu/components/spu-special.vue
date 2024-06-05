@@ -57,7 +57,7 @@
                 {{ index + 1 }}
               </template>
               <template v-if="column.dataIndex === 'skuNo'">
-                <a-input v-model:value="record.skuNo" allowClear="true" />
+                <a-input v-model:value="record.skuNo" allowClear="true"/>
               </template>
               <template v-if="column.dataIndex === 'action'">
                 <div class="smart-table-operate">
@@ -149,12 +149,12 @@
       form.attrsList = rawData.attrsList;
 
       if (form.enableAttr) {
+        buildColumns();
+
         queryCategoryList();
 
         //选中的类目
         checkedCategoryList.value = form.attrsList.map((item) => item.categoryName);
-
-        buildColumns();
       }
     }
   }
@@ -201,14 +201,6 @@
         }
       });
     }
-  }
-
-  function getCategoryAttrsList(categoryId) {
-    originalCategoryList.value.forEach((category) => {
-      if (categoryId == category.categoryId) {
-        return category.attrsList;
-      }
-    });
   }
 
   //属性
@@ -278,17 +270,16 @@
   function buildColumns() {
     buildDynamicColumns();
 
-    tableData.value = form.skuList.map((sku, idx) => {
+    tableData.value = form.skuList.map((sku) => {
       const data = {
         attrsName: sku.attrsList.map((item) => item.name).join(','),
         skuNo: sku.skuNo,
+        attrsList: sku.attrsList
       };
 
       for (let index = 0; index < sku.attrsList.length; index++) {
         data['attrs' + index] = sku.attrsList[index].name;
       }
-
-      data.attrsList = sku.attrsList;
 
       return data;
     });
@@ -370,7 +361,7 @@
       }
 
       //触发父组件刷新
-      emits('reloadDetail');
+      emits('reloadDetail',form.spuId);
 
       message.success('商品特性保存成功');
     } catch (err) {

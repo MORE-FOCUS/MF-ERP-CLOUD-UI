@@ -120,9 +120,7 @@
       Object.assign(form, res.data);
     }
 
-    nextTick(() => {
-      updateChildComponent();
-    });
+    updateChildComponent();
   }
 
   //子组件调用该方法刷新子组件数据
@@ -134,14 +132,16 @@
   }
 
   function updateChildComponent() {
-    spuBaseRef.value.updateData(form);
-    spuUnitRef.value.updateData(form);
-    spuBaseImgRef.value.updateData(form);
-    spuSpecialRef.value.updateData(form);
-    spuBarcodeRef.value.updateData(form);
-    spuPriceRef.value.updateData(form);
-    spuStockRef.value.updateData(form);
-    spuStockWarnRef.value.updateData(form);
+    nextTick(() => {
+      spuBaseRef.value.updateData(form);
+      spuUnitRef.value.updateData(form);
+      spuBaseImgRef.value.updateData(form);
+      spuSpecialRef.value.updateData(form);
+      spuBarcodeRef.value.updateData(form);
+      spuPriceRef.value.updateData(form);
+      spuStockRef.value.updateData(form);
+      spuStockWarnRef.value.updateData(form);
+    });
   }
 
   function onClose() {
