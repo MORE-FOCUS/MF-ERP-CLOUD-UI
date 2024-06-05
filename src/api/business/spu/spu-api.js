@@ -30,6 +30,11 @@ export const spuApi = {
     return postRequest('/spu/special/update', param);
   },
 
+  //更新商品条形码
+  updateSpuBarcode: (param) => {
+    return postRequest('/spu/barcode/update', param);
+  },
+
   // 删除
   deleteSpu: (id) => {
     return getRequest(`/spu/delete/${id}`);

@@ -4,6 +4,12 @@
       <template #title>
         <div class="title">
           <span class="smart-margin-left10">商品图片</span>
+          <a-tooltip placement="right" class="smart-margin-left10">
+            <template #title>
+              <span>{{ tips }}</span>
+            </template>
+            <QuestionCircleOutlined />
+          </a-tooltip>
         </div>
       </template>
       <template #extra v-if="form.spuId">
@@ -23,9 +29,6 @@
           :multiple="true"
           :folder="FILE_FOLDER_TYPE_ENUM.COMMON.value"
         />
-        <a-alert :closable="true" :message="tips" type="success" show-icon>
-          <template #icon><smile-outlined /></template>
-        </a-alert>
       </a-form>
     </a-card>
   </div>

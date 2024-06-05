@@ -14,30 +14,31 @@
           保存</a-button
         >
       </template>
-      <a-form ref="formRef" :model="form" :rules="rules" layout="horizontal" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
-        <a-form-item label="编码" name="code">
-          <a-input placeholder="请输入编码"></a-input>
+      <a-form ref="formRef" :model="form" :rules="rules" layout="horizontal" :label-col="{ span: 2 }" :wrapper-col="{ span: 22 }">
+        <a-form-item label="开启" name="code">
+          <a-switch v-model:checked="form.enableAttr" />
         </a-form-item>
-        <a-form-item label="编码" name="code">
-          <a-input placeholder="请输入编码"></a-input>
-        </a-form-item>
-        <a-form-item label="编码" name="code">
-          <a-input placeholder="请输入编码"></a-input>
-        </a-form-item>
-        <a-form-item label="编码" name="code">
-          <a-input placeholder="请输入编码"></a-input>
-        </a-form-item>
-        <a-form-item label="编码" name="code">
-          <a-input placeholder="请输入编码"></a-input>
-        </a-form-item>
-        <a-form-item label="编码" name="code">
-          <a-input placeholder="请输入编码"></a-input>
-        </a-form-item>
-        <a-form-item label="编码" name="code">
-          <a-input placeholder="请输入编码"></a-input>
-        </a-form-item>
-        <a-form-item label="编码" name="code">
-          <a-input placeholder="请输入编码"></a-input>
+
+        <a-form-item label="商品条码" name="code">
+          <a-table
+            style="width: 100%"
+            size="small"
+            :dataSource="tableData"
+            :columns="dynamicColumns"
+            rowKey="id"
+            bordered
+            :pagination="false"
+            :row-selection="{ selectedRowKeys: selectedRowKeyList, onChange: onSelectChange }"
+          >
+            <template #bodyCell="{ index, record, column }">
+              <template v-if="column.dataIndex === 'no'">
+                {{ index + 1 }}
+              </template>
+              <template v-if="column.dataIndex === 'barcode'">
+                <a-input v-model:value="record.barcode" allowClear="true" />
+              </template>
+            </template>
+          </a-table>
         </a-form-item>
       </a-form>
     </a-card>
@@ -51,18 +52,70 @@
   import { smartSentry } from '/@/lib/smart-sentry';
   import { message } from 'ant-design-vue';
   import { spuApi } from '/src/api/business/spu/spu-api';
+  import { serialNumberApi } from '/@/api/support/serial-number-api';
+  import { SERIAL_NUMBER_ID_ENUM } from '/@/constants/support/serial-number-const';
+
   const rules = ref([]);
   const formRef = ref();
+  const tableData = ref([]);
+  const dynamicColumns = ref([]);
+
+  const columns = [
+    {
+      title: '序号',
+      dataIndex: 'no',
+      width: 50,
+      align: 'center',
+      fixed: 'left',
+    },
+    {
+      title: '辅助属性',
+      dataIndex: 'attrsName',
+      align: 'center',
+      width: 100,
+    },
+    {
+      title: 'SKU编码',
+      dataIndex: 'skuNo',
+      align: 'center',
+      width: 200,
+    },
+    {
+      title: '操作',
+      dataIndex: 'action',
+      fixed: 'right',
+      align: 'center',
+      width: 100,
+    },
+  ];
+
   const formDefault = {
     spuId: undefined,
   };
-
   let form = reactive(_.cloneDeep(formDefault));
 
   function updateData(rawData) {
     Object.assign(form, formDefault);
     if (rawData) {
       form.spuId = rawData.id;
+    }
+  }
+
+  async function extraClick() {
+    SmartLoading.show();
+    try {
+      if (form.spuId) {
+        await spuApi.updateSpuBarcode(form);
+      }
+
+      //触发父组件刷新
+      emits('reloadDetail', form.spuId);
+
+      message.success('商品条形码保存成功');
+    } catch (err) {
+      smartSentry.captureError(err);
+    } finally {
+      SmartLoading.hide();
     }
   }
 
