@@ -108,9 +108,6 @@
         await spuApi.updateSpuBarcode(form);
       }
 
-      //触发父组件刷新
-      emits('reloadDetail', form.spuId);
-
       message.success('商品条形码保存成功');
     } catch (err) {
       smartSentry.captureError(err);
