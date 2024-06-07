@@ -91,6 +91,8 @@
 
   const formDefault = {
     spuId: undefined,
+    skuId: undefined,
+    skuList: [],
   };
   let form = reactive(_.cloneDeep(formDefault));
 
@@ -98,6 +100,8 @@
     Object.assign(form, formDefault);
     if (rawData) {
       form.spuId = rawData.id;
+      form.skuId = rawData.skuId;
+      form.skuList = rawData.skuList;
     }
   }
 
