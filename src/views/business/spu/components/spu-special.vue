@@ -248,7 +248,6 @@
   //组装属性表格列
   function buildDynamicColumns() {
     dynamicColumns.value = [];
-    tableData.value = [];
     Object.assign(dynamicColumns.value, columns);
 
     const attrsColumns = checkedCategoryList.value.map((item, index) =>

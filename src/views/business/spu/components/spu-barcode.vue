@@ -69,23 +69,10 @@
       fixed: 'left',
     },
     {
-      title: '辅助属性',
-      dataIndex: 'attrsName',
-      align: 'center',
-      width: 100,
-    },
-    {
-      title: 'SKU编码',
-      dataIndex: 'skuNo',
+      title: '条形码',
+      dataIndex: 'barcode',
       align: 'center',
       width: 200,
-    },
-    {
-      title: '操作',
-      dataIndex: 'action',
-      fixed: 'right',
-      align: 'center',
-      width: 100,
     },
   ];
 
@@ -93,16 +80,49 @@
     spuId: undefined,
     skuId: undefined,
     skuList: [],
+    attrsList: [],
   };
   let form = reactive(_.cloneDeep(formDefault));
 
   function updateData(rawData) {
     Object.assign(form, formDefault);
     if (rawData) {
-      form.spuId = rawData.id;
-      form.skuId = rawData.skuId;
-      form.skuList = rawData.skuList;
+      Object.assign(form, rawData);
     }
+
+    buildTableColumns();
+
+    buildTableDataList();
+  }
+
+  function buildTableColumns() {
+    Object.assign(dynamicColumns.value, columns);
+
+    const attrsColumns = form.attrsList.map((item, index) =>
+      Object.assign(
+        {},
+        {
+          title: item.categoryName,
+          dataIndex: 'attrs' + index,
+          ellipsis: true,
+          align: 'center',
+          width: 100,
+        }
+      )
+    );
+    dynamicColumns.value.splice(1, 0, ...attrsColumns);
+  }
+
+  function buildTableDataList() {
+    tableData.value = form.skuList.map((sku) => {
+      const data = {};
+
+      for (let index = 0; index < sku.attrsList.length; index++) {
+        data['attrs' + index] = sku.attrsList[index].name;
+      }
+
+      return data;
+    });
   }
 
   async function extraClick() {
