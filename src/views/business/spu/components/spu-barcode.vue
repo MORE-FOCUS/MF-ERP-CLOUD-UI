@@ -16,10 +16,10 @@
       </template>
       <a-form ref="formRef" :model="form" :rules="rules" layout="horizontal" :label-col="{ span: 2 }" :wrapper-col="{ span: 22 }">
         <a-form-item label="开启" name="code">
-          <a-switch v-model:checked="form.enableAttr" />
+          <a-switch v-model:checked="form.enableBarcode" />
         </a-form-item>
 
-        <a-form-item label="商品条码" name="code">
+        <a-form-item label="商品条码" name="code" v-if="form.enableBarcode">
           <a-table
             style="width: 100%"
             size="small"
@@ -35,7 +35,11 @@
                 {{ index + 1 }}
               </template>
               <template v-if="column.dataIndex === 'barcode'">
-                <a-input v-model:value="record.barcode" allowClear="true" />
+                <a-input placeholder="条形码" v-model:value="barcodeList" for="item in record.barcodeList">
+                  <template #prefix>
+                    {{ item.unitName }}
+                  </template>
+                </a-input>
               </template>
             </template>
           </a-table>
@@ -78,9 +82,11 @@
 
   const formDefault = {
     spuId: undefined,
-    skuId: undefined,
+    enableBarcode: false,
     skuList: [],
     attrsList: [],
+    enableMultiUnit: false,
+    multiUnitList: [],
   };
   let form = reactive(_.cloneDeep(formDefault));
 
@@ -88,6 +94,7 @@
     Object.assign(form, formDefault);
     if (rawData) {
       Object.assign(form, rawData);
+      form.spuId = rawData.id;
     }
 
     buildTableColumns();
@@ -115,10 +122,20 @@
 
   function buildTableDataList() {
     tableData.value = form.skuList.map((sku) => {
-      const data = {};
+      const data = {
+        barcodeList: sku.barcodeList,
+        spuId: form.spuId,
+        skuId: sku.id,
+      };
 
+      //商品特性
       for (let index = 0; index < sku.attrsList.length; index++) {
         data['attrs' + index] = sku.attrsList[index].name;
+      }
+
+      //商品多单位
+      if (form.enableMultiUnit) {
+        
       }
 
       return data;

@@ -237,8 +237,8 @@
       align: 'center',
     },
     {
-      title: '计量单位',
-      dataIndex: 'unit',
+      title: '基础单位',
+      dataIndex: 'unitName',
       align: 'center',
     },
     {

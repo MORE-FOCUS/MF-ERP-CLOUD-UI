@@ -8,7 +8,7 @@
             <template #title>
               <span>{{ tips }}</span>
             </template>
-            <QuestionCircleOutlined />
+            <info-circle-outlined style="color: rgba(0, 0, 0, 0.45)" />
           </a-tooltip>
         </div>
       </template>
