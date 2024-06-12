@@ -27,6 +27,17 @@ export const FLAG_NUMBER_ENUM = {
   },
 };
 
+export const DISABLED_ENUM = {
+  ENABLED: {
+    value: false,
+    desc: '启用',
+  },
+  DISABLED: {
+    value: true,
+    desc: '禁用',
+  },
+};
+
 export const GENDER_ENUM = {
   UNKNOWN: {
     value: 0,
@@ -47,7 +58,6 @@ export const USER_TYPE_ENUM = {
     value: 1,
     desc: '员工',
   },
-  
 };
 
 export const DATA_TYPE_ENUM = {
@@ -59,6 +69,4 @@ export const DATA_TYPE_ENUM = {
     value: 10,
     desc: '加密',
   },
-  
 };
-

@@ -7,11 +7,10 @@
 import { postRequest, getRequest } from '/@/lib/axios';
 
 export const tenantIndustryApi = {
-
   /**
    * 分页查询  @author  loki
    */
-  queryPage : (param) => {
+  queryPage: (param) => {
     return postRequest('/tenant/industry/queryPage', param);
   },
 
@@ -19,29 +18,34 @@ export const tenantIndustryApi = {
    * 增加  @author  loki
    */
   add: (param) => {
-      return postRequest('/tenant/industry/add', param);
+    return postRequest('/tenant/industry/add', param);
   },
 
   /**
    * 修改  @author  loki
    */
   update: (param) => {
-      return postRequest('/tenant/industry/update', param);
+    return postRequest('/tenant/industry/update', param);
   },
-
 
   /**
    * 删除  @author  loki
    */
   delete: (id) => {
-      return getRequest(`/tenant/industry/delete/${id}`);
+    return getRequest(`/tenant/industry/delete/${id}`);
   },
 
   /**
    * 批量删除  @author  loki
    */
   batchDelete: (idList) => {
-      return postRequest('/tenant/industry/batchDelete', idList);
+    return postRequest('/tenant/industry/batchDelete', idList);
   },
 
+  /**
+   * 更新禁用状态
+   */
+  updateDisabled: (id) => {
+    return postRequest(`/tenant/industry/update/disabled/${id}`);
+  },
 };
