@@ -35,7 +35,7 @@
                 {{ index + 1 }}
               </template>
               <template v-if="column.dataIndex === 'barcode'">
-                <a-input placeholder="条形码" v-model:value="barcodeList" for="item in record.barcodeList">
+                <a-input placeholder="条形码" v-model:value="barcodeList" v-for="item in record.barcodeList">
                   <template #prefix>
                     {{ item.unitName }}
                   </template>
@@ -58,6 +58,7 @@
   import { spuApi } from '/src/api/business/spu/spu-api';
   import { serialNumberApi } from '/@/api/support/serial-number-api';
   import { SERIAL_NUMBER_ID_ENUM } from '/@/constants/support/serial-number-const';
+  import { watch } from 'vue';
 
   const rules = ref([]);
   const formRef = ref();
@@ -82,11 +83,13 @@
 
   const formDefault = {
     spuId: undefined,
+    unitId: undefined,
+    unitName: undefined,
     enableBarcode: false,
     skuList: [],
     attrsList: [],
     enableMultiUnit: false,
-    multiUnitList: [],
+    unitList: [],
   };
   let form = reactive(_.cloneDeep(formDefault));
 
@@ -96,11 +99,18 @@
       Object.assign(form, rawData);
       form.spuId = rawData.id;
     }
-
-    buildTableColumns();
-
-    buildTableDataList();
   }
+
+  watch(
+    () => form.enableBarcode,
+    (newValue) => {
+      if (newValue) {
+        buildTableColumns();
+
+        buildTableDataList();
+      }
+    }
+  );
 
   function buildTableColumns() {
     Object.assign(dynamicColumns.value, columns);
@@ -123,7 +133,7 @@
   function buildTableDataList() {
     tableData.value = form.skuList.map((sku) => {
       const data = {
-        barcodeList: sku.barcodeList,
+        barcodeList: [],
         spuId: form.spuId,
         skuId: sku.id,
       };
@@ -134,8 +144,29 @@
       }
 
       //商品多单位
+      const barcodeItem = {
+        spuId: form.spuId,
+        skuId: sku.id,
+        unitId: undefined,
+        unitName: undefined,
+        barcode: undefined,
+        spuName: undefined,
+      };
+
       if (form.enableMultiUnit) {
-        
+        //开启了多单位
+        if (form.unitList) {
+          
+        }
+      } else {
+        //未开启多单位,只显示基本单位
+        if (sku.barcodeList) {
+          barcodeItem = sku.barcodeList.filter((item) => {
+            return item.unitId === form.unitId;
+          });
+        }
+
+        data.barcodeList.push(barcodeItem);
       }
 
       return data;
@@ -146,7 +177,12 @@
     SmartLoading.show();
     try {
       if (form.spuId) {
-        await spuApi.updateSpuBarcode(form);
+        const data = {
+          spuId: form.spuId,
+          enableBarcode: form.enableBarcode,
+          barcodeList: tableData.value,
+        };
+        await spuApi.updateSpuBarcode(data);
       }
 
       message.success('商品条形码保存成功');

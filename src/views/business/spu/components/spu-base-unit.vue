@@ -106,7 +106,7 @@
   const formDefault = {
     spuId: undefined,
     enableMultiUnit: false,
-    multiUnitList: [],
+    unitList: [],
   };
 
   let form = reactive(_.cloneDeep(formDefault));
@@ -120,7 +120,7 @@
       form.baseUnitName = rawData.unitName;
       form.spuId = rawData.id;
       form.enableMultiUnit = rawData.enableMultiUnit;
-      tableData.value = rawData.multiUnitList;
+      tableData.value = rawData.unitList;
     }
 
     queryUnit();
@@ -142,7 +142,7 @@
     SmartLoading.show();
     try {
       if (form.spuId) {
-        form.multiUnitList = tableData.value;
+        form.unitList = tableData.value;
         await spuApi.updateSpuUnit(form);
       }
 
