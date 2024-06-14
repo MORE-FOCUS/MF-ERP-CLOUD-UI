@@ -35,11 +35,13 @@
                 {{ index + 1 }}
               </template>
               <template v-if="column.dataIndex === 'barcode'">
-                <a-input placeholder="条形码" v-model:value="barcodeList" v-for="item in record.barcodeList">
-                  <template #prefix>
-                    {{ item.unitName }}
-                  </template>
-                </a-input>
+                <div style="width:80%; padding: 10px;">
+                  <a-input v-model:value="barcodeList" v-for="item in record.barcodeList">
+                    <template #prefix>
+                      {{ item.unitName }}
+                    </template>
+                  </a-input>
+                </div>
               </template>
             </template>
           </a-table>
@@ -88,6 +90,8 @@
     enableBarcode: false,
     skuList: [],
     attrsList: [],
+    unitId: undefined,
+    unitName: undefined,
     enableMultiUnit: false,
     unitList: [],
   };
@@ -143,34 +147,37 @@
         data['attrs' + index] = sku.attrsList[index].name;
       }
 
-      //商品多单位
-      const barcodeItem = {
-        spuId: form.spuId,
-        skuId: sku.id,
-        unitId: undefined,
-        unitName: undefined,
-        barcode: undefined,
-        spuName: undefined,
-      };
+      //基础单位
+      data.barcodeList.push(getBarcodeItem(sku, form.spuId, form.unitId, form.unitName));
 
+      //开启了多单位
       if (form.enableMultiUnit) {
-        //开启了多单位
         if (form.unitList) {
-          
-        }
-      } else {
-        //未开启多单位,只显示基本单位
-        if (sku.barcodeList) {
-          barcodeItem = sku.barcodeList.filter((item) => {
-            return item.unitId === form.unitId;
+          //多单位
+          form.unitList.forEach((unit) => {
+            data.barcodeList.push(getBarcodeItem(sku, form.spuId, unit.unitId, unit.unitName));
           });
         }
-
-        data.barcodeList.push(barcodeItem);
       }
 
       return data;
     });
+  }
+
+  function getBarcodeItem(sku, spuId, unitId, unitName) {
+    const barcodeItem = sku.barcodeList.find((item) => {
+      return item.unitId === form.unitId;
+    });
+
+    return barcodeItem
+      ? barcodeItem
+      : {
+          spuId: spuId,
+          skuId: sku.id,
+          unitId: unitId,
+          unitName: unitName,
+          barcode: undefined,
+        };
   }
 
   async function extraClick() {
