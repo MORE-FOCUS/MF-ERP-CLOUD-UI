@@ -35,7 +35,7 @@
                 {{ index + 1 }}
               </template>
               <template v-if="column.dataIndex === 'barcode'">
-                <div style="width:80%; padding: 10px;">
+                <div style="width: 80%; padding: 10px">
                   <a-input v-model:value="barcodeList" v-for="item in record.barcodeList">
                     <template #prefix>
                       {{ item.unitName }}
@@ -152,12 +152,10 @@
 
       //开启了多单位
       if (form.enableMultiUnit) {
-        if (form.unitList) {
-          //多单位
-          form.unitList.forEach((unit) => {
-            data.barcodeList.push(getBarcodeItem(sku, form.spuId, unit.unitId, unit.unitName));
-          });
-        }
+        //多单位
+        form.unitList.forEach((unit) => {
+          data.barcodeList.push(getBarcodeItem(sku, form.spuId, unit.unitId, unit.unitName));
+        });
       }
 
       return data;
