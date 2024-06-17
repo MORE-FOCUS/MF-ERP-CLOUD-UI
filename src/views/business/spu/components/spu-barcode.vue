@@ -35,13 +35,11 @@
                 {{ index + 1 }}
               </template>
               <template v-if="column.dataIndex === 'barcode'">
-                <div style="width: 80%; padding: 10px">
-                  <a-input v-model:value="barcodeList" v-for="item in record.barcodeList">
+                  <a-input v-model:value="barcodeList" v-for="item in record.barcodeList" style="width: 80%; margin-top: 6px">
                     <template #prefix>
                       {{ item.unitName }}
                     </template>
                   </a-input>
-                </div>
               </template>
             </template>
           </a-table>
