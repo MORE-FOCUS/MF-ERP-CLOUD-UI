@@ -35,11 +35,14 @@
                 {{ index + 1 }}
               </template>
               <template v-if="column.dataIndex === 'barcode'">
-                  <a-input v-model:value="barcodeList" v-for="item in record.barcodeList" style="width: 80%; margin-top: 6px">
-                    <template #prefix>
-                      {{ item.unitName }}
-                    </template>
-                  </a-input>
+                <a-space direction="vertical">
+                  <div v-for="item in record.barcodeList">
+                    <a-input-group compact>
+                      <a-input style="width: 15%; color: #c0c4cc; font-size: 12px" readonly v-model:value="item.unitName" />
+                      <a-input style="width: 75%; font-size: 12px" v-model:value="item.barcode" />
+                    </a-input-group>
+                  </div>
+                </a-space>
               </template>
             </template>
           </a-table>
@@ -172,7 +175,7 @@
           skuId: sku.id,
           unitId: unitId,
           unitName: unitName,
-          barcode: undefined,
+          barcode: 222222,
         };
   }
 
@@ -180,10 +183,17 @@
     SmartLoading.show();
     try {
       if (form.spuId) {
+        const barcodeList = [];
+        tableData.value.map((item) =>
+          item.barcodeList.forEach((c) => {
+            barcodeList.push(c);
+          })
+        );
+
         const data = {
           spuId: form.spuId,
           enableBarcode: form.enableBarcode,
-          barcodeList: tableData.value,
+          barcodeList: barcodeList,
         };
         await spuApi.updateSpuBarcode(data);
       }
