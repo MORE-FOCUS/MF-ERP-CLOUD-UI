@@ -183,12 +183,10 @@
     SmartLoading.show();
     try {
       if (form.spuId) {
-        const barcodeList = [];
-        tableData.value.map((item) =>
-          item.barcodeList.forEach((c) => {
-            barcodeList.push(c);
-          })
-        );
+        var barcodeList = [];
+        tableData.value.map((item) => {
+          barcodeList = [...barcodeList, ...item.barcodeList];
+        });
 
         const data = {
           spuId: form.spuId,
