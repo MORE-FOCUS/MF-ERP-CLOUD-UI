@@ -138,6 +138,7 @@
     }
   }
 
+  //构建表格数据
   function buildTableDataList() {
     tableData.value = form.skuList.map((sku) => {
       const data = {
