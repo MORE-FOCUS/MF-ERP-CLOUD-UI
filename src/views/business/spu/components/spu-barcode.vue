@@ -89,6 +89,7 @@
     unitId: undefined,
     unitName: undefined,
     enableBarcode: false,
+    enableAttr: false,
     skuList: [],
     attrsList: [],
     unitId: undefined,
@@ -120,19 +121,21 @@
   function buildTableColumns() {
     Object.assign(dynamicColumns.value, columns);
 
-    const attrsColumns = form.attrsList.map((item, index) =>
-      Object.assign(
-        {},
-        {
-          title: item.categoryName,
-          dataIndex: 'attrs' + index,
-          ellipsis: true,
-          align: 'center',
-          width: 100,
-        }
-      )
-    );
-    dynamicColumns.value.splice(1, 0, ...attrsColumns);
+    if (form.enableAttr) {
+      const attrsColumns = form.attrsList.map((item, index) =>
+        Object.assign(
+          {},
+          {
+            title: item.categoryName,
+            dataIndex: 'attrs' + index,
+            ellipsis: true,
+            align: 'center',
+            width: 100,
+          }
+        )
+      );
+      dynamicColumns.value.splice(1, 0, ...attrsColumns);
+    }
   }
 
   function buildTableDataList() {
@@ -144,8 +147,10 @@
       };
 
       //商品特性
-      for (let index = 0; index < sku.attrsList.length; index++) {
-        data['attrs' + index] = sku.attrsList[index].name;
+      if (form.enableAttr) {
+        for (let index = 0; index < sku.attrsList.length; index++) {
+          data['attrs' + index] = sku.attrsList[index].name;
+        }
       }
 
       //基础单位
@@ -158,7 +163,6 @@
           data.barcodeList.push(getBarcodeItem(sku, form.spuId, unit.unitId, unit.unitName));
         });
       }
-
       return data;
     });
   }
@@ -175,7 +179,7 @@
           skuId: sku.id,
           unitId: unitId,
           unitName: unitName,
-          barcode: 222222,
+          barcode: serialNumberApi.generate(SERIAL_NUMBER_ID_ENUM.BARCODE),
         };
   }
 

@@ -41,6 +41,10 @@ export const SERIAL_NUMBER_ID_ENUM = {
     value: '5',
     desc: 'SKU编码',
   },
+  BARCODE: {
+    value: '6',
+    desc: '条形码',
+  },
 };
 
 export default {
