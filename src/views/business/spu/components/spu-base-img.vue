@@ -22,7 +22,7 @@
       </template>
       <a-form ref="formRef" :model="form" layout="horizontal" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
         <FileUpload
-          v-model:value="form.images"
+          v-model:value="form.image"
           :maxUploadSize="maxUploadSize"
           buttonText="点击上传图片"
           :defaultFileList="[]"
@@ -47,7 +47,7 @@
   const formRef = ref();
   const formDefault = {
     spuId: undefined,
-    images: '',
+    image: '',
   };
 
   const maxUploadSize = 5;
@@ -58,7 +58,7 @@
     Object.assign(form, formDefault);
     if (rawData) {
       form.spuId = rawData.id;
-      form.images = rawData.images;
+      form.image = rawData.image;
     }
   }
 

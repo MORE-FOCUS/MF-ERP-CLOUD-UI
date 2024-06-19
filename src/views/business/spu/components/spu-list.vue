@@ -101,18 +101,12 @@
         <template v-if="column.dataIndex === 'no'">
           {{ index + 1 }}
         </template>
-        <template v-if="column.dataIndex === 'mainPicture'">
+        <template v-if="column.dataIndex === 'image'">
           <a-popover placement="right">
             <template #content>
-              <img
-                src="https://zhjg.sz.gov.cn/zhcy/web/group2/M00/04/4A/CuIvUGHOvAKAFex4AABU7pg91qM129.jpg"
-                style="width: 100px; height: 100px;"
-              />
+              <img src="https://zhjg.sz.gov.cn/zhcy/web/group2/M00/04/4A/CuIvUGHOvAKAFex4AABU7pg91qM129.jpg" style="width: 100px; height: 100px" />
             </template>
-            <img
-              src="https://zhjg.sz.gov.cn/zhcy/web/group2/M00/04/4A/CuIvUGHOvAKAFex4AABU7pg91qM129.jpg"
-              style="width: 30px; height: 30px;"
-            />
+            <img src="https://zhjg.sz.gov.cn/zhcy/web/group2/M00/04/4A/CuIvUGHOvAKAFex4AABU7pg91qM129.jpg" style="width: 30px; height: 30px" />
           </a-popover>
         </template>
         <template v-if="column.dataIndex === 'status'">
@@ -120,6 +114,9 @@
         </template>
         <template v-if="column.dataIndex === 'isListed'">
           <span>{{ record.isListed ? '上架' : '下架' }}</span>
+        </template>
+        <template v-if="column.dataIndex === 'unitName'">
+          <span>{{ calcBasicUnitName(record) }}</span>
         </template>
         <template v-if="column.dataIndex === 'action'">
           <div class="smart-table-operate">
@@ -201,20 +198,20 @@
       dataIndex: 'no',
       width: 50,
       align: 'center',
-      fixed: 'left'
+      fixed: 'left',
     },
     {
       title: '商品名称',
       dataIndex: 'name',
       align: 'center',
-      fixed: 'left'
+      fixed: 'left',
     },
     {
       title: '图片',
-      dataIndex: 'mainPicture',
+      dataIndex: 'image',
       align: 'center',
       width: 60,
-      fixed: 'left'
+      fixed: 'left',
     },
     {
       title: '商品规格',
@@ -237,7 +234,7 @@
       align: 'center',
     },
     {
-      title: '基础单位',
+      title: '单位',
       dataIndex: 'unitName',
       align: 'center',
     },
@@ -432,5 +429,13 @@
 
   async function onExportSpu() {
     await spuApi.exportSpu();
+  }
+
+  function calcBasicUnitName(record) {
+    const basicUnit = record.unitList.find((item) => item.isBasicUnit);
+    if (basicUnit) {
+      return basicUnit.unitName;
+    }
+    return '';
   }
 </script>
