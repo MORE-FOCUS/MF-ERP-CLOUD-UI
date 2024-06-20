@@ -96,7 +96,6 @@
     Object.assign(form, formDefault);
     if (rawData) {
       Object.assign(form, rawData);
-      form.unitId = form.unitList.find((item) => item.isBasicUnit).unitId;
     } else {
       genSpuNo();
     }
@@ -112,19 +111,6 @@
   async function extraClick() {
     SmartLoading.show();
     try {
-      //基础单位
-      const baseUnit = form.unitList.find((item) => item.unitId === form.unitId);
-      if (!baseUnit) {
-        form.unitList.push({
-          isBasicUnit: true,
-          unitId: form.unitId,
-          exchange: 0,
-          isDisabled: false,
-        });
-      } else {
-        baseUnit.isBasicUnit = true;
-      }
-
       if (form.id) {
         await spuApi.updateSpuBase(form);
       } else {

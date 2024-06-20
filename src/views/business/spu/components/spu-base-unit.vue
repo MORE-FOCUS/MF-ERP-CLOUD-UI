@@ -38,7 +38,7 @@
                 <UnitSelect v-model:value="record.unitId" @change="onUnitChange(record)" />
               </template>
               <template v-if="column.dataIndex === 'isDisabled'">
-                <a-switch :checked="!record.isDisabled" v-model:value="record.isDisabled" @change="onDisabledChange(record)"/>
+                <a-switch :checked="!record.isDisabled" v-model:value="record.isDisabled" @change="onDisabledChange(record)" />
               </template>
               <template v-if="column.dataIndex === 'action'">
                 <div class="smart-table-operate">
@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-  import { ref, reactive } from 'vue';
+  import { ref, reactive, computed } from 'vue';
   import _ from 'lodash';
   import { spuApi } from '/src/api/business/spu/spu-api';
   import UnitSelect from '/@/components/business/unit-select/index.vue';
@@ -116,11 +116,17 @@
   function updateData(rawData) {
     Object.assign(form, formDefault);
     if (rawData) {
-      form.baseUnitId = rawData.unitId;
-      form.baseUnitName = rawData.unitName;
       form.spuId = rawData.id;
       form.enableMultiUnit = rawData.enableMultiUnit;
-      tableData.value = rawData.unitList;
+
+      rawData.unitList.forEach((item) => {
+        if (item.isBasicUnit) {
+          form.baseUnitId = baseUnit.unitId;
+          form.baseUnitName = baseUnit.unitName;
+        } else {
+          tableData.value.push(item);
+        }
+      });
     }
 
     queryUnit();
@@ -187,7 +193,7 @@
     }
   }
 
-  function onDisabledChange(record){
+  function onDisabledChange(record) {
     record.isDisabled = !record.isDisabled;
   }
 

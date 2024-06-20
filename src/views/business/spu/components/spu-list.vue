@@ -115,9 +115,6 @@
         <template v-if="column.dataIndex === 'isListed'">
           <span>{{ record.isListed ? '上架' : '下架' }}</span>
         </template>
-        <template v-if="column.dataIndex === 'unitName'">
-          <span>{{ calcBasicUnitName(record) }}</span>
-        </template>
         <template v-if="column.dataIndex === 'action'">
           <div class="smart-table-operate">
             <a-button @click="addSpu(record)" type="link" v-privilege="'business:spu:update'">编辑</a-button>
@@ -429,13 +426,5 @@
 
   async function onExportSpu() {
     await spuApi.exportSpu();
-  }
-
-  function calcBasicUnitName(record) {
-    const basicUnit = record.unitList.find((item) => item.isBasicUnit);
-    if (basicUnit) {
-      return basicUnit.unitName;
-    }
-    return '';
   }
 </script>

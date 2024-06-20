@@ -169,6 +169,16 @@
   }
 
   function getBarcodeItem(sku, spuId, unitId, unitName) {
+    if (!sku.barcodeList) {
+      return {
+        spuId: spuId,
+        skuId: sku.id,
+        unitId: unitId,
+        unitName: unitName,
+        barcode: serialNumberApi.generate(SERIAL_NUMBER_ID_ENUM.BARCODE.value),
+      };
+    }
+
     const barcodeItem = sku.barcodeList.find((item) => {
       return item.unitId === form.unitId;
     });
@@ -180,7 +190,7 @@
           skuId: sku.id,
           unitId: unitId,
           unitName: unitName,
-          barcode: serialNumberApi.generate(SERIAL_NUMBER_ID_ENUM.BARCODE),
+          barcode: serialNumberApi.generate(SERIAL_NUMBER_ID_ENUM.BARCODE.value),
         };
   }
 
