@@ -37,9 +37,9 @@
               <template v-if="column.dataIndex === 'barcode'">
                 <a-space direction="vertical">
                   <div v-for="item in record.barcodeList">
-                    <a-input-group compact>
-                      <a-input style="width: 15%; color: #c0c4cc; font-size: 12px" readonly v-model:value="item.unitName" />
-                      <a-input style="width: 75%; font-size: 12px" v-model:value="item.barcode" />
+                    <a-input-group>
+                      <a-input style="width: 15%; color: #c0c4cc" readonly v-model:value="item.unitName" />
+                      <a-input style="width: 75%;" v-model:value="item.barcode" />
                     </a-input-group>
                   </div>
                 </a-space>
@@ -139,8 +139,12 @@
   }
 
   //构建表格数据
-  function buildTableDataList() {
-    tableData.value = form.skuList.map((sku) => {
+  async function buildTableDataList() {
+    if (!form.skuList) {
+      return;
+    }
+
+    const dataList = form.skuList.map((sku) => {
       const data = {
         barcodeList: [],
         spuId: form.spuId,
@@ -159,49 +163,62 @@
 
       //开启了多单位
       if (form.enableMultiUnit) {
-        //多单位
+        //多单位,unitList不包含基础单位
         form.unitList.forEach((unit) => {
           data.barcodeList.push(getBarcodeItem(sku, form.spuId, unit.unitId, unit.unitName));
         });
       }
+
       return data;
     });
+
+    const barcodeList = dataList.reduce((pre, cur) => {
+      return pre.concat(cur.barcodeList.filter((item) => !item.barcode));
+    }, []);
+
+    //生成条形码
+    if (barcodeList.length > 0) {
+      const res = await serialNumberApi.generateMulti({ serialNumberId: SERIAL_NUMBER_ID_ENUM.BARCODE.value, count: barcodeList.length });
+      const barcodes = res.data;
+
+      let index = 0;
+      dataList.forEach((data) => {
+        data.barcodeList.forEach((item) => {
+          if (!item.barcode) {
+            item.barcode = barcodes[index];
+            index++;
+          }
+        });
+      });
+    }
+
+    tableData.value = dataList;
   }
 
   function getBarcodeItem(sku, spuId, unitId, unitName) {
-    if (!sku.barcodeList) {
-      return {
-        spuId: spuId,
-        skuId: sku.id,
-        unitId: unitId,
-        unitName: unitName,
-        barcode: serialNumberApi.generate(SERIAL_NUMBER_ID_ENUM.BARCODE.value),
-      };
+    if (sku.barcodeList) {
+      const barcodeItem = sku.barcodeList.find((item) => item.unitId === form.unitId);
+      if (barcodeItem) {
+        return barcodeItem;
+      }
     }
 
-    const barcodeItem = sku.barcodeList.find((item) => {
-      return item.unitId === form.unitId;
-    });
-
-    return barcodeItem
-      ? barcodeItem
-      : {
-          spuId: spuId,
-          skuId: sku.id,
-          unitId: unitId,
-          unitName: unitName,
-          barcode: serialNumberApi.generate(SERIAL_NUMBER_ID_ENUM.BARCODE.value),
-        };
+    return {
+      spuId,
+      skuId: sku.id,
+      unitId,
+      unitName,
+      barcode: undefined,
+    };
   }
 
   async function extraClick() {
     SmartLoading.show();
     try {
       if (form.spuId) {
-        var barcodeList = [];
-        tableData.value.map((item) => {
-          barcodeList = [...barcodeList, ...item.barcodeList];
-        });
+        const barcodeList = tableData.value.reduce((pre, cur) => {
+          return pre.concat(cur.barcodeList);
+        }, []);
 
         const data = {
           spuId: form.spuId,
