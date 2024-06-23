@@ -16,10 +16,10 @@
       </template>
       <a-form ref="formRef" :model="form" :rules="rules" layout="horizontal" :label-col="{ span: 2 }" :wrapper-col="{ span: 22 }">
         <a-form-item label="开启" name="code">
-          <a-switch v-model:checked="form.enableBarcode" />
+          <a-switch v-model:checked="form.enableStockWarn" />
         </a-form-item>
 
-        <a-form-item label="商品条码" name="code" v-if="form.enableBarcode">
+        <a-form-item label="商品条码" name="code" v-if="form.enableStockWarn">
           <a-table
             style="width: 100%"
             size="small"
@@ -88,7 +88,7 @@
     spuId: undefined,
     unitId: undefined,
     unitName: undefined,
-    enableBarcode: false,
+    enableStockWarn: false,
     enableAttr: false,
     skuList: [],
     attrsList: [],
@@ -108,7 +108,7 @@
   }
 
   watch(
-    () => form.enableBarcode,
+    () => form.enableStockWarn,
     (newValue) => {
       if (newValue) {
         buildTableColumns();
@@ -222,7 +222,7 @@
 
         const data = {
           spuId: form.spuId,
-          enableBarcode: form.enableBarcode,
+          enableStockWarn: form.enableStockWarn,
           barcodeList: barcodeList,
         };
         await spuApi.updateSpuBarcode(data);

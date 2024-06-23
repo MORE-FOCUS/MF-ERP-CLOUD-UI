@@ -15,11 +15,7 @@
         >
       </template>
       <a-form ref="formRef" :model="form" :rules="rules" layout="horizontal" :label-col="{ span: 2 }" :wrapper-col="{ span: 22 }">
-        <a-form-item label="开启" name="code">
-          <a-switch v-model:checked="form.enableBarcode" />
-        </a-form-item>
-
-        <a-form-item label="商品条码" name="code" v-if="form.enableBarcode">
+        <a-form-item label="初始库存" name="code">
           <a-table
             style="width: 100%"
             size="small"
@@ -36,10 +32,10 @@
               </template>
               <template v-if="column.dataIndex === 'barcode'">
                 <a-space direction="vertical">
-                  <div v-for="item in record.barcodeList">
+                  <div v-for="item in record.quantity">
                     <a-input-group>
                       <a-input style="width: 15%; color: #c0c4cc" readonly v-model:value="item.unitName" />
-                      <a-input style="width: 75%;" v-model:value="item.barcode" />
+                      <a-input style="width: 75%" v-model:value="item.barcode" />
                     </a-input-group>
                   </div>
                 </a-space>
@@ -77,10 +73,28 @@
       fixed: 'left',
     },
     {
-      title: '条形码',
-      dataIndex: 'barcode',
+      title: '门店',
+      dataIndex: 'storeName',
       align: 'center',
-      width: 200,
+      width: 100,
+    },
+    {
+      title: '仓库',
+      dataIndex: 'warehouseName',
+      align: 'center',
+      width: 100,
+    },
+    {
+      title: '数量',
+      dataIndex: 'quantity',
+      align: 'center',
+      width: 100,
+    },
+    {
+      title: '单价',
+      dataIndex: 'price',
+      align: 'center',
+      width: 100,
     },
   ];
 

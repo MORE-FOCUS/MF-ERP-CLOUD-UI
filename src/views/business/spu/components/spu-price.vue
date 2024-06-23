@@ -30,6 +30,50 @@
               <template v-if="column.dataIndex === 'no'">
                 {{ index + 1 }}
               </template>
+              <template v-if="column.dataIndex === 'referencePurchasePrice'">
+                <a-space direction="vertical">
+                  <div v-for="item in record.priceList">
+                    <a-input-number size="small" style="width: 100%;" v-model:value="item.referencePurchasePrice" :precision="2" :min="0">
+                      <template #prefix>
+                        <span style="color: #c0c4cc">{{ item.unitName }}</span>
+                      </template>
+                    </a-input-number>
+                  </div>
+                </a-space>
+              </template>
+              <template v-if="column.dataIndex === 'tradePrice'">
+                <a-space direction="vertical">
+                  <div v-for="item in record.priceList">
+                    <a-input-number size="small" style="width: 100%;" v-model:value="item.tradePrice" :precision="2" :min="0">
+                      <template #prefix>
+                        <span style="color: #c0c4cc">{{ item.unitName }}</span>
+                      </template>
+                    </a-input-number>
+                  </div>
+                </a-space>
+              </template>
+              <template v-if="column.dataIndex === 'retailPrice'">
+                <a-space direction="vertical">
+                  <div v-for="item in record.priceList">
+                    <a-input-number size="small" style="width: 100%;" v-model:value="item.retailPrice" :precision="2" :min="0">
+                      <template #prefix>
+                        <span style="color: #c0c4cc">{{ item.unitName }}</span>
+                      </template>
+                    </a-input-number>
+                  </div>
+                </a-space>
+              </template>
+              <template v-if="column.dataIndex === 'retailPriceMin'">
+                <a-space direction="vertical">
+                  <div v-for="item in record.priceList">
+                    <a-input-number size="small" style="width: 100%;" v-model:value="item.retailPriceMin" :precision="2" :min="0">
+                      <template #prefix>
+                        <span style="color: #c0c4cc">{{ item.unitName }}</span>
+                      </template>
+                    </a-input-number>
+                  </div>
+                </a-space>
+              </template>
             </template>
           </a-table>
         </a-form-item>
@@ -45,8 +89,6 @@
   import { smartSentry } from '/@/lib/smart-sentry';
   import { message } from 'ant-design-vue';
   import { spuApi } from '/src/api/business/spu/spu-api';
-  import { serialNumberApi } from '/@/api/support/serial-number-api';
-  import { SERIAL_NUMBER_ID_ENUM } from '/@/constants/support/serial-number-const';
   import { watch } from 'vue';
 
   const rules = ref([]);
@@ -64,25 +106,25 @@
     },
     {
       title: '参考进货价',
-      dataIndex: 'barcode',
+      dataIndex: 'referencePurchasePrice',
       align: 'center',
       width: 100,
     },
     {
       title: '批发价',
-      dataIndex: 'barcode',
+      dataIndex: 'tradePrice',
       align: 'center',
       width: 100,
     },
     {
       title: '零售价',
-      dataIndex: 'barcode',
+      dataIndex: 'retailPrice',
       align: 'center',
       width: 100,
     },
     {
       title: '最低零售价',
-      dataIndex: 'barcode',
+      dataIndex: 'retailPriceMin',
       align: 'center',
       width: 100,
     },
@@ -92,12 +134,10 @@
     spuId: undefined,
     unitId: undefined,
     unitName: undefined,
-    enableAttr: false,
     skuList: [],
     attrsList: [],
     unitId: undefined,
     unitName: undefined,
-    enableMultiUnit: false,
     unitList: [],
   };
   let form = reactive(_.cloneDeep(formDefault));
@@ -108,23 +148,16 @@
       Object.assign(form, rawData);
       form.spuId = rawData.id;
     }
+
+    buildTableColumns();
+
+    buildTableDataList();
   }
-
-  watch(
-    () => form.enableBarcode,
-    (newValue) => {
-      if (newValue) {
-        buildTableColumns();
-
-        buildTableDataList();
-      }
-    }
-  );
 
   function buildTableColumns() {
     Object.assign(dynamicColumns.value, columns);
 
-    if (form.enableAttr) {
+    if (form.attrsList) {
       const attrsColumns = form.attrsList.map((item, index) =>
         Object.assign(
           {},
@@ -133,7 +166,7 @@
             dataIndex: 'attrs' + index,
             ellipsis: true,
             align: 'center',
-            width: 100,
+            width: 60,
           }
         )
       );
@@ -142,67 +175,46 @@
   }
 
   //构建表格数据
-  async function buildTableDataList() {
+  function buildTableDataList() {
     if (!form.skuList) {
       return;
     }
 
     const dataList = form.skuList.map((sku) => {
       const data = {
-        barcodeList: [],
+        priceList: [],
         spuId: form.spuId,
         skuId: sku.id,
       };
 
       //商品特性
-      if (form.enableAttr) {
+      if (sku.attrsList) {
         for (let index = 0; index < sku.attrsList.length; index++) {
           data['attrs' + index] = sku.attrsList[index].name;
         }
       }
 
       //基础单位
-      data.barcodeList.push(getBarcodeItem(sku, form.spuId, form.unitId, form.unitName));
+      data.priceList.push(getPriceItem(sku, form.spuId, form.unitId, form.unitName));
 
-      //开启了多单位
-      if (form.enableMultiUnit) {
-        //多单位,unitList不包含基础单位
+      //多单位,unitList不包含基础单位
+      if (form.unitList) {
         form.unitList.forEach((unit) => {
-          data.barcodeList.push(getBarcodeItem(sku, form.spuId, unit.unitId, unit.unitName));
+          data.priceList.push(getPriceItem(sku, form.spuId, unit.unitId, unit.unitName));
         });
       }
 
       return data;
     });
 
-    const barcodeList = dataList.reduce((pre, cur) => {
-      return pre.concat(cur.barcodeList.filter((item) => !item.barcode));
-    }, []);
-
-    //生成条形码
-    if (barcodeList.length > 0) {
-      const res = await serialNumberApi.generateMulti({ serialNumberId: SERIAL_NUMBER_ID_ENUM.BARCODE.value, count: barcodeList.length });
-      const barcodes = res.data;
-
-      let index = 0;
-      dataList.forEach((data) => {
-        data.barcodeList.forEach((item) => {
-          if (!item.barcode) {
-            item.barcode = barcodes[index];
-            index++;
-          }
-        });
-      });
-    }
-
     tableData.value = dataList;
   }
 
-  function getBarcodeItem(sku, spuId, unitId, unitName) {
-    if (sku.barcodeList) {
-      const barcodeItem = sku.barcodeList.find((item) => item.unitId === form.unitId);
-      if (barcodeItem) {
-        return barcodeItem;
+  function getPriceItem(sku, spuId, unitId, unitName) {
+    if (sku.priceList) {
+      const priceItem = sku.priceList.find((item) => item.unitId === form.unitId);
+      if (priceItem) {
+        return priceItem;
       }
     }
 
@@ -211,7 +223,10 @@
       skuId: sku.id,
       unitId,
       unitName,
-      barcode: undefined,
+      referencePurchasePrice: 1,
+      tradePrice: 2,
+      retailPrice: 3,
+      retailPriceMin: 4,
     };
   }
 
@@ -219,19 +234,18 @@
     SmartLoading.show();
     try {
       if (form.spuId) {
-        const barcodeList = tableData.value.reduce((pre, cur) => {
-          return pre.concat(cur.barcodeList);
+        const priceList = tableData.value.reduce((pre, cur) => {
+          return pre.concat(cur.priceList);
         }, []);
 
         const data = {
           spuId: form.spuId,
-          enableBarcode: form.enableBarcode,
-          barcodeList: barcodeList,
+          priceList: priceList,
         };
-        await spuApi.updateSpuBarcode(data);
+        await spuApi.updateSpuPrice(data);
       }
 
-      message.success('商品条形码保存成功');
+      message.success('商品单价保存成功');
     } catch (err) {
       smartSentry.captureError(err);
     } finally {

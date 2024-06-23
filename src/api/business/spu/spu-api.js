@@ -35,6 +35,21 @@ export const spuApi = {
     return postRequest('/spu/barcode/update', param);
   },
 
+  //更新单价
+  updateSpuPrice: (param) => {
+    return postRequest('/spu/price/update', param);
+  },
+
+  //更新初始库存
+  updateSpuInitialStock: (param) => {
+    return postRequest('/spu/initial-stock/update', param);
+  },
+
+  //更新库存预警
+  updateSpuWarnConfig: (param) => {
+    return postRequest('/spu/stock-warn-config/update', param);
+  },
+
   // 删除
   deleteSpu: (id) => {
     return getRequest(`/spu/delete/${id}`);

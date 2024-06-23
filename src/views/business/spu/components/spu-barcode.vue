@@ -37,10 +37,11 @@
               <template v-if="column.dataIndex === 'barcode'">
                 <a-space direction="vertical">
                   <div v-for="item in record.barcodeList">
-                    <a-input-group>
-                      <a-input style="width: 15%; color: #c0c4cc" readonly v-model:value="item.unitName" />
-                      <a-input style="width: 75%;" v-model:value="item.barcode" />
-                    </a-input-group>
+                    <a-input size="small" style="width: 100%;" v-model:value="item.barcode">
+                      <template #prefix>
+                        <span style="color: #c0c4cc">{{ item.unitName }}</span>
+                      </template>
+                    </a-input>
                   </div>
                 </a-space>
               </template>
