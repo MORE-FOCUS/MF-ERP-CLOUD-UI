@@ -26,12 +26,15 @@
         <template v-if="column.dataIndex === 'isDisabled'">
           <a-tag :color="record.isDisabled ? 'success' : 'error'">{{ text ? '是' : '否' }}</a-tag>
         </template>
+        <template v-if="column.dataIndex === 'type'">
+         {{ record.type === "1" ? '门店' : '组织机构' }}
+        </template>
         <template v-if="column.dataIndex === 'action'">
           <div class="smart-table-operate">
             <a-button @click="addDepartment(record.departmentId)" type="link"
               v-privilege="`system:department:addChild`">新增</a-button>
             <a-button @click="updateDepartment(record)" type="link" v-privilege="`system:department:update`">编辑</a-button>
-            <a-button @click="confirmDeleteDepartment(record.departmentId)" danger type="link"
+            <a-button @click="confirmDeleteDepartment(record.id)" danger type="link"
               v-privilege="`system:department:delete`">删除</a-button>
           </div>
         </template>
@@ -61,6 +64,12 @@ const columns = reactive([
   {
     title: '编码',
     dataIndex: 'code',
+    width: 150,
+    align: 'center'
+  },
+  {
+    title: '类型',
+    dataIndex: 'type',
     width: 150,
     align: 'center'
   },
@@ -122,16 +131,16 @@ function confirmDeleteDepartment(departmentId) {
     okText: '确定',
     okType: 'danger',
     async onOk() {
-      deleteCategory(departmentId);
+      deleteDepartment(departmentId);
     },
     cancelText: '取消',
     onCancel() { },
   });
 }
-async function deleteCategory(departmentId) {
+async function deleteDepartment(departmentId) {
   try {
     SmartLoading.show();
-    await departmentApi.delete(departmentId);
+    await departmentApi.deleteDepartment(departmentId);
     message.success('删除成功');
     queryTree();
   } catch (e) {
