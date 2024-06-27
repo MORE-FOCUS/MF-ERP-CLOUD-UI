@@ -118,15 +118,9 @@
     if (rawData) {
       form.spuId = rawData.id;
       form.enableMultiUnit = rawData.enableMultiUnit;
-
-      rawData.unitList.forEach((item) => {
-        if (item.isBasicUnit) {
-          form.baseUnitId = baseUnit.unitId;
-          form.baseUnitName = baseUnit.unitName;
-        } else {
-          tableData.value.push(item);
-        }
-      });
+      form.baseUnitId = rawData.unitId;
+      form.baseUnitName = rawData.unitName;
+      tableData.value = rawData.unitList;
     }
 
     queryUnit();

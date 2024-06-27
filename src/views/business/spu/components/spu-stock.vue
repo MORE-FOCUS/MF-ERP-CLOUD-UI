@@ -30,15 +30,14 @@
               <template v-if="column.dataIndex === 'no'">
                 {{ index + 1 }}
               </template>
-              <template v-if="column.dataIndex === 'barcode'">
-                <a-space direction="vertical">
-                  <div v-for="item in record.quantity">
-                    <a-input-group>
-                      <a-input style="width: 15%; color: #c0c4cc" readonly v-model:value="item.unitName" />
-                      <a-input style="width: 75%" v-model:value="item.barcode" />
-                    </a-input-group>
-                  </div>
-                </a-space>
+              <template v-if="column.dataIndex === 'warehouseName'">
+                <WarehouseSelect v-model:value="record.warehouseId" />
+              </template>
+              <template v-if="column.dataIndex === 'quantity'">
+                <a-input-number v-model:value="record.quantity" @change="onQuantityChange(record)" />
+              </template>
+              <template v-if="column.dataIndex === 'price'">
+                <a-input-number v-model:value="record.price" @change="onPriceChange(record)" />
               </template>
             </template>
           </a-table>
@@ -57,6 +56,7 @@
   import { spuApi } from '/src/api/business/spu/spu-api';
   import { serialNumberApi } from '/@/api/support/serial-number-api';
   import { SERIAL_NUMBER_ID_ENUM } from '/@/constants/support/serial-number-const';
+  import WarehouseSelect from '/@/components/business/warehouse-select/index.vue';
   import { watch } from 'vue';
 
   const rules = ref([]);
@@ -96,6 +96,12 @@
       align: 'center',
       width: 100,
     },
+    {
+      title: '总金额',
+      dataIndex: 'amount',
+      align: 'center',
+      width: 100,
+    },
   ];
 
   const formDefault = {
@@ -119,18 +125,11 @@
       Object.assign(form, rawData);
       form.spuId = rawData.id;
     }
+
+    buildTableColumns();
+
+    buildTableDataList();
   }
-
-  watch(
-    () => form.enableBarcode,
-    (newValue) => {
-      if (newValue) {
-        buildTableColumns();
-
-        buildTableDataList();
-      }
-    }
-  );
 
   function buildTableColumns() {
     Object.assign(dynamicColumns.value, columns);
@@ -144,7 +143,7 @@
             dataIndex: 'attrs' + index,
             ellipsis: true,
             align: 'center',
-            width: 100,
+            width: 60,
           }
         )
       );
@@ -159,11 +158,7 @@
     }
 
     const dataList = form.skuList.map((sku) => {
-      const data = {
-        barcodeList: [],
-        spuId: form.spuId,
-        skuId: sku.id,
-      };
+      const data = sku.initialStock;
 
       //商品特性
       if (form.enableAttr) {
@@ -172,77 +167,48 @@
         }
       }
 
-      //基础单位
-      data.barcodeList.push(getBarcodeItem(sku, form.spuId, form.unitId, form.unitName));
-
-      //开启了多单位
-      if (form.enableMultiUnit) {
-        //多单位,unitList不包含基础单位
-        form.unitList.forEach((unit) => {
-          data.barcodeList.push(getBarcodeItem(sku, form.spuId, unit.unitId, unit.unitName));
-        });
-      }
-
       return data;
     });
-
-    const barcodeList = dataList.reduce((pre, cur) => {
-      return pre.concat(cur.barcodeList.filter((item) => !item.barcode));
-    }, []);
-
-    //生成条形码
-    if (barcodeList.length > 0) {
-      const res = await serialNumberApi.generateMulti({ serialNumberId: SERIAL_NUMBER_ID_ENUM.BARCODE.value, count: barcodeList.length });
-      const barcodes = res.data;
-
-      let index = 0;
-      dataList.forEach((data) => {
-        data.barcodeList.forEach((item) => {
-          if (!item.barcode) {
-            item.barcode = barcodes[index];
-            index++;
-          }
-        });
-      });
-    }
 
     tableData.value = dataList;
   }
 
-  function getBarcodeItem(sku, spuId, unitId, unitName) {
-    if (sku.barcodeList) {
-      const barcodeItem = sku.barcodeList.find((item) => item.unitId === form.unitId);
-      if (barcodeItem) {
-        return barcodeItem;
-      }
+  function onQuantityChange(data) {
+    calculateAmount(data);
+  }
+
+  function onPriceChange(data) {
+    calculateAmount(data);
+  }
+
+  function calculateAmount(data) {
+    if (!data.quantity) {
+      data.quantity = 0;
     }
 
-    return {
-      spuId,
-      skuId: sku.id,
-      unitId,
-      unitName,
-      barcode: undefined,
-    };
+    if (!data.price) {
+      data.price = 0;
+    }
+
+    return data.price * data.quantity;
   }
 
   async function extraClick() {
     SmartLoading.show();
     try {
       if (form.spuId) {
-        const barcodeList = tableData.value.reduce((pre, cur) => {
-          return pre.concat(cur.barcodeList);
+        const initialStockList = tableData.value.reduce((pre, cur) => {
+          return pre.concat(cur.initialStockList);
         }, []);
 
         const data = {
           spuId: form.spuId,
-          enableBarcode: form.enableBarcode,
-          barcodeList: barcodeList,
+          initialStockList: initialStockList,
         };
-        await spuApi.updateSpuBarcode(data);
+        await spuApi.updateSpuInitialStock(data);
       }
 
-      message.success('商品条形码保存成功');
+      message.success('商品初始库存保存成功');
     } catch (err) {
       smartSentry.captureError(err);
     } finally {

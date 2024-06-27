@@ -15,6 +15,13 @@ export const warehouseApi = {
   },
 
   /**
+   * 分页查询  @author  loki
+   */
+  queryAll: (param) => {
+    return postRequest('/warehouse/queryAll', param);
+  },
+
+  /**
    * 增加  @author  loki
    */
   add: (param) => {
