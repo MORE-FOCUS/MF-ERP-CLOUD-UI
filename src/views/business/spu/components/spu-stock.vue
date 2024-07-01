@@ -34,10 +34,10 @@
                 <WarehouseSelect v-model:value="record.warehouseId" />
               </template>
               <template v-if="column.dataIndex === 'quantity'">
-                <a-input-number v-model:value="record.quantity" @change="onQuantityChange(record)" />
+                <a-input-number v-model:value="record.quantity" :precision="2" :min="0" @change="onQuantityChange(record)" />
               </template>
               <template v-if="column.dataIndex === 'price'">
-                <a-input-number v-model:value="record.price" @change="onPriceChange(record)" />
+                <a-input-number v-model:value="record.price" :precision="2" :min="0" @change="onPriceChange(record)"/>
               </template>
             </template>
           </a-table>
@@ -54,8 +54,6 @@
   import { smartSentry } from '/@/lib/smart-sentry';
   import { message } from 'ant-design-vue';
   import { spuApi } from '/src/api/business/spu/spu-api';
-  import { serialNumberApi } from '/@/api/support/serial-number-api';
-  import { SERIAL_NUMBER_ID_ENUM } from '/@/constants/support/serial-number-const';
   import WarehouseSelect from '/@/components/business/warehouse-select/index.vue';
   import { watch } from 'vue';
 
@@ -190,20 +188,16 @@
       data.price = 0;
     }
 
-    return data.price * data.quantity;
+    data.amount = data.price * data.quantity;
   }
 
   async function extraClick() {
     SmartLoading.show();
     try {
       if (form.spuId) {
-        const initialStockList = tableData.value.reduce((pre, cur) => {
-          return pre.concat(cur.initialStockList);
-        }, []);
-
         const data = {
           spuId: form.spuId,
-          initialStockList: initialStockList,
+          initialStockList: tableData.value,
         };
         await spuApi.updateSpuInitialStock(data);
       }
