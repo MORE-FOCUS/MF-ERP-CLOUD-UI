@@ -14,7 +14,7 @@
     <a-select-option v-for="item in unitList" :key="item.id" :value="item.id">
       {{ item.name }}
     </a-select-option>
-  </a-select>
+  </a-select> 
 </template>
 
 <script setup>

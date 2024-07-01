@@ -31,13 +31,17 @@
                 {{ index + 1 }}
               </template>
               <template v-if="column.dataIndex === 'warehouseName'">
-                <WarehouseSelect v-model:value="record.warehouseId" />
+                <a-select v-model:value="record.warehouseId" showSearch="true" allowClear="true">
+                  <a-select-option v-for="item in warehouseList" :key="item.id" :value="item.id">
+                    {{ item.name }}
+                  </a-select-option>
+                </a-select>
               </template>
               <template v-if="column.dataIndex === 'quantity'">
                 <a-input-number v-model:value="record.quantity" :precision="2" :min="0" @change="onQuantityChange(record)" />
               </template>
               <template v-if="column.dataIndex === 'price'">
-                <a-input-number v-model:value="record.price" :precision="2" :min="0" @change="onPriceChange(record)"/>
+                <a-input-number v-model:value="record.price" :precision="2" :min="0" @change="onPriceChange(record)" />
               </template>
             </template>
           </a-table>
@@ -48,14 +52,13 @@
 </template>
 
 <script setup>
-  import { ref, reactive } from 'vue';
+  import { ref, reactive, onMounted } from 'vue';
   import _ from 'lodash';
   import { SmartLoading } from '/@/components/framework/smart-loading';
   import { smartSentry } from '/@/lib/smart-sentry';
   import { message } from 'ant-design-vue';
   import { spuApi } from '/src/api/business/spu/spu-api';
-  import WarehouseSelect from '/@/components/business/warehouse-select/index.vue';
-  import { watch } from 'vue';
+  import { warehouseApi } from '/src/api/business/warehouse/warehouse-api';
 
   const rules = ref([]);
   const formRef = ref();
@@ -189,6 +192,18 @@
     }
 
     data.amount = data.price * data.quantity;
+  }
+
+  onMounted(getWarehouseList);
+
+  const warehouseList = ref([]);
+  async function getWarehouseList() {
+    try {
+      let resp = await warehouseApi.queryAll({ isDisabled: false });
+      warehouseList.value = resp.data;
+    } catch (e) {
+      smartSentry.captureError(e);
+    }
   }
 
   async function extraClick() {
