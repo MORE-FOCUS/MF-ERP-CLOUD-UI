@@ -6,7 +6,7 @@
   <a-form class="smart-query-form">
     <a-row class="smart-query-form-row" v-privilege="'business:spu:query'">
       <a-form-item class="smart-query-form-item">
-        <a-input style="width: 200px" v-model:value="queryForm.searchWord" placeholder="商品名称/编码" />
+        <a-input style="width: 200px" v-model:value="queryForm.searchWord" placeholder="按名称/编号查询" />
       </a-form-item>
 
       <!-- <a-form-item label="产地" name="place" class="smart-query-form-item">
@@ -198,12 +198,6 @@
       fixed: 'left',
     },
     {
-      title: '商品名称',
-      dataIndex: 'name',
-      align: 'center',
-      fixed: 'left',
-    },
-    {
       title: '图片',
       dataIndex: 'image',
       align: 'center',
@@ -211,18 +205,25 @@
       fixed: 'left',
     },
     {
-      title: '商品规格',
+      title: '编号',
+      dataIndex: 'code',
+      align: 'center',
+      fixed: 'left',
+    },
+    {
+      title: '名称',
+      dataIndex: 'name',
+      align: 'center',
+      fixed: 'left',
+    },
+    {
+      title: '规格',
       dataIndex: 'specs',
       align: 'center',
     },
     {
       title: '产地',
       dataIndex: 'place',
-      align: 'center',
-    },
-    {
-      title: '商品状态',
-      dataIndex: 'status',
       align: 'center',
     },
     {
@@ -236,8 +237,29 @@
       align: 'center',
     },
     {
-      title: '上架状态',
-      dataIndex: 'isListed',
+      title: '状态',
+      dataIndex: 'isDisabled',
+      align: 'center',
+    },
+    {
+      title: '默认供应商',
+      dataIndex: 'supplierName',
+      align: 'center',
+      width: 100,
+    },
+    {
+      title: '默认仓库',
+      dataIndex: 'warehouseName',
+      align: 'center',
+    },
+    {
+      title: '当前库存',
+      dataIndex: 'stockAmount',
+      align: 'center',
+    },
+    {
+      title: '期初库存',
+      dataIndex: 'initialStockAmount',
       align: 'center',
     },
     {
