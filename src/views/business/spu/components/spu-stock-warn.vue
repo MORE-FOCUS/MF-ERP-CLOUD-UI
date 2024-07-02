@@ -19,7 +19,7 @@
           <a-switch v-model:checked="form.enableStockWarn" />
         </a-form-item>
 
-        <a-form-item label="商品条码" name="code" v-if="form.enableStockWarn">
+        <a-form-item label="库存预警" name="code" v-if="form.enableStockWarn">
           <a-table
             style="width: 100%"
             size="small"
@@ -34,15 +34,18 @@
               <template v-if="column.dataIndex === 'no'">
                 {{ index + 1 }}
               </template>
-              <template v-if="column.dataIndex === 'barcode'">
-                <a-space direction="vertical">
-                  <div v-for="item in record.barcodeList">
-                    <a-input-group>
-                      <a-input style="width: 15%; color: #c0c4cc" readonly v-model:value="item.unitName" />
-                      <a-input style="width: 75%;" v-model:value="item.barcode" />
-                    </a-input-group>
-                  </div>
-                </a-space>
+              <template v-if="column.dataIndex === 'warehouseName'">
+                <a-select v-model:value="record.warehouseId" showSearch="true" allowClear="true">
+                  <a-select-option v-for="item in warehouseList" :key="item.id" :value="item.id">
+                    {{ item.name }}
+                  </a-select-option>
+                </a-select>
+              </template>
+              <template v-if="column.dataIndex === 'minQuantity'">
+                <a-input-number style="width: 100%" v-model:value="record.minQuantity" :precision="2" :min="0" />
+              </template>
+              <template v-if="column.dataIndex === 'maxQuantity'">
+                <a-input-number style="width: 100%" v-model:value="record.maxQuantity" :precision="2" :min="0" />
               </template>
             </template>
           </a-table>
@@ -53,14 +56,13 @@
 </template>
 
 <script setup>
-  import { ref, reactive } from 'vue';
+  import { ref, reactive,onMounted } from 'vue';
   import _ from 'lodash';
   import { SmartLoading } from '/@/components/framework/smart-loading';
   import { smartSentry } from '/@/lib/smart-sentry';
   import { message } from 'ant-design-vue';
   import { spuApi } from '/src/api/business/spu/spu-api';
-  import { serialNumberApi } from '/@/api/support/serial-number-api';
-  import { SERIAL_NUMBER_ID_ENUM } from '/@/constants/support/serial-number-const';
+  import { warehouseApi } from '/src/api/business/warehouse/warehouse-api';
   import { watch } from 'vue';
 
   const rules = ref([]);
@@ -77,8 +79,20 @@
       fixed: 'left',
     },
     {
-      title: '条形码',
-      dataIndex: 'barcode',
+      title: '仓库',
+      dataIndex: 'warehouseName',
+      align: 'center',
+      width: 100,
+    },
+    {
+      title: '最小库存',
+      dataIndex: 'minQuantity',
+      align: 'center',
+      width: 200,
+    },
+    {
+      title: '最大库存',
+      dataIndex: 'maxQuantity',
       align: 'center',
       width: 200,
     },
@@ -130,7 +144,7 @@
             dataIndex: 'attrs' + index,
             ellipsis: true,
             align: 'center',
-            width: 100,
+            width: 60,
           }
         )
       );
@@ -145,11 +159,7 @@
     }
 
     const dataList = form.skuList.map((sku) => {
-      const data = {
-        barcodeList: [],
-        spuId: form.spuId,
-        skuId: sku.id,
-      };
+      const data = sku.initialStock;
 
       //商品特性
       if (form.enableAttr) {
@@ -158,74 +168,33 @@
         }
       }
 
-      //基础单位
-      data.barcodeList.push(getBarcodeItem(sku, form.spuId, form.unitId, form.unitName));
-
-      //开启了多单位
-      if (form.enableMultiUnit) {
-        //多单位,unitList不包含基础单位
-        form.unitList.forEach((unit) => {
-          data.barcodeList.push(getBarcodeItem(sku, form.spuId, unit.unitId, unit.unitName));
-        });
-      }
-
       return data;
     });
-
-    const barcodeList = dataList.reduce((pre, cur) => {
-      return pre.concat(cur.barcodeList.filter((item) => !item.barcode));
-    }, []);
-
-    //生成条形码
-    if (barcodeList.length > 0) {
-      const res = await serialNumberApi.generateMulti({ serialNumberId: SERIAL_NUMBER_ID_ENUM.BARCODE.value, count: barcodeList.length });
-      const barcodes = res.data;
-
-      let index = 0;
-      dataList.forEach((data) => {
-        data.barcodeList.forEach((item) => {
-          if (!item.barcode) {
-            item.barcode = barcodes[index];
-            index++;
-          }
-        });
-      });
-    }
 
     tableData.value = dataList;
   }
 
-  function getBarcodeItem(sku, spuId, unitId, unitName) {
-    if (sku.barcodeList) {
-      const barcodeItem = sku.barcodeList.find((item) => item.unitId === form.unitId);
-      if (barcodeItem) {
-        return barcodeItem;
-      }
-    }
+  onMounted(getWarehouseList);
 
-    return {
-      spuId,
-      skuId: sku.id,
-      unitId,
-      unitName,
-      barcode: undefined,
-    };
+  const warehouseList = ref([]);
+  async function getWarehouseList() {
+    try {
+      let resp = await warehouseApi.queryAll({ isDisabled: false });
+      warehouseList.value = resp.data;
+    } catch (e) {
+      smartSentry.captureError(e);
+    }
   }
 
   async function extraClick() {
     SmartLoading.show();
     try {
       if (form.spuId) {
-        const barcodeList = tableData.value.reduce((pre, cur) => {
-          return pre.concat(cur.barcodeList);
-        }, []);
-
         const data = {
           spuId: form.spuId,
-          enableStockWarn: form.enableStockWarn,
-          barcodeList: barcodeList,
+          warnConfigList: tableData.value,
         };
-        await spuApi.updateSpuBarcode(data);
+        await spuApi.updateSpuWarnConfig(data);
       }
 
       message.success('商品条形码保存成功');
