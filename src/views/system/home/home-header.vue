@@ -106,7 +106,7 @@
     let next = lunar.getNextJieQi();
     let nextJieqi = next.getName() + ' ' + next.getSolar().toYmd();
 
-    return `${day} 星期${week}，农历${lunarMonth}${lunarDay}（当前${jieqi}，${nextJieqi} ）`;
+    return `${day} 星期${week}，农历${lunarMonth}月${lunarDay}（当前${jieqi}，${nextJieqi} ）`;
   });
 
   // 毒鸡汤
