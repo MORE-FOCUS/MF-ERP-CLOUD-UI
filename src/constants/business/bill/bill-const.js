@@ -4,9 +4,9 @@ export const BILL_TYPE_ENUM = {
    * 101：购货订单
    * 102：购货单
    * 103：购货退货单
-   * 201：销售订单
-   * 202：销售单
-   * 203：销售退货单
+   * 201：销货订单
+   * 202：销货单
+   * 203：销货退货单
    */
   PO: {
     value: 101,
@@ -22,19 +22,19 @@ export const BILL_TYPE_ENUM = {
   },
   SO: {
     value: 201,
-    desc: '销售订单',
+    desc: '销货订单',
   },
   SB: {
     value: 202,
-    desc: '销售单',
+    desc: '销货单',
   },
   SOT: {
     value: 203,
-    desc: '销售退货单',
+    desc: '销货退货单',
   },
 };
 /*
- * 采购订单状态
+ * 购货订单状态
  */
 export const PO_BILL_STATE_ENUM = {
   //101-未入库 102-部分入库 103-全部入库 104-已关闭
@@ -80,7 +80,10 @@ export const BILL_CHECK_STATE_ENUM = {
   },
 };
 
+export const ADD_PO_PAGE_NAME = "/bill/po/add";
+
 export default {
+  ADD_PO_PAGE_NAME,
   BILL_TYPE_ENUM,
   PO_BILL_STATE_ENUM,
   BILL_AUDIT_STATE_ENUM,

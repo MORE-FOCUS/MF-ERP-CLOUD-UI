@@ -17,6 +17,7 @@ export const TABLE_ID_CONST = {
     SUPPLIER: businessInitTableId + 3, //供应商列表
     UNIT: businessInitTableId + 4, //单位列表
     BRAND: businessInitTableId + 5, //品牌列表
+    PURCHASE_ORDER: businessInitTableId + 6, //购货订单
   },
 
   /**

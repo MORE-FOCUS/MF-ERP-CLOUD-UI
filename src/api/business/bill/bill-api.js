@@ -29,7 +29,7 @@ export const billApi = {
   },
 
   /**
-   * 采购订单
+   * 购货订单
    */
   queryPoPage: (param) => {
     return postRequest('/po/queryPage', param);

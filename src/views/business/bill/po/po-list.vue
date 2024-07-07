@@ -1,5 +1,5 @@
 <!--
-  * 采购订单
+  * 购货订单
   *
   * @author:    loki
   * @date:      2024-07-04 23:20:21
@@ -44,7 +44,7 @@
     <!---------- 表格操作行 begin ----------->
     <a-row class="smart-table-btn-block">
       <div class="smart-table-operate-block">
-        <a-button @click="showForm" type="primary" size="small">
+        <a-button @click="addPO" type="primary" size="small">
           <template #icon>
             <PlusOutlined />
           </template>
@@ -53,13 +53,13 @@
 
         <a-button size="small">
           <template #icon>
-            <CheckSquareOutlined />
+            <UserOutlined />
           </template>
           审核
         </a-button>
         <a-button size="small">
           <template #icon>
-            <CloseSquareOutlined />
+            <UserOutlined />
           </template>
           反审核
         </a-button>
@@ -77,7 +77,7 @@
         </a-button>
       </div>
       <div class="smart-table-setting-block">
-        <TableOperator v-model="columns" :tableId="null" :refresh="queryData" />
+        <TableOperator v-model="columns" :tableId="TABLE_ID_CONST.PURCHASE_ORDER" :refresh="queryData" />
       </div>
     </a-row>
     <!---------- 表格操作行 end ----------->
@@ -134,8 +134,6 @@
         :show-total="(total) => `共${total}条`"
       />
     </div>
-
-    <BillForm ref="formRef" @reloadList="queryData" />
   </a-card>
 </template>
 <script setup>
@@ -146,10 +144,12 @@
   import { SmartLoading } from '/@/components/framework/smart-loading';
   import { billApi } from '/@/api/business/bill/bill-api';
   import { smartSentry } from '/@/lib/smart-sentry';
-  import BillForm from './components/bill-form.vue';
+  import BillForm from './po-add-form.vue';
   import SmartEnumSelect from '/@/components/framework/smart-enum-select/index.vue';
   import TableOperator from '/@/components/support/table-operator/index.vue';
   import { TABLE_ID_CONST } from '/@/constants/support/table-id-const';
+  import { useRouter } from 'vue-router';
+  import { ADD_PO_PAGE_NAME } from '/@/constants/business/bill/bill-const';
   // ---------------------------- 表格列 ----------------------------
 
   const columns = ref([
@@ -355,7 +355,8 @@
   // ---------------------------- 添加/修改 ----------------------------
   const formRef = ref();
 
-  function showForm(data) {
-    formRef.value.show(data);
+  const router = useRouter();
+  function addPO() {
+    router.push({ path: ADD_PO_PAGE_NAME });
   }
 </script>
