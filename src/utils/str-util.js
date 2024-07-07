@@ -38,3 +38,14 @@ export function convertLowerCamel(str) {
 
   return str.replace(/_(\w)/g, (_, letter) => letter.toUpperCase());
 }
+
+/**
+ * 金额前面加上'¥'
+ */
+export const convertAmount = (amount) => {
+  if (!amount) {
+    amount = 0;
+  }
+
+  return '¥ ' + amount.toFixed(2);
+};

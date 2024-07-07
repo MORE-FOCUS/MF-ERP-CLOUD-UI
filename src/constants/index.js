@@ -16,6 +16,7 @@ import changeLogConst from './support/change-log-const';
 import jobConst from './support/job-const';
 import tenant from './business/tenant/tenant-const';
 import serialNumberConst from './support/serial-number-const';
+import billConst from './business/bill/bill-const';
 
 export default {
   DISABLED_ENUM,
@@ -36,4 +37,5 @@ export default {
   ...jobConst,
   ...tenant,
   ...serialNumberConst,
+  ...billConst,
 };

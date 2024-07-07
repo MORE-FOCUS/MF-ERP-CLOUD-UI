@@ -27,4 +27,12 @@ export const billApi = {
   update: (param) => {
     return postRequest('/bill/update', param);
   },
+
+  /**
+   * 采购订单
+   */
+  queryPoPage: (param) => {
+    return postRequest('/po/queryPage', param);
+  },
+
 };
