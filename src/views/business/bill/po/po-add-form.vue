@@ -7,16 +7,16 @@
 <template>
   <a-card size="small" :bordered="false">
     <a-form ref="formRef" :model="form" :rules="rules" layout="horizontal" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
-      <a-row :gutter="24" style="margin-bottom: 5px">
-        <a-col :span="24">
+      
+        <a-flex :justify="flex-end" :align="center">
           <a-space>
             <a-button @click="onSubmit(true)" size="middle">历史单据</a-button>
             <a-button @click="onSubmit(false)" size="middle">保存并审核</a-button>
             <a-button @click="onSubmit(true)" size="middle">保存</a-button>
             <a-button @click="onClose" size="middle">取消</a-button>
           </a-space>
-        </a-col>
-      </a-row>
+        </a-flex>
+ 
       <a-divider />
       <a-row>
         <a-col :span="6">
