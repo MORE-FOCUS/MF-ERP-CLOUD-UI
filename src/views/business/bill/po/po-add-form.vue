@@ -6,29 +6,36 @@
 -->
 <template>
   <a-card size="small" :bordered="false">
-    <a-form ref="formRef" :model="form" :rules="rules" layout="horizontal" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
-      
-        <a-flex :justify="flex-end" :align="center">
-          <a-space>
-            <a-button @click="onSubmit(true)" size="middle">历史单据</a-button>
-            <a-button @click="onSubmit(false)" size="middle">保存并审核</a-button>
-            <a-button @click="onSubmit(true)" size="middle">保存</a-button>
-            <a-button @click="onClose" size="middle">取消</a-button>
-          </a-space>
-        </a-flex>
- 
-      <a-divider />
+    <a-form ref="formRef" :model="form" :rules="rules" layout="horizontal" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
       <a-row>
-        <a-col :span="6">
-          <a-form-item label="单据编号" name="supplier">
-            <a-input style="width: 100%" v-model:value.trim="form.name" placeholder="请输入名称" />
-          </a-form-item>
-        </a-col>
         <a-col :span="6">
           <a-form-item label="供应商" name="supplier">
             <a-input style="width: 100%" v-model:value.trim="form.name" placeholder="请输入名称" />
           </a-form-item>
         </a-col>
+        <a-col :span="6">
+          <a-form-item label="单据日期" name="billDate">
+            <a-date-picker valueFormat="YYYY-MM-DD" v-model:value="form.billDate" style="width: 60%" />
+          </a-form-item>
+        </a-col>
+
+        <a-col :span="12">
+          <a-flex gap="small" justify="flex-end" align="center" style="padding-bottom: 8px">
+            <a-button @click="onSubmit(false)" type="primary" size="middle">保存并审核</a-button>
+            <a-button @click="onSubmit(true)" type="primary" size="middle">保存</a-button>
+            <a-button @click="onCancel" type="primary" size="middle">取消</a-button>
+            <a-button @click="historyBillList(true)" type="primary" size="middle">历史单据</a-button>
+          </a-flex>
+        </a-col>
+      </a-row>
+
+      <a-row>
+        <a-col :span="6">
+          <a-form-item label="订单号" name="billNo">
+            <a-input style="width: 100%" v-model:value.trim="form.billNo" placeholder="请输入订单号" />
+          </a-form-item>
+        </a-col>
+
         <a-col :span="6">
           <a-form-item label="业务员" name="salesman">
             <a-input style="width: 100%" v-model:value.trim="form.name" placeholder="请输入名称" />
@@ -39,33 +46,20 @@
             <a-input style="width: 100%" v-model:value.trim="form.name" placeholder="请输入名称" />
           </a-form-item>
         </a-col>
+        <a-col :span="6">
+          <a-form-item label="交货日期" name="deliveryDate">
+            <a-date-picker valueFormat="YYYY-MM-DD" v-model:value="form.deliveryDate" style="width: 60%" />
+          </a-form-item>
+        </a-col>
       </a-row>
+
       <a-row>
         <a-col :span="6">
-          <a-form-item label="单据日期" name="salesman">
-            <a-input style="width: 100%" v-model:value.trim="form.name" placeholder="请输入名称" />
-          </a-form-item>
-        </a-col>
-        <a-col :span="6">
-          <a-form-item label="交货日期" name="salesman">
-            <a-input style="width: 100%" v-model:value.trim="form.name" placeholder="请输入名称" />
+          <a-form-item label="备注" name="remark">
+            <a-textarea show-count :maxlength="100" style="width: 300%;" />
           </a-form-item>
         </a-col>
       </a-row>
-      <a-divider />
-      <a-table size="small" :dataSource="tableData" :columns="columns" rowKey="id" bordered :loading="tableLoading">
-        <template #bodyCell="{ record, index, column }">
-          <template v-if="column.dataIndex === 'no'">
-            {{ index + 1 }}
-          </template>
-          <template v-if="column.dataIndex === 'action'">
-            <div class="smart-table-operate">
-              <a-button @click="showForm(record)" type="link">编辑</a-button>
-              <a-button @click="showForm(record)" type="link">删除</a-button>
-            </div>
-          </template>
-        </template>
-      </a-table>
     </a-form>
   </a-card>
 </template>
@@ -97,7 +91,7 @@
     });
   }
 
-  function onClose() {
+  function onCancel() {
     Object.assign(form, formDefault);
     visible.value = false;
   }
@@ -157,3 +151,6 @@
     show,
   });
 </script>
+
+<style lang="less">
+</style>
