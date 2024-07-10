@@ -14,11 +14,20 @@
     <a-select-option v-for="item in supplierList" :key="item.id" :value="item.id">
       {{ item.name }}
     </a-select-option>
+
+    <template #dropdownRender="{ menuNode: menu }">
+      <v-nodes :vnodes="menu" />
+      <a-divider style="margin: 4px 0" />
+      <a-flex gap="small" justify="space-between" align="center">
+        <a-button type="text" @click="addItem" style="width: 100%"><PlusOutlined /> 新增 </a-button>
+        <a-button type="text" @click="moreItem" style="width: 100%"> 更多<EllipsisOutlined /> </a-button>
+      </a-flex>
+    </template>
   </a-select>
 </template>
 
 <script setup>
-  import { onMounted, ref, watch } from 'vue';
+  import { onMounted, ref, watch, defineComponent } from 'vue';
   import { supplierApi } from '/src/api/business/supplier/supplier-api';
   import { smartSentry } from '/@/lib/smart-sentry';
 
@@ -41,6 +50,18 @@
     isDisabled: {
       type: Boolean,
       default: false,
+    },
+  });
+
+  const VNodes = defineComponent({
+    props: {
+      vnodes: {
+        type: Object,
+        required: true,
+      },
+    },
+    render() {
+      return this.vnodes;
     },
   });
 

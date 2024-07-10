@@ -9,7 +9,7 @@
     <a-form ref="formRef" :model="form" :rules="rules" layout="horizontal" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
       <a-row>
         <a-col :span="6">
-          <a-form-item label="供应商" name="supplier">
+          <a-form-item label="供应商"name="supplier">
             <SupplierSelect v-model:value="form.supplierId" width="100%" />
           </a-form-item>
         </a-col>
