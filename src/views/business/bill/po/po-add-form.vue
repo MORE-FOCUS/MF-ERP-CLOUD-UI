@@ -10,7 +10,7 @@
       <a-row>
         <a-col :span="6">
           <a-form-item label="供应商" name="supplier">
-            <a-input style="width: 100%" v-model:value.trim="form.name" placeholder="请输入名称" />
+            <SupplierSelect v-model:value="form.supplierId" width="100%" />
           </a-form-item>
         </a-col>
         <a-col :span="6">
@@ -52,11 +52,10 @@
           </a-form-item>
         </a-col>
       </a-row>
-
       <a-row>
         <a-col :span="6">
           <a-form-item label="备注" name="remark">
-            <a-textarea show-count :maxlength="100" style="width: 300%;" />
+            <a-textarea show-count :maxlength="100" style="width: 250%;" />
           </a-form-item>
         </a-col>
       </a-row>
@@ -71,6 +70,7 @@
 
   import { billApi } from '/@/api/business/bill/bill-api';
   import { smartSentry } from '/@/lib/smart-sentry';
+  import SupplierSelect from '/@/components/business/supplier-select/index.vue'
 
   // ------------------------ 事件 ------------------------
 
@@ -152,5 +152,4 @@
   });
 </script>
 
-<style lang="less">
-</style>
+<style lang="less"></style>
